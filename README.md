@@ -166,7 +166,7 @@ keyAchievements: [
 ## 🌐 Let's Connect
 
   
-- 🔗 [LinkedIn]([https://linkedin.com/in/juanrestrepo](https://www.linkedin.com/in/jota-restrepo/))
+- 🔗 [LinkedIn](https://www.linkedin.com/in/jota-restrepo)
 
 - 🧪 [Portfolio / GitHub Projects](https://github.com/Sircodr)
 
