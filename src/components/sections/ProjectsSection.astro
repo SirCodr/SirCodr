@@ -1,0 +1,171 @@
+---
+import type { Locale } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import { projects } from '../../data/projects';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section style="padding: 5rem 0;" id="projects">
+  <div class="container-prose">
+    <h2 class="section-title reveal">{t('projects.title')}</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      {projects.filter((p) => p.featured).map((project) => (
+        <div class="card reveal" style="padding: 1.75rem 2rem; overflow: hidden;">
+
+          <!-- Header: name + year + badge -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.625rem;">
+              <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--tx); margin: 0; letter-spacing: -0.02em;">{project.name}</h3>
+              <span style="font-size: 0.78rem; color: var(--tx-muted); font-weight: 400;">{project.year}</span>
+            </div>
+            <span style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 10%, transparent); border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent); padding: 0.2rem 0.6rem; border-radius: 9999px; white-space: nowrap; flex-shrink: 0;">
+              {t('projects.featured')}
+            </span>
+          </div>
+
+          <!-- Body: text / screenshots -->
+          <div class="project-body" style="display: grid; grid-template-columns: 1fr; gap: 1.75rem; align-items: start;">
+
+            <!-- Text column -->
+            <div style="min-width: 0;">
+              <p style="font-size: 0.9rem; color: var(--tx-muted); line-height: 1.65; margin: 0 0 1.1rem;">
+                {project.summary[locale]}
+              </p>
+
+              <ul style="margin: 0 0 1.1rem; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.4rem;">
+                {project.highlights.map((h) => (
+                  <li style="display: flex; gap: 0.5rem; font-size: 0.84rem; color: var(--tx-muted); line-height: 1.5; align-items: flex-start;">
+                    <span style="color: var(--color-accent); flex-shrink: 0; margin-top: 0.2rem; font-size: 0.7rem;">✓</span>
+                    <span>{h[locale]}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 1.1rem;">
+                {project.stack.map((tech) => (
+                  <span class="chip">{tech}</span>
+                ))}
+              </div>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <a href={project.github} target="_blank" rel="noopener noreferrer" class="btn-ghost" style="font-size: 0.82rem; padding: 0.45rem 1rem;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  {t('projects.view_github')}
+                </a>
+                {project.demo && (
+                  <a href={project.demo} target="_blank" rel="noopener noreferrer" class="btn-primary" style="font-size: 0.82rem; padding: 0.45rem 1rem;">
+                    {t('projects.view_demo')} ↗
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <!-- Screenshots carousel -->
+            {project.screenshots && project.screenshots.length > 0 && (
+              <div style="min-width: 0;">
+                <div
+                  id={`carousel-${project.slug}`}
+                  class="carousel-track"
+                  style="display: flex; gap: 0.625rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;"
+                >
+                  {project.screenshots.map((src, i) => (
+                    <div class="carousel-item" style="flex: 0 0 auto; scroll-snap-align: start;">
+                      <img
+                        src={src}
+                        alt={`${project.name} screenshot ${i + 1}`}
+                        loading="lazy"
+                        decoding="async"
+                        style="width: 100%; height: auto; display: block; border-radius: 0.875rem; border: 1px solid var(--bd); box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <!-- Dots -->
+                <div style="display: flex; justify-content: center; gap: 0.375rem; margin-top: 0.75rem;">
+                  {project.screenshots.map((_, i) => (
+                    <button
+                      data-carousel={`carousel-${project.slug}`}
+                      data-index={i}
+                      aria-label={`Screenshot ${i + 1}`}
+                      class={`carousel-dot${i === 0 ? ' is-active' : ''}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .carousel-track::-webkit-scrollbar { display: none; }
+
+  .carousel-item { width: clamp(155px, 44vw, 200px); }
+
+  .carousel-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--bd);
+    padding: 0;
+    transition: width 0.25s ease, background-color 0.25s ease;
+  }
+  .carousel-dot.is-active {
+    width: 1.25rem;
+    background-color: var(--color-accent);
+  }
+
+  @media (min-width: 768px) {
+    .project-body { grid-template-columns: 1fr 1fr !important; }
+    .carousel-item { width: clamp(155px, 21vw, 195px); }
+  }
+  @media (min-width: 1024px) {
+    .carousel-item { width: clamp(160px, 17vw, 205px); }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.carousel-dot').forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const id = dot.dataset.carousel!;
+      const idx = Number(dot.dataset.index);
+      const track = document.getElementById(id);
+      if (!track) return;
+      const item = track.children[idx] as HTMLElement;
+      track.scrollTo({ left: item.offsetLeft, behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[id^="carousel-"]').forEach((track) => {
+    const dots = document.querySelectorAll<HTMLElement>(`.carousel-dot[data-carousel="${track.id}"]`);
+    track.addEventListener('scroll', () => {
+      const firstItem = track.children[0] as HTMLElement;
+      const itemW = (firstItem?.offsetWidth ?? 0) + 10;
+      if (itemW <= 10) return;
+      const active = Math.round(track.scrollLeft / itemW);
+      dots.forEach((d, i) => {
+        const on = i === active;
+        d.classList.toggle('is-active', on);
+        d.style.width = on ? '1.25rem' : '0.5rem';
+        d.style.backgroundColor = on ? 'var(--color-accent)' : 'var(--bd)';
+      });
+    }, { passive: true });
+  });
+</script>
+
+

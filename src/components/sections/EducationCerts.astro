@@ -1,0 +1,92 @@
+---
+import type { Locale } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import { educationList, certifications, softSkills } from '../../data/cv';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section style="padding: 5rem 0;" id="education">
+  <div class="container-prose">
+    <h2 class="section-title reveal">{t('education.title')}</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+
+      <!-- Education -->
+      <div class="card reveal" style="padding: 1.5rem;">
+        <h3 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1rem;">
+          {t('education.education_label')}
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+          {educationList.map((edu) => (
+            <div>
+              <p style="font-weight: 600; color: var(--tx); margin: 0; font-size: 0.9rem;">{edu.degree[locale]}</p>
+              <p style="color: var(--tx-muted); font-size: 0.82rem; margin: 0.15rem 0 0;">{edu.institution}{edu.period ? ` · ${edu.period}` : ''}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Certifications -->
+      <div class="card reveal" style="padding: 1.5rem;">
+        <h3 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1rem;">
+          {t('education.certs_label')}
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 0.625rem;">
+          {certifications.map((cert) => (
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+              <p style="font-weight: 500; color: var(--tx); margin: 0; font-size: 0.9rem;">{cert.name} <span style="color: var(--tx-muted); font-weight: 400;">— {cert.platform}</span></p>
+              <p style="font-size: 0.78rem; color: var(--tx-muted); white-space: nowrap; margin: 0;">{cert.date}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Soft skills -->
+      <div class="card reveal" style="padding: 1.5rem;">
+        <h3 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1rem;">
+          {t('education.soft_label')}
+        </h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+          {softSkills.map((skill) => (
+            <span class="chip">{skill[locale]}</span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div class="card reveal" style="padding: 1.5rem;">
+        <h3 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1rem;">
+          {t('education.languages_label')}
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <p style="font-weight: 500; color: var(--tx); margin: 0; font-size: 0.9rem;">{t('education.spanish')}</p>
+            <div style="width: 100px; height: 5px; background: var(--bd); border-radius: 9999px; overflow: hidden;">
+              <div style="width: 100%; height: 100%; background: var(--color-accent); border-radius: 9999px;"></div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <p style="font-weight: 500; color: var(--tx); margin: 0; font-size: 0.9rem;">{t('education.english')}</p>
+            <div style="width: 100px; height: 5px; background: var(--bd); border-radius: 9999px; overflow: hidden;">
+              <div style="width: 72%; height: 100%; background: var(--color-accent); border-radius: 9999px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (min-width: 640px) {
+    section div[style*="grid-template-columns: 1fr;"] {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+</style>

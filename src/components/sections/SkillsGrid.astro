@@ -1,0 +1,41 @@
+---
+import type { Locale } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import { skillCategories } from '../../data/cv';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section style="padding: 5rem 0;" id="skills">
+  <div class="container-prose">
+    <h2 class="section-title reveal">{t('skills.title')}</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.25rem;">
+      {skillCategories.map((cat) => (
+        <div class="card reveal" style="padding: 1.5rem;">
+          <h3 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.875rem;">
+            {cat.label[locale]}
+          </h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+            {cat.skills.map((skill) => (
+              <span class="chip">{skill}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (min-width: 640px) {
+    section div[style*="grid-template-columns: 1fr;"] {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+import type { Locale } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import { experiences } from '../../data/cv';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section style="padding: 5rem 0;" id="experience">
+  <div class="container-prose">
+    <h2 class="section-title reveal">{t('experience.title')}</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 0; position: relative;">
+      <!-- Timeline line -->
+      <div style="position: absolute; left: 0.5rem; top: 0.5rem; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--color-accent), color-mix(in srgb, var(--color-accent) 10%, transparent));"></div>
+
+      {experiences.map((exp) => (
+        <div class="reveal" style="padding-left: 2.5rem; padding-bottom: 3rem; position: relative;">
+          <!-- Dot -->
+          <div style="position: absolute; left: 0; top: 0.4rem; width: 1rem; height: 1rem; border-radius: 50%; background-color: var(--color-accent); border: 2px solid var(--bg);"></div>
+
+          <div class="card" style="padding: 1.5rem;">
+            <div style="margin-bottom: 0.75rem;">
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--tx); margin: 0 0 0.15rem;">
+                {exp.role[locale]}
+                <span style="color: var(--tx-muted); font-weight: 500;"> — {exp.company}</span>
+              </h3>
+              <p style="font-size: 0.82rem; color: var(--color-accent); font-weight: 500;">{exp.period}</p>
+            </div>
+
+            <ul style="margin: 0 0 1rem; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; list-style: disc;">
+              {exp.achievements.map((a) => (
+                <li style="font-size: 0.9rem; color: var(--tx-muted); line-height: 1.55;">{a[locale]}</li>
+              ))}
+            </ul>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+              {exp.skills.map((skill) => (
+                <span class="chip">{skill}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
