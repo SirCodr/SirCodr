@@ -9,7 +9,7 @@
 
 🇨🇴 Based in Medellín, Colombia · 🌍 Remote-friendly · 🗣️ English B2
 
-[🌐 Portfolio](https://juanpablorestrepo.dev) · [💼 LinkedIn](https://www.linkedin.com/in/jota-restrepo) · [🎵 TikTok](https://www.tiktok.com/@soyjota.dev) · [📫 Email](mailto:jotadeveloper00@gmail.com)
+[🌐 Portfolio](https://jotadev-portfolio.vercel.app) · [💼 LinkedIn](https://www.linkedin.com/in/jota-restrepo) · [🎵 TikTok](https://www.tiktok.com/@soyjota.dev) · [📫 Email](mailto:jotadeveloper00@gmail.com)
 
 </div>
 
@@ -62,7 +62,7 @@
 - 📊 **Real-time dashboard** with monthly budget grouping
 - ⚙️ **Stack:** Next.js · TypeScript · Tailwind · Prisma
 
-🔗 [See it in the portfolio](https://juanpablorestrepo.dev/#projects)
+🔗 [See it in the portfolio](https://jotadev-portfolio.vercel.app/#projects)
 
 ---
 
@@ -95,11 +95,11 @@
 I help developers and designers land remote jobs through personalized coaching.
 Also open to interesting frontend / full-stack opportunities.
 
-- 🌐 **Portfolio:** [juanpablorestrepo.dev](https://juanpablorestrepo.dev)
+- 🌐 **Portfolio:** [jotadev-portfolio.vercel.app](https://jotadev-portfolio.vercel.app)
 - 💼 **LinkedIn:** [in/jota-restrepo](https://www.linkedin.com/in/jota-restrepo)
 - 🎵 **TikTok:** [@soyjota.dev](https://www.tiktok.com/@soyjota.dev)
 - 📫 **Email:** jotadeveloper00@gmail.com
-- 💬 **Coaching:** [Remote work advisory](https://juanpablorestrepo.dev/servicios)
+- 💬 **Coaching:** [Remote work advisory](https://jotadev-portfolio.vercel.app/servicios)
 
 <div align="center">
   <sub>⭐ If you find my work useful, consider starring my repos</sub>
