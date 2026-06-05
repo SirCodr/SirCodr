@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import ExperienceTimeline from '../components/sections/ExperienceTimeline.astro';
+import SkillsGrid from '../components/sections/SkillsGrid.astro';
+import ProjectsSection from '../components/sections/ProjectsSection.astro';
+import EducationCerts from '../components/sections/EducationCerts.astro';
+import ContactCTA from '../components/sections/ContactCTA.astro';
+import PageNav from '../components/PageNav.astro';
+import { useTranslations } from '../i18n/utils';
+
+const locale = 'es' as const;
+const t = useTranslations(locale);
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Juan Pablo Restrepo',
+  jobTitle: 'Frontend Developer',
+  url: 'https://juanpablorestrepo.dev',
+  sameAs: [
+    'https://github.com/Sircodr',
+    'https://linkedin.com/in/jota-restrepo',
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Medellín',
+    addressCountry: 'CO',
+  },
+  knowsLanguage: ['Spanish', 'English'],
+};
+---
+
+<BaseLayout
+  title="Juan Pablo Restrepo — Frontend Developer | Medellín, Colombia"
+  description="Frontend Developer con 4+ años de experiencia en React, Next.js y TypeScript. Especialista en AI-assisted development y prompt engineering. B2 en inglés."
+  locale={locale}
+  structuredData={structuredData}
+>
+  <Hero locale={locale} />
+  <PageNav
+    ariaLabel="Secciones de la página"
+    items={[
+      { href: '#experience', label: t('pagenav.experience') },
+      { href: '#skills', label: t('pagenav.skills') },
+      { href: '#projects', label: t('pagenav.projects') },
+      { href: '#education', label: t('pagenav.education') },
+      { href: '#contact', label: t('pagenav.contact') },
+    ]}
+  />
+  <ExperienceTimeline locale={locale} />
+  <SkillsGrid locale={locale} />
+  <ProjectsSection locale={locale} />
+  <EducationCerts locale={locale} />
+  <ContactCTA locale={locale} />
+</BaseLayout>
