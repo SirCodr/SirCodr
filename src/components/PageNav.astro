@@ -1,0 +1,83 @@
+---
+interface NavItem {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  items: NavItem[];
+  ariaLabel?: string;
+}
+
+const { items, ariaLabel = 'Secciones' } = Astro.props;
+---
+
+<nav
+  aria-label={ariaLabel}
+  class="page-nav"
+  style="position: sticky; top: 3.5rem; z-index: 40; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--bd);"
+>
+  <div class="container-prose" style="padding-top: 0; padding-bottom: 0;">
+    <div class="pagenav-list" style="display: flex; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;">
+      {items.map((item) => (
+        <a
+          href={item.href}
+          class="pagenav-link"
+          style="flex: 0 0 auto; padding: 0.6rem 1rem; font-size: 0.8rem; font-weight: 500; text-decoration: none; color: var(--tx-muted); border-bottom: 2px solid transparent; transition: color 0.2s ease, border-color 0.2s ease; white-space: nowrap;"
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<style>
+  .pagenav-list::-webkit-scrollbar { display: none; }
+  .pagenav-link:hover {
+    color: var(--color-accent) !important;
+    border-bottom-color: var(--color-accent) !important;
+  }
+  .pagenav-link.is-active {
+    color: var(--color-accent) !important;
+    border-bottom-color: var(--color-accent) !important;
+    font-weight: 600 !important;
+  }
+</style>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('.pagenav-link');
+  if (links.length > 0) {
+    const ids = [...links]
+      .map((l) => l.getAttribute('href')?.replace('#', ''))
+      .filter(Boolean) as string[];
+
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    // Set first link active initially
+    if (links[0]) links[0].classList.add('is-active');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            links.forEach((l) => l.classList.remove('is-active'));
+            const active = document.querySelector<HTMLAnchorElement>(
+              `.pagenav-link[href="#${e.target.id}"]`
+            );
+            if (active) {
+              active.classList.add('is-active');
+              // Scroll the active link into view within the nav
+              active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+          }
+        });
+      },
+      { rootMargin: '-15% 0px -75% 0px', threshold: 0 }
+    );
+
+    sections.forEach((s) => observer.observe(s));
+  }
+</script>

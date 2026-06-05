@@ -1,0 +1,143 @@
+---
+import type { Locale } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const path = Astro.url.pathname;
+
+const navLinks = [
+  { href: locale === 'es' ? '/' : '/en/', label: t('nav.home') },
+  { href: locale === 'es' ? '/servicios' : '/en/services', label: t('nav.services') },
+];
+
+const altHref = locale === 'es' ? '/en/' : '/';
+---
+
+<header class="sticky top-0 z-50" style="background-color: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--bd);">
+  <div class="container-prose">
+    <nav style="display: flex; align-items: center; justify-content: space-between; height: 3.5rem;" aria-label="Main navigation">
+
+      <!-- Logo / Name -->
+      <a href={locale === 'es' ? '/' : '/en/'} style="font-weight: 800; font-size: 1.1rem; text-decoration: none; color: var(--tx); letter-spacing: -0.02em;">
+        JPR<span style="color: var(--color-accent);">.</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div style="display: flex; align-items: center; gap: 2rem;">
+        <div style="display: none;" class="nav-desktop">
+          {navLinks.map(({ href, label }) => (
+            <a
+              href={href}
+              class="nav-link"
+              aria-current={path === href || (href !== '/' && href !== '/en/' && path.startsWith(href)) ? 'page' : undefined}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+
+        <!-- Controls -->
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <!-- Lang switcher -->
+          <a
+            href={altHref}
+            style="font-size: 0.8rem; font-weight: 600; text-decoration: none; color: var(--tx-muted); padding: 0.25rem 0.5rem; border-radius: 0.375rem; border: 1px solid var(--bd); transition: color 0.2s ease, border-color 0.2s ease;"
+            aria-label={t('lang.switch')}
+          >
+            {t('lang.switch')}
+          </a>
+
+          <!-- Theme toggle -->
+          <button
+            id="theme-toggle"
+            aria-label={t('theme.toggle_dark')}
+            style="width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; border: 1px solid var(--bd); background: transparent; cursor: pointer; color: var(--tx); transition: border-color 0.2s ease;"
+          >
+            <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: none;">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+            </svg>
+          </button>
+
+          <!-- Mobile menu toggle -->
+          <button
+            id="menu-toggle"
+            aria-label="Abrir menú"
+            aria-expanded="false"
+            class="nav-desktop-hide"
+            style="width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; border: 1px solid var(--bd); background: transparent; cursor: pointer; color: var(--tx);"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div
+      id="mobile-menu"
+      style="display: none; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem;"
+      aria-hidden="true"
+    >
+      {navLinks.map(({ href, label }) => (
+        <a
+          href={href}
+          style="padding: 0.5rem 0; font-weight: 500; text-decoration: none; color: var(--tx); border-bottom: 1px solid var(--bd);"
+          aria-current={path === href ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>
+
+<style>
+  @media (min-width: 640px) {
+    .nav-desktop { display: flex !important; gap: 1.5rem; }
+    .nav-desktop-hide { display: none !important; }
+  }
+</style>
+
+<script>
+  // Theme toggle
+  const btn = document.getElementById('theme-toggle');
+  const iconSun = document.getElementById('icon-sun');
+  const iconMoon = document.getElementById('icon-moon');
+
+  function updateIcons() {
+    const isDark = document.documentElement.classList.contains('dark');
+    if (iconSun) iconSun.style.display = isDark ? 'block' : 'none';
+    if (iconMoon) iconMoon.style.display = isDark ? 'none' : 'block';
+  }
+
+  updateIcons();
+
+  btn?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateIcons();
+  });
+
+  // Mobile menu
+  const menuBtn = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuBtn?.addEventListener('click', () => {
+    const isOpen = mobileMenu?.style.display === 'flex';
+    if (mobileMenu) {
+      mobileMenu.style.display = isOpen ? 'none' : 'flex';
+      mobileMenu.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+    }
+    menuBtn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+  });
+</script>
