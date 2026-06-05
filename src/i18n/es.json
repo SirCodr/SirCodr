@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "greeting": "Hola, soy",
+    "role": "Frontend Developer",
+    "pitch": "Más de 4 años construyendo soluciones web modernas con JavaScript. Experto en React, Next.js y AI-assisted development. B2 en inglés.",
+    "cta_services": "Ver servicios",
+    "cta_whatsapp": "Escribir por WhatsApp",
+    "cta_cv": "Descargar CV"
+  },
+  "about": {
+    "title": "Sobre mí",
+    "body": "Soy un desarrollador frontend con más de 4 años de experiencia construyendo productos reales — desde interfaces interactivas hasta servicios backend escalables. Me especializo en el ecosistema JavaScript, con foco en React y Next.js. Trabajo con equipos ágiles, soy experto en prompt engineering y desarrollo asistido por IA. Inglés B2 certificado."
+  },
+  "experience": {
+    "title": "Experiencia"
+  },
+  "skills": {
+    "title": "Habilidades técnicas"
+  },
+  "projects": {
+    "title": "Proyectos",
+    "view_github": "Ver en GitHub",
+    "view_demo": "Ver demo",
+    "featured": "Proyecto destacado"
+  },
+  "education": {
+    "title": "Educación & Certificaciones",
+    "education_label": "Educación",
+    "certs_label": "Certificaciones",
+    "soft_label": "Habilidades blandas",
+    "languages_label": "Idiomas",
+    "spanish": "Español (Nativo)",
+    "english": "Inglés (B2 – Intermedio Alto)"
+  },
+  "contact": {
+    "title": "Conectemos",
+    "body": "Abierto a oportunidades interesantes. También puedo acompañarte en tu proceso de búsqueda de trabajo remoto.",
+    "cta": "Escribir por WhatsApp"
+  },
+  "services_page": {
+    "title": "Servicios",
+    "subtitle": "Aprende a conseguir trabajo remoto con acompañamiento personalizado",
+    "why_title": "¿Por qué trabajar conmigo?",
+    "why_1": "Experiencia real en el mercado de trabajo remoto internacional",
+    "why_2": "Proceso personalizado según tu perfil y objetivos",
+    "why_3": "Seguimiento continuo entre sesiones vía WhatsApp",
+    "why_4": "Herramientas, plantillas y recursos incluidos",
+    "how_title": "¿Cómo funciona?",
+    "cta_title": "¿Listo para empezar?",
+    "cta_body": "Cuéntame sobre ti y diseñamos juntos el camino hacia tu primer trabajo remoto.",
+    "cta_button": "Empezar por WhatsApp",
+    "view_detail": "Ver detalle",
+    "includes_label": "¿Qué incluye?",
+    "process_label": "¿Cómo funciona?",
+    "requirements_label": "¿Qué necesito para empezar?",
+    "faq_label": "Preguntas frecuentes",
+    "back": "← Volver a servicios"
+  },
+  "pagenav": {
+    "experience": "Experiencia",
+    "skills": "Skills",
+    "projects": "Proyectos",
+    "education": "Educación",
+    "contact": "Contacto",
+    "services": "Servicios",
+    "why": "¿Por qué yo?",
+    "faq": "FAQ",
+    "includes": "¿Qué incluye?",
+    "process": "Proceso",
+    "requirements": "Requisitos"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "built": "Construido con Astro y Tailwind CSS."
+  },
+  "theme": {
+    "toggle_dark": "Cambiar a modo oscuro",
+    "toggle_light": "Cambiar a modo claro"
+  },
+  "lang": {
+    "switch": "English"
+  }
+}

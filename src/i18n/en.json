@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "role": "Frontend Developer",
+    "pitch": "4+ years building modern web solutions with JavaScript. Expert in React, Next.js and AI-assisted development. B2 English certified.",
+    "cta_services": "View services",
+    "cta_whatsapp": "Message on WhatsApp",
+    "cta_cv": "Download CV"
+  },
+  "about": {
+    "title": "About me",
+    "body": "I am a frontend developer with 4+ years of experience building real products — from interactive UIs to scalable backend services. I specialize in the JavaScript ecosystem, focused on React and Next.js. I work with agile teams, expert in prompt engineering and AI-assisted development. B2 English certified."
+  },
+  "experience": {
+    "title": "Experience"
+  },
+  "skills": {
+    "title": "Technical skills"
+  },
+  "projects": {
+    "title": "Projects",
+    "view_github": "View on GitHub",
+    "view_demo": "View demo",
+    "featured": "Featured project"
+  },
+  "education": {
+    "title": "Education & Certifications",
+    "education_label": "Education",
+    "certs_label": "Certifications",
+    "soft_label": "Soft skills",
+    "languages_label": "Languages",
+    "spanish": "Spanish (Native)",
+    "english": "English (B2 – Upper Intermediate)"
+  },
+  "contact": {
+    "title": "Let's connect",
+    "body": "Open to interesting opportunities. I can also guide you through your remote job search.",
+    "cta": "Message on WhatsApp"
+  },
+  "services_page": {
+    "title": "Services",
+    "subtitle": "Learn to land remote jobs with personalized coaching",
+    "why_title": "Why work with me?",
+    "why_1": "Real experience in the international remote job market",
+    "why_2": "Personalized process based on your profile and goals",
+    "why_3": "Continuous follow-up between sessions via WhatsApp",
+    "why_4": "Tools, templates and resources included",
+    "how_title": "How does it work?",
+    "cta_title": "Ready to start?",
+    "cta_body": "Tell me about yourself and we will design the path to your first remote job together.",
+    "cta_button": "Start on WhatsApp",
+    "view_detail": "View detail",
+    "includes_label": "What's included?",
+    "process_label": "How does it work?",
+    "requirements_label": "What do I need to start?",
+    "faq_label": "Frequently asked questions",
+    "back": "← Back to services"
+  },
+  "pagenav": {
+    "experience": "Experience",
+    "skills": "Skills",
+    "projects": "Projects",
+    "education": "Education",
+    "contact": "Contact",
+    "services": "Services",
+    "why": "Why me?",
+    "faq": "FAQ",
+    "includes": "What's included?",
+    "process": "Process",
+    "requirements": "Requirements"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "built": "Built with Astro and Tailwind CSS."
+  },
+  "theme": {
+    "toggle_dark": "Switch to dark mode",
+    "toggle_light": "Switch to light mode"
+  },
+  "lang": {
+    "switch": "Español"
+  }
+}
