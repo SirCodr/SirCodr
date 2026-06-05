@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ServiceCard from '../../components/services/ServiceCard.astro';
+import Faq from '../../components/services/Faq.astro';
+import PageNav from '../../components/PageNav.astro';
+import { services } from '../../data/services';
+import { useTranslations } from '../../i18n/utils';
+import { buildWhatsAppLink } from '../../data/contact';
+
+const locale = 'es' as const;
+const t = useTranslations(locale);
+const waLink = buildWhatsAppLink({ locale, intent: 'general' });
+
+const whyItems = [
+  t('services_page.why_1'),
+  t('services_page.why_2'),
+  t('services_page.why_3'),
+  t('services_page.why_4'),
+];
+
+const allFaqs = services.flatMap((s) => s.faq.slice(0, 2));
+
+const structuredData = services.map((s) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: s.title[locale],
+  description: s.summary[locale],
+  provider: {
+    '@type': 'Person',
+    name: 'Juan Pablo Restrepo',
+    url: 'https://juanpablorestrepo.dev',
+  },
+  areaServed: 'Worldwide',
+  availableLanguage: 'Spanish',
+}));
+---
+
+<BaseLayout
+  title="Servicios — Asesoría de Trabajo Remoto | Juan Pablo Restrepo"
+  description="Aprende a conseguir trabajo remoto con asesoría personalizada: LinkedIn, hoja de vida, búsqueda de empleo y preparación para entrevistas. Sesiones $50.000 COP."
+  locale={locale}
+  structuredData={structuredData}
+>
+  <!-- Hero servicios -->
+  <section style="padding: 5rem 0 3rem; background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 5%, var(--bg)) 0%, var(--bg) 100%);">
+    <div class="container-prose" style="text-align: center;">
+      <p style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.75rem;">
+        {t('services_page.title')}
+      </p>
+      <h1 style="font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--tx); margin: 0 0 1.25rem; max-width: 720px; margin-inline: auto;">
+        {t('services_page.subtitle')}
+      </h1>
+      <a href={waLink} target="_blank" rel="noopener noreferrer" class="btn-primary">
+        {t('services_page.cta_button')} →
+      </a>
+    </div>
+  </section>
+
+  <PageNav
+    ariaLabel="Secciones de servicios"
+    items={[
+      { href: '#servicios', label: t('pagenav.services') },
+      { href: '#por-que', label: t('pagenav.why') },
+      { href: '#faq', label: t('pagenav.faq') },
+      { href: '#contacto', label: t('pagenav.contact') },
+    ]}
+  />
+
+  <!-- Service cards -->
+  <section id="servicios" style="padding: 4rem 0;">
+    <div class="container-prose">
+      <div style="display: grid; grid-template-columns: 1fr; gap: 1.25rem;" class="services-grid">
+        {services.map((service) => (
+          <div class="reveal">
+            <ServiceCard service={service} locale={locale} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Why me -->
+  <section id="por-que" style="padding: 4rem 0;">
+    <div class="container-prose">
+      <h2 class="section-title reveal" style="text-align: center;">{t('services_page.why_title')}</h2>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;" class="why-grid">
+        {whyItems.map((item) => (
+          <div class="card reveal" style="padding: 1.25rem 1.5rem; display: flex; gap: 1rem; align-items: flex-start;">
+            <span style="font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem;">✓</span>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--tx-muted); line-height: 1.6;">{item}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="padding: 4rem 0;">
+    <div class="container-prose">
+      <h2 class="section-title reveal" style="text-align: center;">{t('services_page.faq_label')}</h2>
+      <div class="reveal" style="max-width: 680px; margin-inline: auto;">
+        <Faq faq={allFaqs} locale={locale} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA -->
+  <section id="contacto" style="padding: 4rem 0 6rem;">
+    <div class="container-prose">
+      <div class="reveal" style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 10%, var(--bg-2)), var(--bg-2)); border: 1px solid color-mix(in srgb, var(--color-accent) 25%, var(--bd)); border-radius: var(--radius-card); padding: 3rem 2rem; text-align: center;">
+        <h2 style="font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; color: var(--tx); margin: 0 0 0.75rem;">
+          {t('services_page.cta_title')}
+        </h2>
+        <p style="color: var(--tx-muted); max-width: 32rem; margin: 0 auto 2rem; line-height: 1.65;">
+          {t('services_page.cta_body')}
+        </p>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" class="btn-primary">
+          {t('services_page.cta_button')} →
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  @media (min-width: 640px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .why-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+</style>

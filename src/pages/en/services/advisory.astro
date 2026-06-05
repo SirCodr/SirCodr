@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Faq from '../../../components/services/Faq.astro';
+import PageNav from '../../../components/PageNav.astro';
+import { services } from '../../../data/services';
+import { useTranslations } from '../../../i18n/utils';
+import { buildWhatsAppLink } from '../../../data/contact';
+
+const locale = 'en' as const;
+const t = useTranslations(locale);
+const service = services.find((s) => s.slug === 'asesoria')!;
+const waLink = buildWhatsAppLink({ locale, intent: 'asesoria' });
+---
+
+<BaseLayout
+  title="Remote Work Advisory — Juan Pablo Restrepo"
+  description="Learn everything about remote work: LinkedIn, resume, job search and interviews. Personalized sessions of 1h30 at $50,000 COP. WhatsApp follow-up included."
+  locale={locale}
+>
+  <section style="padding: 4rem 0 3rem; background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 5%, var(--bg)) 0%, var(--bg) 100%);">
+    <div class="container-prose">
+      <a href="/en/services" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--tx-muted); text-decoration: none; margin-bottom: 1.5rem; transition: color 0.2s ease;" onmouseover="this.style.color='var(--color-accent)'" onmouseout="this.style.color='var(--tx-muted)'">
+        {t('services_page.back')}
+      </a>
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+        <span style="font-size: 2.5rem;">{service.icon}</span>
+        <div>
+          <h1 style="font-size: clamp(1.75rem, 5vw, 3rem); font-weight: 800; color: var(--tx); margin: 0 0 0.25rem; letter-spacing: -0.02em;">
+            {service.title[locale]}
+          </h1>
+          <p style="font-size: 1rem; font-weight: 700; color: var(--color-accent); margin: 0;">
+            {service.pricingLabel[locale]}
+            {service.duration && <span style="color: var(--tx-muted); font-weight: 400;"> · {service.duration[locale]}</span>}
+          </p>
+        </div>
+      </div>
+      <p style="font-size: 1.05rem; color: var(--tx-muted); max-width: 640px; line-height: 1.7; margin-bottom: 2rem;">
+        {service.description[locale]}
+      </p>
+      <a href={waLink} target="_blank" rel="noopener noreferrer" class="btn-primary">
+        {t('services_page.cta_button')} →
+      </a>
+    </div>
+  </section>
+
+  <PageNav
+    ariaLabel="Service sections"
+    items={[
+      { href: '#incluye', label: t('pagenav.includes') },
+      { href: '#proceso', label: t('pagenav.process') },
+      { href: '#requisitos', label: t('pagenav.requirements') },
+      { href: '#faq', label: t('pagenav.faq') },
+      { href: '#contacto', label: t('pagenav.contact') },
+    ]}
+  />
+
+  <section id="incluye" style="padding: 4rem 0;">
+    <div class="container-prose">
+      <h2 class="section-title reveal">{t('services_page.includes_label')}</h2>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 0.625rem;" class="includes-grid">
+        {service.includes.map((item) => (
+          <div class="reveal" style="display: flex; gap: 0.75rem; align-items: flex-start; padding: 1rem 1.25rem; background: var(--bg-2); border: 1px solid var(--bd); border-radius: 0.75rem;">
+            <span style="color: var(--color-accent); flex-shrink: 0; margin-top: 0.05rem;">✓</span>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--tx-muted); line-height: 1.5;">{item[locale]}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="proceso" style="padding: 4rem 0;">
+    <div class="container-prose">
+      <h2 class="section-title reveal">{t('services_page.process_label')}</h2>
+      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+        {service.process.map((step) => (
+          <div class="card reveal" style="padding: 1.5rem; display: flex; gap: 1.25rem; align-items: flex-start;">
+            <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--color-accent); color: white; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              {step.step}
+            </div>
+            <div>
+              <h3 style="font-size: 1rem; font-weight: 700; color: var(--tx); margin: 0 0 0.4rem;">{step.title[locale]}</h3>
+              <p style="font-size: 0.9rem; color: var(--tx-muted); margin: 0; line-height: 1.6;">{step.description[locale]}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="requisitos" style="padding: 4rem 0;">
+    <div class="container-prose">
+      <h2 class="section-title reveal">{t('services_page.requirements_label')}</h2>
+      <div class="card reveal" style="padding: 1.75rem;">
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.625rem;">
+          {service.requirements.map((req) => (
+            <li style="display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.9rem; color: var(--tx-muted); line-height: 1.5;">
+              <span style="color: var(--color-accent); flex-shrink: 0;">→</span>
+              {req[locale]}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" style="padding: 4rem 0;">
+    <div class="container-prose">
+      <h2 class="section-title reveal">{t('services_page.faq_label')}</h2>
+      <div class="reveal" style="max-width: 680px;">
+        <Faq faq={service.faq} locale={locale} />
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" style="padding: 2rem 0 6rem;">
+    <div class="container-prose">
+      <div class="reveal" style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 10%, var(--bg-2)), var(--bg-2)); border: 1px solid color-mix(in srgb, var(--color-accent) 25%, var(--bd)); border-radius: var(--radius-card); padding: 2.5rem 2rem; text-align: center;">
+        <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--tx); margin: 0 0 0.75rem;">{t('services_page.cta_title')}</h2>
+        <p style="color: var(--tx-muted); margin: 0 auto 1.75rem; line-height: 1.65; max-width: 28rem;">{t('services_page.cta_body')}</p>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" class="btn-primary">{t('services_page.cta_button')} →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  @media (min-width: 640px) {
+    .includes-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+</style>
