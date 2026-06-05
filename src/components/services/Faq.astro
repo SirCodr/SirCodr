@@ -1,0 +1,36 @@
+---
+import type { Locale } from '../../i18n/utils';
+import type { ServiceFaq } from '../../data/services';
+
+interface Props {
+  faq: ServiceFaq[];
+  locale: Locale;
+}
+
+const { faq, locale } = Astro.props;
+---
+
+<div style="display: flex; flex-direction: column; gap: 0.5rem;">
+  {faq.map((item, i) => (
+    <details style="border: 1px solid var(--bd); border-radius: 0.75rem; overflow: hidden;" name="faq">
+      <summary style="padding: 1rem 1.25rem; font-weight: 600; font-size: 0.95rem; color: var(--tx); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1rem; user-select: none;">
+        {item.question[locale]}
+        <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="flex-shrink: 0; transition: transform 0.25s ease; color: var(--color-accent);">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </summary>
+      <div style="padding: 0 1.25rem 1rem; font-size: 0.9rem; color: var(--tx-muted); line-height: 1.65;">
+        {item.answer[locale]}
+      </div>
+    </details>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll('details').forEach((el) => {
+    el.addEventListener('toggle', () => {
+      const icon = el.querySelector('.faq-icon') as HTMLElement | null;
+      if (icon) icon.style.transform = el.open ? 'rotate(180deg)' : 'rotate(0)';
+    });
+  });
+</script>

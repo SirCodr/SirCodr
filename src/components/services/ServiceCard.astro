@@ -1,0 +1,46 @@
+---
+import type { Locale } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import { buildWhatsAppLink } from '../../data/contact';
+import type { Service } from '../../data/services';
+
+interface Props {
+  service: Service;
+  locale: Locale;
+}
+
+const { service, locale } = Astro.props;
+const t = useTranslations(locale);
+const detailHref = locale === 'es'
+  ? `/servicios/${service.slug}`
+  : `/en/services/${service.slugEn}`;
+const waLink = buildWhatsAppLink({
+  locale,
+  intent: service.slug === 'asesoria' ? 'asesoria' : 'cv',
+});
+---
+
+<div class="card" style="padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem;">
+  <div style="font-size: 2rem; line-height: 1;">{service.icon}</div>
+
+  <div>
+    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--tx); margin: 0 0 0.5rem;">{service.title[locale]}</h3>
+    <p style="font-size: 0.9rem; color: var(--tx-muted); line-height: 1.6; margin: 0;">{service.summary[locale]}</p>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; padding-top: 0.5rem; border-top: 1px solid var(--bd);">
+    <span style="font-size: 0.875rem; font-weight: 700; color: var(--color-accent);">{service.pricingLabel[locale]}</span>
+    {service.duration && (
+      <span style="font-size: 0.78rem; color: var(--tx-muted);">· {service.duration[locale]}</span>
+    )}
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 0.625rem; margin-top: auto;">
+    <a href={detailHref} class="btn-ghost" style="flex: 1; justify-content: center; font-size: 0.875rem; padding: 0.6rem 1rem;">
+      {t('services_page.view_detail')} →
+    </a>
+    <a href={waLink} target="_blank" rel="noopener noreferrer" class="btn-primary" style="flex: 1; justify-content: center; font-size: 0.875rem; padding: 0.6rem 1rem;">
+      WhatsApp
+    </a>
+  </div>
+</div>
