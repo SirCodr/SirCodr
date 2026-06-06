@@ -21,7 +21,6 @@ export async function createStudentUser(params: {
   unlockedModules: string[]
   notes: string
   adminUserId: string
-  siteOrigin: string
 }) {
   const clerk = getClerkClient()
   const metadata: StudentMetadata = {
@@ -31,11 +30,18 @@ export async function createStudentUser(params: {
     createdBy: params.adminUserId,
     createdAt: new Date().toISOString(),
   }
+
+  // redirectUrl solo si SITE_URL está definida (evita errores de URL no permitida en Clerk).
+  // En Clerk Dashboard → Configure → Paths, asegúrate de que la URL de invitación
+  // apunte a /sign-up. También agrega las URLs a Allowed redirect URLs.
+  const siteUrl = import.meta.env.SITE_URL
+  const redirectUrl = siteUrl ? `${siteUrl}/sign-up` : undefined
+
   return clerk.invitations.createInvitation({
     emailAddress: params.email,
-    redirectUrl: `${params.siteOrigin}/sign-up`,
+    ...(redirectUrl ? { redirectUrl } : {}),
     notify: true,
-    ignoreExisting: false,
+    ignoreExisting: true,   // reenviar sin error si ya hay invitación pendiente
     publicMetadata: metadata as unknown as UserPublicMetadata,
   })
 }
@@ -50,7 +56,7 @@ export async function listStudents(params?: {
     limit: params?.limit ?? 50,
     offset: params?.offset ?? 0,
     query: params?.query,
-    orderBy: '-created_at',
+    orderBy: '-created_at'
   })
 }
 
@@ -67,7 +73,8 @@ export async function updateStudentModules(
   const user = await clerk.users.getUser(userId)
   const currentMeta = (user.publicMetadata ?? {}) as Record<string, unknown>
   const newMeta: Record<string, unknown> = { ...currentMeta }
-  if (updates.unlockedModules !== undefined) newMeta.unlockedModules = updates.unlockedModules
+  if (updates.unlockedModules !== undefined)
+    newMeta.unlockedModules = updates.unlockedModules
   if (updates.notes !== undefined) newMeta.notes = updates.notes
   return clerk.users.updateUserMetadata(userId, { publicMetadata: newMeta })
 }

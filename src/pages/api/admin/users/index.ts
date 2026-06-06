@@ -22,7 +22,20 @@ export const GET: APIRoute = async ({ locals, url }) => {
   }
 }
 
-export const POST: APIRoute = async ({ locals, request, url }) => {
+/** Extrae el mensaje de error de Clerk o de un Error estándar */
+function extractError(err: unknown): string {
+  if (err && typeof err === 'object') {
+    // ClerkAPIResponseError tiene un array errors
+    const clerkErr = err as { errors?: Array<{ longMessage?: string; message?: string }> }
+    if (clerkErr.errors?.[0]) {
+      return clerkErr.errors[0].longMessage ?? clerkErr.errors[0].message ?? 'Error de Clerk'
+    }
+    if (err instanceof Error) return err.message
+  }
+  return 'Error desconocido'
+}
+
+export const POST: APIRoute = async ({ locals, request }) => {
   const denied = requireAdmin(locals as any)
   if (denied) return denied
 
@@ -67,15 +80,14 @@ export const POST: APIRoute = async ({ locals, request, url }) => {
       unlockedModules: body.unlockedModules ?? [],
       notes: body.notes ?? '',
       adminUserId: adminId,
-      siteOrigin: url.origin,
     })
 
-    return new Response(JSON.stringify({ id: invitation.id, email: body.email }), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({ id: invitation.id, email: body.email }),
+      { status: 201, headers: { 'Content-Type': 'application/json' } }
+    )
   } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Error al crear usuario'
+    const msg = extractError(err)
     return new Response(JSON.stringify({ error: msg }), { status: 500 })
   }
 }
