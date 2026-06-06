@@ -182,3 +182,39 @@ const unlockedCount = userIsAdmin
     .posts-grid { grid-template-columns: repeat(3, 1fr); }
   }
 </style>
+
+<script is:inline>
+  // Si la URL tiene __clerk_ticket es porque el usuario llegó desde el link de invitación.
+  // Procesamos el ticket para activar su cuenta y luego limpiamos la URL.
+  var ticket = new URLSearchParams(window.location.search).get('__clerk_ticket')
+  if (ticket) {
+    function activateTicket(clerk) {
+      clerk.client.signUp.create({ strategy: 'ticket', ticket: ticket })
+        .then(function(signUp) {
+          if (signUp.status === 'complete') {
+            return clerk.setActive({ session: signUp.createdSessionId })
+              .then(function() {
+                // Limpiar el ticket de la URL y recargar para mostrar la comunidad autenticada
+                window.history.replaceState({}, '', '/comunidad')
+                window.location.reload()
+              })
+          }
+        })
+        .catch(function() {
+          // Ticket inválido o expirado — redirigir a sign-in
+          window.location.href = '/sign-in'
+        })
+    }
+
+    var clerk = window.Clerk
+    if (clerk && clerk.loaded) {
+      activateTicket(clerk)
+    } else if (clerk) {
+      clerk.addListener(function(state) {
+        if (state.client) activateTicket(window.Clerk)
+      })
+    } else {
+      document.addEventListener('clerk:loaded', function() { activateTicket(window.Clerk) }, { once: true })
+    }
+  }
+</script>

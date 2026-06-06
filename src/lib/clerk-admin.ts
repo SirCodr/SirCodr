@@ -31,11 +31,11 @@ export async function createStudentUser(params: {
     createdAt: new Date().toISOString(),
   }
 
-  // redirectUrl solo si SITE_URL está definida (evita errores de URL no permitida en Clerk).
-  // En Clerk Dashboard → Configure → Paths, asegúrate de que la URL de invitación
-  // apunte a /sign-up. También agrega las URLs a Allowed redirect URLs.
-  const siteUrl = import.meta.env.SITE_URL
-  const redirectUrl = siteUrl ? `${siteUrl}/sign-up` : undefined
+  // SITE_URL en .env permite override por entorno (ej: http://localhost:4321 en dev).
+  // Si no está definida, usa import.meta.env.SITE (valor de `site:` en astro.config.mjs).
+  // La URL resultante DEBE estar en Clerk Dashboard → Configure → Allowed redirect URLs.
+  const siteUrl = import.meta.env.SITE_URL ?? import.meta.env.SITE
+  const redirectUrl = siteUrl ? `${siteUrl}/comunidad` : undefined
 
   return clerk.invitations.createInvitation({
     emailAddress: params.email,
