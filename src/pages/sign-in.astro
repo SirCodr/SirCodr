@@ -5,8 +5,6 @@ const { userId } = Astro.locals.auth()
 if (userId) return Astro.redirect('/comunidad')
 
 const locale = 'es' as const
-// La URL de callback que Clerk redirige después de que Google autentica al usuario
-const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
 ---
 
 <BaseLayout
@@ -23,27 +21,60 @@ const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
       </div>
       <h1 class="signin-title">Comunidad JPR</h1>
       <p class="signin-subtitle">
-        Inicia sesión con tu cuenta de Google para acceder a tus recursos de carrera remota.
+        Ingresa con el correo con el que fuiste invitado.
       </p>
 
-      <!-- Botón Google completamente custom -->
-      <button id="btn-google" class="btn-google" type="button" aria-label="Continuar con Google">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
-          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        </svg>
-        <span id="btn-label">Continuar con Google</span>
-        <span id="btn-spinner" class="btn-spinner" hidden aria-hidden="true"></span>
-      </button>
+      <!-- Step 1: email -->
+      <form id="form-email" class="signin-form" novalidate>
+        <div class="field">
+          <label for="email" class="field-label">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="field-input"
+            placeholder="tu@correo.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <button type="submit" id="btn-send-code" class="btn-primary">
+          <span id="send-label">Enviar código</span>
+          <span id="send-spinner" class="btn-spinner" hidden aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <!-- Step 2: código OTP (oculto inicialmente) -->
+      <form id="form-code" class="signin-form" style="display:none;" novalidate>
+        <p id="code-hint" class="code-hint"></p>
+        <div class="field">
+          <label for="code" class="field-label">Código de 6 dígitos</label>
+          <input
+            type="text"
+            id="code"
+            name="code"
+            class="field-input field-code"
+            placeholder="123456"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+            maxlength="6"
+            autocomplete="one-time-code"
+            required
+          />
+        </div>
+        <button type="submit" id="btn-verify" class="btn-primary">
+          <span id="verify-label">Ingresar</span>
+          <span id="verify-spinner" class="btn-spinner" hidden aria-hidden="true"></span>
+        </button>
+        <button type="button" id="btn-back" class="btn-ghost">← Cambiar correo</button>
+      </form>
 
       <!-- Error inline -->
       <p id="signin-error" class="signin-error" hidden role="alert"></p>
 
       <p class="signin-note">
-        Solo clientes con invitación pueden ingresar.
-        <a href="/comunidad/no-autorizado" class="signin-note-link">¿Necesitas acceso?</a>
+        Solo acceso por invitación.
+        <a href="/comunidad/no-autorizado" class="signin-note-link">¿No tienes cuenta?</a>
       </p>
     </div>
   </div>
@@ -97,48 +128,107 @@ const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
   }
 
   .signin-subtitle {
-    margin: 0 0 2rem;
+    margin: 0 0 1.75rem;
     font-size: 0.875rem;
     color: var(--tx-muted);
     line-height: 1.55;
   }
 
-  .btn-google {
+  .signin-form {
     width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.65rem;
-    padding: 0.75rem 1.25rem;
-    background: var(--sf2);
-    border: 1.5px solid var(--bd);
-    border-radius: 0.625rem;
-    font-size: 0.925rem;
-    font-weight: 600;
-    color: var(--tx);
-    cursor: pointer;
-    font-family: inherit;
-    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-    margin-bottom: 1.5rem;
+    flex-direction: column;
+    gap: 0.875rem;
   }
 
-  .btn-google:hover:not(:disabled) {
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-align: left;
+  }
+
+  .field-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--tx);
+  }
+
+  .field-input {
+    padding: 0.65rem 0.75rem;
+    border: 1.5px solid var(--bd);
+    border-radius: 0.5rem;
+    background: var(--sf2);
+    color: var(--tx);
+    font-size: 0.925rem;
+    font-family: inherit;
+    transition: border-color 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .field-input:focus {
+    outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
   }
 
-  .btn-google:active:not(:disabled) { scale: 0.98; }
-
-  .btn-google:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+  .field-code {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-align: center;
   }
+
+  .code-hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--tx-muted);
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 0.625rem;
+    font-size: 0.925rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary:hover:not(:disabled) { opacity: 0.9; }
+  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  .btn-ghost {
+    width: 100%;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--tx-muted);
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.15s;
+  }
+
+  .btn-ghost:hover { color: var(--tx); }
 
   .btn-spinner {
     width: 1rem;
     height: 1rem;
-    border: 2px solid color-mix(in srgb, var(--tx) 25%, transparent);
-    border-top-color: var(--tx);
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: white;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     flex-shrink: 0;
@@ -148,7 +238,7 @@ const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
 
   .signin-error {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-top: 0.5rem;
     padding: 0.6rem 0.75rem;
     border-radius: 0.5rem;
     font-size: 0.8rem;
@@ -160,10 +250,10 @@ const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
   }
 
   .signin-note {
+    margin-top: 1.5rem;
     font-size: 0.78rem;
     color: var(--tx-muted);
     line-height: 1.6;
-    margin: 0;
   }
 
   .signin-note-link {
@@ -177,11 +267,24 @@ const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
   .signin-note-link:hover { text-decoration: underline; }
 </style>
 
-<script is:inline define:vars={{ callbackUrl }}>
-  const btn = document.getElementById('btn-google')
-  const label = document.getElementById('btn-label')
-  const spinner = document.getElementById('btn-spinner')
-  const errorEl = document.getElementById('signin-error')
+<script is:inline>
+  // --- helpers ---
+  const formEmail = document.getElementById('form-email')
+  const formCode  = document.getElementById('form-code')
+  const emailInput  = document.getElementById('email')
+  const codeInput   = document.getElementById('code')
+  const codeHint    = document.getElementById('code-hint')
+  const errorEl     = document.getElementById('signin-error')
+  const btnSend     = document.getElementById('btn-send-code')
+  const sendLabel   = document.getElementById('send-label')
+  const sendSpinner = document.getElementById('send-spinner')
+  const btnVerify     = document.getElementById('btn-verify')
+  const verifyLabel   = document.getElementById('verify-label')
+  const verifySpinner = document.getElementById('verify-spinner')
+  const btnBack = document.getElementById('btn-back')
+
+  // Estado compartido entre pasos
+  var signInAttempt = null
 
   function showError(msg) {
     if (!errorEl) return
@@ -189,51 +292,104 @@ const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
     errorEl.hidden = false
   }
 
-  function setLoading(loading) {
-    btn.disabled = loading
-    label.textContent = loading ? 'Conectando...' : 'Continuar con Google'
-    spinner.hidden = !loading
-  }
-
-  function triggerGoogleSignIn(clerk) {
-    clerk.client.signIn
-      .authenticateWithRedirect({
-        strategy: 'oauth_google',
-        redirectUrl: callbackUrl,
-        redirectUrlComplete: '/comunidad',
-      })
-      .catch(function (err) {
-        setLoading(false)
-        const msg =
-          err?.errors?.[0]?.longMessage ||
-          err?.errors?.[0]?.message ||
-          'Error al conectar con Google. Inténtalo de nuevo.'
-        showError(msg)
-      })
-  }
-
-  btn.addEventListener('click', function () {
-    setLoading(true)
+  function clearError() {
     if (errorEl) errorEl.hidden = true
+  }
 
-    const clerk = window.Clerk
+  function setLoading(btn, labelEl, spinnerEl, loading, defaultText) {
+    btn.disabled = loading
+    labelEl.textContent = loading ? 'Un momento...' : defaultText
+    spinnerEl.hidden = !loading
+  }
 
-    if (clerk && clerk.loaded) {
-      triggerGoogleSignIn(clerk)
-    } else if (clerk) {
-      var unsub = clerk.addListener(function (state) {
-        if (state.client) {
-          unsub()
-          triggerGoogleSignIn(clerk)
+  function getClerkReady(cb) {
+    var clerk = window.Clerk
+    if (clerk && clerk.loaded) { cb(clerk); return }
+    if (clerk) {
+      var unsub = clerk.addListener(function(state) {
+        if (state.client) { unsub(); cb(window.Clerk) }
+      })
+      return
+    }
+    document.addEventListener('clerk:loaded', function() { cb(window.Clerk) }, { once: true })
+  }
+
+  // --- Step 1: enviar código ---
+  formEmail && formEmail.addEventListener('submit', function(e) {
+    e.preventDefault()
+    clearError()
+    var email = emailInput.value.trim()
+    if (!email) { showError('Ingresa tu correo.'); return }
+
+    setLoading(btnSend, sendLabel, sendSpinner, true, 'Enviar código')
+
+    getClerkReady(function(clerk) {
+      clerk.client.signIn.create({ identifier: email })
+        .then(function(attempt) {
+          signInAttempt = attempt
+          return attempt.prepareFirstFactor({ strategy: 'email_code' })
+        })
+        .then(function() {
+          // Mostrar step 2
+          formEmail.style.display = 'none'
+          formCode.style.display = 'flex'
+          if (codeHint) codeHint.textContent = 'Enviamos un código de 6 dígitos a ' + emailInput.value.trim() + '. Revisa tu bandeja.'
+          if (codeInput) codeInput.focus()
+          setLoading(btnSend, sendLabel, sendSpinner, false, 'Enviar código')
+        })
+        .catch(function(err) {
+          setLoading(btnSend, sendLabel, sendSpinner, false, 'Enviar código')
+          var msg = (err && err.errors && err.errors[0])
+            ? (err.errors[0].longMessage || err.errors[0].message)
+            : 'No pudimos verificar ese correo. ¿Fue invitado con esta dirección?'
+          showError(msg)
+        })
+    })
+  })
+
+  // --- Step 2: verificar código ---
+  formCode && formCode.addEventListener('submit', function(e) {
+    e.preventDefault()
+    clearError()
+    var code = codeInput.value.replace(/\s/g, '')
+    if (code.length !== 6) { showError('Ingresa el código de 6 dígitos.'); return }
+
+    setLoading(btnVerify, verifyLabel, verifySpinner, true, 'Ingresar')
+
+    if (!signInAttempt) {
+      showError('Sesión expirada. Vuelve a ingresar tu correo.')
+      setLoading(btnVerify, verifyLabel, verifySpinner, false, 'Ingresar')
+      return
+    }
+
+    signInAttempt.attemptFirstFactor({ strategy: 'email_code', code: code })
+      .then(function(result) {
+        if (result.status === 'complete') {
+          // Setear sesión activa y redirigir
+          window.Clerk.setActive({ session: result.createdSessionId })
+            .then(function() { window.location.href = '/comunidad' })
+        } else {
+          // Estado intermedio inesperado
+          setLoading(btnVerify, verifyLabel, verifySpinner, false, 'Ingresar')
+          showError('Verificación incompleta. Código: ' + result.status)
         }
       })
-    } else {
-      // Clerk aún no cargó — esperar al evento global
-      document.addEventListener(
-        'clerk:loaded',
-        function () { triggerGoogleSignIn(window.Clerk) },
-        { once: true }
-      )
-    }
+      .catch(function(err) {
+        setLoading(btnVerify, verifyLabel, verifySpinner, false, 'Ingresar')
+        var msg = (err && err.errors && err.errors[0])
+          ? (err.errors[0].longMessage || err.errors[0].message)
+          : 'Código incorrecto o expirado. Inténtalo de nuevo.'
+        showError(msg)
+      })
+  })
+
+  // --- Volver al step 1 ---
+  btnBack && btnBack.addEventListener('click', function() {
+    clearError()
+    signInAttempt = null
+    formCode.style.display = 'none'
+    formEmail.style.display = 'flex'
+    if (codeInput) codeInput.value = ''
+    if (emailInput) emailInput.focus()
   })
 </script>

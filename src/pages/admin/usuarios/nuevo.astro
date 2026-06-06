@@ -16,12 +16,12 @@ import { MODULES } from '@/data/modules'
       <div class="form-grid">
         <!-- Email -->
         <div class="field field-full">
-          <label for="email" class="label">Email de Gmail <span class="required">*</span></label>
+          <label for="email" class="label">Email <span class="required">*</span></label>
           <input type="email" id="email" name="email" required class="input"
-            placeholder="cliente@gmail.com"
+            placeholder="cliente@correo.com"
             autocomplete="off"
           />
-          <p class="hint">El usuario deberá iniciar sesión con esta cuenta de Google.</p>
+          <p class="hint">Se enviará un email de invitación a esta dirección.</p>
         </div>
 
         <!-- Nombre -->
@@ -68,18 +68,17 @@ import { MODULES } from '@/data/modules'
 
       <div class="form-actions">
         <a href="/admin/usuarios" class="btn-cancel">Cancelar</a>
-        <button type="submit" id="submit-btn" class="btn-submit">Crear usuario</button>
+        <button type="submit" id="submit-btn" class="btn-submit">Invitar usuario</button>
       </div>
     </form>
 
-    <!-- Mensaje post-creación con info para compartir -->
+    <!-- Mensaje post-creación -->
     <div id="success-msg" style="display:none;" class="success-msg">
       <div class="success-icon">✅</div>
-      <h2>Usuario creado</h2>
-      <p>Copia este mensaje y envíaselo al cliente por WhatsApp:</p>
-      <div id="wa-message" class="wa-preview"></div>
+      <h2>Invitación enviada</h2>
+      <p id="invite-sent-desc">Se envió un email de invitación a la dirección indicada.</p>
       <div class="success-actions">
-        <button id="copy-btn" class="btn-copy">Copiar mensaje</button>
+        <a href="/admin/usuarios/nuevo" class="btn-submit" style="text-decoration:none;display:inline-flex;align-items:center;">Invitar otro usuario</a>
         <a href="/admin/usuarios" class="btn-cancel">Ver lista de usuarios</a>
       </div>
     </div>
@@ -277,8 +276,6 @@ import { MODULES } from '@/data/modules'
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null
   const toast = document.getElementById('toast') as HTMLElement | null
   const successMsg = document.getElementById('success-msg') as HTMLElement | null
-  const waMessageEl = document.getElementById('wa-message') as HTMLElement | null
-  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement | null
 
   function showToast(message: string, type: 'error' | 'success') {
     if (!toast) return
@@ -305,7 +302,7 @@ import { MODULES } from '@/data/modules'
     }
 
     submitBtn.disabled = true
-    submitBtn.textContent = 'Creando...'
+    submitBtn.textContent = 'Enviando invitación...'
 
     try {
       const res = await fetch('/api/admin/users', {
@@ -321,34 +318,17 @@ import { MODULES } from '@/data/modules'
         return
       }
 
-      // Mostrar mensaje para compartir con el cliente
-      const modulesText = modules.length > 0
-        ? `Módulos activos: ${modules.join(', ')}`
-        : 'Aún no tienes módulos asignados.'
+      // Actualizar descripción con el email real
+      const descEl = document.getElementById('invite-sent-desc')
+      if (descEl) descEl.textContent = `Se envió un email de invitación a ${email}. El usuario recibirá un link para activar su cuenta.`
 
-      const waMessage = `¡Hola ${firstName}! 👋\n\nYa está lista tu cuenta en la Comunidad JPR.\n\n🔗 Ingresa aquí: https://jotadev-portfolio.vercel.app/comunidad\n\n1. Haz clic en "Ingresar con Google"\n2. Usa tu cuenta: ${email}\n3. Listo — verás tus recursos disponibles\n\n${modulesText}\n\nCualquier duda me escribes por aquí. ¡A darle! 💪`
-
-      if (waMessageEl) waMessageEl.textContent = waMessage
       if (form) form.style.display = 'none'
       if (successMsg) successMsg.style.display = 'block'
     } catch {
       showToast('Error de conexión. Intenta nuevamente.', 'error')
     } finally {
       submitBtn.disabled = false
-      submitBtn.textContent = 'Crear usuario'
-    }
-  })
-
-  copyBtn?.addEventListener('click', async () => {
-    const text = waMessageEl?.textContent ?? ''
-    try {
-      await navigator.clipboard.writeText(text)
-      if (copyBtn) {
-        copyBtn.textContent = '¡Copiado! ✓'
-        setTimeout(() => { if (copyBtn) copyBtn.textContent = 'Copiar mensaje' }, 2000)
-      }
-    } catch {
-      showToast('No se pudo copiar automáticamente. Selecciona el texto manualmente.', 'error')
+      submitBtn.textContent = 'Invitar usuario'
     }
   })
 </script>

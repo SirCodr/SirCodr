@@ -4,6 +4,7 @@ import PaywallTeaser from '@/components/community/PaywallTeaser.astro'
 import ResourceList from '@/components/community/ResourceList.astro'
 import DownloadButton from '@/components/community/DownloadButton.astro'
 import LockedBanner from '@/components/community/LockedBanner.astro'
+import CommunityNav from '@/components/community/CommunityNav.astro'
 import { getModuleById } from '@/data/modules'
 import { getPostsByModule } from '@/lib/community'
 import { canAccessPost } from '@/lib/entitlements'
@@ -53,6 +54,8 @@ const typeLabels: Record<string, string> = {
 >
   <!-- Noindex para contenido gateado -->
   {!hasAccess && <meta name="robots" content="noindex,nofollow" slot="head" />}
+
+  <CommunityNav isAdmin={userIsAdmin} />
 
   <article class="container-prose" style="padding: 2rem 0 5rem;">
     <!-- Breadcrumb -->

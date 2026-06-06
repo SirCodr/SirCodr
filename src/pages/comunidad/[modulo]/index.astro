@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostCard from '@/components/community/PostCard.astro'
 import PaywallTeaser from '@/components/community/PaywallTeaser.astro'
+import CommunityNav from '@/components/community/CommunityNav.astro'
 import { getModuleById, MODULES } from '@/data/modules'
 import { getPostsByModule } from '@/lib/community'
 import { canAccessModule, canAccessPost } from '@/lib/entitlements'
@@ -31,6 +32,8 @@ const posts = await getPostsByModule(modulo as ModuleId)
   locale={locale}
 >
   <meta name="robots" content={moduleUnlocked ? 'noindex' : 'noindex'} slot="head" />
+
+  <CommunityNav isAdmin={userIsAdmin} />
 
   <div class="container-prose" style="padding: 2rem 0 4rem;">
     <!-- Breadcrumb -->

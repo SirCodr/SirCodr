@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ModuleCard from '@/components/community/ModuleCard.astro'
 import PostCard from '@/components/community/PostCard.astro'
+import CommunityNav from '@/components/community/CommunityNav.astro'
 import { MODULES } from '@/data/modules'
 import { getModuleStats, getAllPosts } from '@/lib/community'
 import { canAccessModule } from '@/lib/entitlements'
@@ -29,6 +30,8 @@ const unlockedCount = userIsAdmin
   description="Guías, tutoriales, plantillas y tips para conseguir trabajo remoto internacional. Acceso exclusivo para clientes."
   locale={locale}
 >
+  <CommunityNav isAdmin={userIsAdmin} />
+
   <!-- Hero -->
   <section style="padding: 3rem 0 2rem;">
     <div class="container-prose">
@@ -56,7 +59,7 @@ const unlockedCount = userIsAdmin
           <p style="margin:0 0 1.5rem;color:var(--tx-muted);font-size:1rem;line-height:1.6;">
             Guías completas, plantillas listas y tutoriales paso a paso. Contenido práctico adaptado a tu industria — desbloqueas módulos a medida que avanzamos juntos.
           </p>
-          <a href="/sign-in" class="cta-btn">Ingresar con Google</a>
+          <a href="/sign-in" class="cta-btn">Ingresar</a>
         </div>
       )}
     </div>

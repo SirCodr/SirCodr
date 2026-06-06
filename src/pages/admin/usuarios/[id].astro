@@ -376,7 +376,7 @@ const createdAt = new Date(user.createdAt).toLocaleDateString('es-CO', { day: '2
       if (action === 'reinvite') {
         const email = btn.dataset.email!
         const firstName = btn.dataset.name!
-        const message = `¡Hola ${firstName}! 👋\n\nAquí está el enlace para acceder a la Comunidad JPR:\n\n🔗 https://jotadev-portfolio.vercel.app/comunidad\n\n1. Haz clic en "Ingresar con Google"\n2. Usa tu cuenta: ${email}\n3. Listo — verás tus recursos disponibles\n\n¡Cualquier duda me escribes por aquí! 💪`
+        const message = `¡Hola ${firstName}! 👋\n\nAquí está el enlace para acceder a la Comunidad JPR:\n\n🔗 https://jotadev-portfolio.vercel.app/comunidad\n\n1. Haz clic en "Ingresar"\n2. Usa tu cuenta: ${email}\n3. Listo — verás tus recursos disponibles\n\n¡Cualquier duda me escribes por aquí! 💪`
         if (inviteText) inviteText.textContent = message
         if (inviteMsg) inviteMsg.style.display = 'block'
         inviteMsg?.scrollIntoView({ behavior: 'smooth', block: 'start' })

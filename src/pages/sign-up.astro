@@ -1,0 +1,173 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+
+// Si ya está logueado, ir directo a comunidad
+const { userId } = Astro.locals.auth()
+if (userId) return Astro.redirect('/comunidad')
+
+const locale = 'es' as const
+
+// El ticket viene como query param inyectado por Clerk en el link de invitación
+const ticket = Astro.url.searchParams.get('__clerk_ticket') ?? ''
+
+// Si no hay ticket, no hay nada que hacer aquí
+// (redirigir al sign-in o a no-autorizado)
+if (!ticket) {
+  return Astro.redirect('/comunidad/no-autorizado')
+}
+---
+
+<BaseLayout
+  title="Activando cuenta — JPR Comunidad"
+  description="Activando tu cuenta en la Comunidad JPR."
+  locale={locale}
+>
+  <meta name="robots" content="noindex,nofollow" slot="head" />
+  <div class="signup-page">
+    <div class="signup-card">
+      <div class="signup-brand">
+        <span class="brand-logo">JPR<span class="brand-dot">.</span></span>
+      </div>
+      <h1 class="signup-title">Activando tu cuenta</h1>
+      <p id="signup-status" class="signup-subtitle">
+        Verificando tu invitación...
+      </p>
+      <div id="signup-spinner" class="spinner" aria-hidden="true"></div>
+      <p id="signup-error" class="signup-error" hidden role="alert"></p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .signup-page {
+    min-height: calc(100vh - 3.5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: radial-gradient(
+      ellipse 60% 40% at 50% -10%,
+      color-mix(in srgb, var(--color-accent) 10%, transparent),
+      transparent
+    );
+  }
+
+  .signup-card {
+    width: 100%;
+    max-width: 22rem;
+    padding: 2.5rem 2rem;
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .signup-brand { margin-bottom: 1.25rem; }
+
+  .brand-logo {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--tx);
+  }
+
+  .brand-dot { color: var(--color-accent); }
+
+  .signup-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--tx);
+    letter-spacing: -0.02em;
+  }
+
+  .signup-subtitle {
+    margin: 0 0 1.5rem;
+    font-size: 0.875rem;
+    color: var(--tx-muted);
+    line-height: 1.55;
+  }
+
+  .spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes spin { to { rotate: 360deg; } }
+
+  .signup-error {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #DC2626;
+    background: color-mix(in srgb, #DC2626 10%, var(--sf));
+    border: 1px solid color-mix(in srgb, #DC2626 25%, transparent);
+    text-align: left;
+  }
+</style>
+
+<script is:inline>
+  // Ticket inyectado desde la URL por Clerk en el link de invitación
+  var ticket = new URLSearchParams(window.location.search).get('__clerk_ticket')
+
+  var statusEl  = document.getElementById('signup-status')
+  var spinnerEl = document.getElementById('signup-spinner')
+  var errorEl   = document.getElementById('signup-error')
+
+  function showError(msg) {
+    if (spinnerEl) spinnerEl.style.display = 'none'
+    if (statusEl) statusEl.textContent = 'No pudimos activar tu cuenta.'
+    if (errorEl) {
+      errorEl.textContent = msg
+      errorEl.hidden = false
+    }
+  }
+
+  function getClerkReady(cb) {
+    var clerk = window.Clerk
+    if (clerk && clerk.loaded) { cb(clerk); return }
+    if (clerk) {
+      var unsub = clerk.addListener(function(state) {
+        if (state.client) { unsub(); cb(window.Clerk) }
+      })
+      return
+    }
+    document.addEventListener('clerk:loaded', function() { cb(window.Clerk) }, { once: true })
+  }
+
+  if (!ticket) {
+    showError('Link de invitación inválido o expirado. Pide al administrador que te envíe uno nuevo.')
+  } else {
+    getClerkReady(function(clerk) {
+      // Crear el sign-up usando el ticket de invitación
+      clerk.client.signUp.create({ strategy: 'ticket', ticket: ticket })
+        .then(function(signUp) {
+          if (signUp.status === 'complete') {
+            if (statusEl) statusEl.textContent = '¡Cuenta activada! Redirigiendo...'
+            return clerk.setActive({ session: signUp.createdSessionId })
+              .then(function() { window.location.href = '/comunidad' })
+          }
+          // Si falta completar algo (nombre, etc.), Clerk requiere más datos
+          // En nuestro caso el admin ya los pasa vía metadata; si aún así falta algo:
+          showError('Activación incompleta (status: ' + signUp.status + '). Contacta al administrador.')
+        })
+        .catch(function(err) {
+          var msg = (err && err.errors && err.errors[0])
+            ? (err.errors[0].longMessage || err.errors[0].message)
+            : 'Error al activar la cuenta. El link puede haber expirado o ya fue usado.'
+          showError(msg)
+        })
+    })
+  }
+</script>

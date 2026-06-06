@@ -22,7 +22,7 @@ export const GET: APIRoute = async ({ locals, url }) => {
   }
 }
 
-export const POST: APIRoute = async ({ locals, request }) => {
+export const POST: APIRoute = async ({ locals, request, url }) => {
   const denied = requireAdmin(locals as any)
   if (denied) return denied
 
@@ -60,18 +60,19 @@ export const POST: APIRoute = async ({ locals, request }) => {
   const { userId: adminId } = (locals as any).auth()
 
   try {
-    const user = await createStudentUser({
+    const invitation = await createStudentUser({
       email: body.email,
       firstName: body.firstName,
       lastName: body.lastName ?? '',
       unlockedModules: body.unlockedModules ?? [],
       notes: body.notes ?? '',
-      adminUserId: adminId
+      adminUserId: adminId,
+      siteOrigin: url.origin,
     })
 
-    return new Response(JSON.stringify({ id: user.id, email: body.email }), {
+    return new Response(JSON.stringify({ id: invitation.id, email: body.email }), {
       status: 201,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Error al crear usuario'
