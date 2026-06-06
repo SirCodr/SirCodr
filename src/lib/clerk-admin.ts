@@ -21,6 +21,7 @@ export async function createStudentUser(params: {
   unlockedModules: string[]
   notes: string
   adminUserId: string
+  siteOrigin: string
 }) {
   const clerk = getClerkClient()
   const metadata: StudentMetadata = {
@@ -31,17 +32,15 @@ export async function createStudentUser(params: {
     createdAt: new Date().toISOString(),
   }
 
-  // SITE_URL en .env permite override por entorno (ej: http://localhost:4321 en dev).
-  // Si no está definida, usa import.meta.env.SITE (valor de `site:` en astro.config.mjs).
-  // La URL resultante DEBE estar en Clerk Dashboard → Configure → Allowed redirect URLs.
-  const siteUrl = import.meta.env.SITE_URL ?? import.meta.env.SITE
-  const redirectUrl = siteUrl ? `${siteUrl}/comunidad` : undefined
+  // Usar el origin del request: localhost en dev, dominio real en prod.
+  // Debe estar en Clerk Dashboard → Configure → Allowed redirect URLs.
+  const redirectUrl = `${params.siteOrigin}/comunidad`
 
   return clerk.invitations.createInvitation({
     emailAddress: params.email,
-    ...(redirectUrl ? { redirectUrl } : {}),
+    redirectUrl,
     notify: true,
-    ignoreExisting: true,   // reenviar sin error si ya hay invitación pendiente
+    ignoreExisting: true,
     publicMetadata: metadata as unknown as UserPublicMetadata,
   })
 }

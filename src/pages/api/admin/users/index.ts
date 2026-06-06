@@ -35,7 +35,7 @@ function extractError(err: unknown): string {
   return 'Error desconocido'
 }
 
-export const POST: APIRoute = async ({ locals, request }) => {
+export const POST: APIRoute = async ({ locals, request, url }) => {
   const denied = requireAdmin(locals as any)
   if (denied) return denied
 
@@ -80,6 +80,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
       unlockedModules: body.unlockedModules ?? [],
       notes: body.notes ?? '',
       adminUserId: adminId,
+      siteOrigin: url.origin,
     })
 
     return new Response(
