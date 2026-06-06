@@ -1,0 +1,137 @@
+---
+import type { CommunityModule } from '@/data/modules'
+
+interface Props {
+  module: CommunityModule
+  unlocked: boolean
+  postCount: number
+  href: string
+}
+
+const { module, unlocked, postCount, href } = Astro.props
+---
+
+<a
+  href={unlocked ? href : '#'}
+  class={`module-card ${unlocked ? 'unlocked' : 'locked'}`}
+  aria-label={`Módulo ${module.title}${unlocked ? '' : ' — bloqueado'}`}
+  style={`--mod-color: ${module.accentColor};`}
+>
+  <div class="card-icon">{module.icon}</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">{module.title}</h3>
+      {unlocked ? (
+        <span class="badge badge-unlocked">Activo</span>
+      ) : (
+        <span class="badge badge-locked">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+          </svg>
+          Bloqueado
+        </span>
+      )}
+    </div>
+    <p class="card-desc">{module.description}</p>
+    <div class="card-meta">
+      <span>{postCount} {postCount === 1 ? 'recurso' : 'recursos'}</span>
+      {!unlocked && (
+        <span class="cta-unlock">Solicitar acceso →</span>
+      )}
+    </div>
+  </div>
+</a>
+
+<style>
+  .module-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--bd);
+    text-decoration: none;
+    color: var(--tx);
+    background: var(--sf);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    box-shadow: var(--shadow-card);
+  }
+
+  .module-card.unlocked:hover {
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--mod-color);
+    transform: translateY(-2px);
+  }
+
+  .module-card.locked {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 2.5rem;
+    text-align: center;
+  }
+
+  .card-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--tx);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+  }
+
+  .badge-unlocked {
+    background: color-mix(in srgb, #059669 15%, transparent);
+    color: #059669;
+  }
+
+  .badge-locked {
+    background: color-mix(in srgb, var(--tx-muted) 12%, transparent);
+    color: var(--tx-muted);
+  }
+
+  .card-desc {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    color: var(--tx-muted);
+    line-height: 1.5;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--tx-muted);
+  }
+
+  .cta-unlock {
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 0.78rem;
+  }
+</style>

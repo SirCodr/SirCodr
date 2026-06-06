@@ -1,0 +1,190 @@
+---
+/**
+ * NicheTabs — tabs para elegir ejemplos por nicho (software / ventas / comercio)
+ * Vanilla JS, ARIA, persistencia en localStorage.
+ *
+ * Uso en MDX:
+ *   <NicheTabs nicheTabs={["software", "sales", "trade"]}>
+ *     <Fragment slot="software">...contenido software...</Fragment>
+ *     <Fragment slot="sales">...contenido ventas...</Fragment>
+ *     <Fragment slot="trade">...contenido comercio...</Fragment>
+ *   </NicheTabs>
+ */
+
+interface Props {
+  nicheTabs: Array<'software' | 'sales' | 'trade'>
+}
+
+const { nicheTabs } = Astro.props
+
+const labels: Record<string, string> = {
+  software: '💻 Desarrollo de Software',
+  sales: '📈 Ventas & BD',
+  trade: '🌐 Comercio Internacional',
+}
+
+const id = `niche-tabs-${Math.random().toString(36).slice(2, 7)}`
+---
+
+<div class="niche-tabs-root" data-tabs-id={id} data-niches={nicheTabs.join(',')}>
+  <!-- Tab list -->
+  <div role="tablist" aria-label="Ejemplos por industria" class="tabs-list">
+    {nicheTabs.map((niche, i) => (
+      <button
+        role="tab"
+        id={`${id}-tab-${niche}`}
+        aria-controls={`${id}-panel-${niche}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        tabindex={i === 0 ? 0 : -1}
+        class={`tab-btn ${i === 0 ? 'tab-active' : ''}`}
+        data-niche={niche}
+      >
+        {labels[niche]}
+      </button>
+    ))}
+  </div>
+
+  <!-- Panels -->
+  {nicheTabs.map((niche, i) => (
+    <div
+      role="tabpanel"
+      id={`${id}-panel-${niche}`}
+      aria-labelledby={`${id}-tab-${niche}`}
+      hidden={i !== 0}
+      class="tab-panel"
+      data-niche={niche}
+    >
+      <slot name={niche} />
+    </div>
+  ))}
+</div>
+
+<style>
+  .niche-tabs-root {
+    margin: 2rem 0;
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .tabs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    background: var(--sf2);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    color: var(--tx-muted);
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--bd);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tab-btn:last-child {
+    border-right: none;
+  }
+
+  .tab-btn:hover {
+    background: var(--sf);
+    color: var(--tx);
+  }
+
+  .tab-btn.tab-active,
+  .tab-btn[aria-selected="true"] {
+    background: var(--sf);
+    color: var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
+    margin-bottom: -1px;
+  }
+
+  .tab-panel {
+    padding: 1.5rem;
+  }
+
+  .tab-panel[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .tab-btn {
+      font-size: 0.72rem;
+      padding: 0.65rem 0.5rem;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.niche-tabs-root').forEach((root) => {
+    const tabsId = root.dataset.tabsId!
+    const nichesStr = root.dataset.niches!
+    const niches = nichesStr.split(',')
+
+    const STORAGE_KEY = 'community.niche'
+    const savedNiche = localStorage.getItem(STORAGE_KEY)
+
+    // Activar niche guardado si existe en esta instancia
+    const initialNiche =
+      savedNiche && niches.includes(savedNiche) ? savedNiche : niches[0]
+
+    function activateTab(niche: string) {
+      niches.forEach((n) => {
+        const btn = root.querySelector<HTMLButtonElement>(`[data-niche="${n}"][role="tab"]`)
+        const panel = root.querySelector<HTMLElement>(`#${tabsId}-panel-${n}`)
+        if (!btn || !panel) return
+
+        const isActive = n === niche
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false')
+        btn.setAttribute('tabindex', isActive ? '0' : '-1')
+        btn.classList.toggle('tab-active', isActive)
+        panel.hidden = !isActive
+      })
+    }
+
+    activateTab(initialNiche)
+
+    // Click
+    root.querySelectorAll<HTMLButtonElement>('[role="tab"]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const niche = btn.dataset.niche!
+        activateTab(niche)
+        localStorage.setItem(STORAGE_KEY, niche)
+      })
+    })
+
+    // Teclado: ← → entre tabs
+    root.querySelector('[role="tablist"]')!.addEventListener('keydown', (e) => {
+      const ke = e as KeyboardEvent
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ke.key)) return
+      ke.preventDefault()
+
+      const currentIndex = niches.findIndex((n) => {
+        const btn = root.querySelector<HTMLButtonElement>(`[data-niche="${n}"][role="tab"]`)
+        return btn?.getAttribute('aria-selected') === 'true'
+      })
+
+      let nextIndex = currentIndex
+      if (ke.key === 'ArrowRight') nextIndex = (currentIndex + 1) % niches.length
+      if (ke.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + niches.length) % niches.length
+      if (ke.key === 'Home') nextIndex = 0
+      if (ke.key === 'End') nextIndex = niches.length - 1
+
+      const nextNiche = niches[nextIndex]
+      activateTab(nextNiche)
+      localStorage.setItem(STORAGE_KEY, nextNiche)
+      root.querySelector<HTMLButtonElement>(`[data-niche="${nextNiche}"][role="tab"]`)?.focus()
+    })
+  })
+</script>

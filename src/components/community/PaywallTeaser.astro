@@ -1,0 +1,128 @@
+---
+import { buildWhatsAppLink } from '@/data/contact'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  post: CollectionEntry<'community'>
+  isLoggedIn?: boolean
+}
+
+const { post, isLoggedIn = false } = Astro.props
+const waLink = buildWhatsAppLink({ locale: 'es', intent: 'asesoria' })
+---
+
+<div class="paywall">
+  <div class="paywall-icon">🔒</div>
+  <h2 class="paywall-title">Contenido exclusivo</h2>
+  <p class="paywall-teaser">{post.data.teaser}</p>
+
+  <div class="paywall-divider"></div>
+
+  {isLoggedIn ? (
+    <!-- Usuario logueado pero sin acceso al módulo -->
+    <div class="paywall-body">
+      <p>Este recurso pertenece al módulo <strong>{post.data.module}</strong>, al que aún no tienes acceso.</p>
+      <p style="margin-top:0.5rem;font-size:0.875rem;color:var(--tx-muted);">
+        Para desbloquearlo, escríbeme por WhatsApp. Cuéntame en qué etapa de tu búsqueda estás y qué necesitas.
+      </p>
+    </div>
+    <a href={waLink} target="_blank" rel="noopener noreferrer" class="paywall-cta">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Solicitar acceso por WhatsApp
+    </a>
+  ) : (
+    <!-- Usuario no logueado -->
+    <div class="paywall-body">
+      <p>Este es un recurso exclusivo para la comunidad. Inicia sesión para ver si ya tienes acceso.</p>
+    </div>
+    <div class="paywall-actions">
+      <a href="/sign-in" class="paywall-cta">Iniciar sesión con Google</a>
+      <a href={waLink} target="_blank" rel="noopener noreferrer" class="paywall-secondary">
+        No tengo cuenta — solicitar acceso →
+      </a>
+    </div>
+  )}
+</div>
+
+<style>
+  .paywall {
+    margin: 2rem auto;
+    max-width: 36rem;
+    padding: 2rem;
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    background: var(--sf);
+    box-shadow: var(--shadow-card);
+    text-align: center;
+  }
+
+  .paywall-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .paywall-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--tx);
+  }
+
+  .paywall-teaser {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--tx-muted);
+    line-height: 1.6;
+  }
+
+  .paywall-divider {
+    height: 1px;
+    background: var(--bd);
+    margin: 1.25rem 0;
+  }
+
+  .paywall-body {
+    font-size: 0.875rem;
+    color: var(--tx);
+    margin-bottom: 1.25rem;
+    text-align: left;
+  }
+
+  .paywall-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .paywall-cta:hover {
+    opacity: 0.9;
+  }
+
+  .paywall-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .paywall-secondary {
+    font-size: 0.82rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .paywall-secondary:hover {
+    text-decoration: underline;
+  }
+</style>

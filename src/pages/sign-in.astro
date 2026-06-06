@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SignIn } from '@clerk/astro/components'
+
+// Si ya está logueado, redirect a comunidad
+const { userId } = Astro.locals.auth()
+if (userId) return Astro.redirect('/comunidad')
+
+const locale = 'es' as const
+---
+
+<BaseLayout
+  title="Ingresar — JPR Comunidad"
+  description="Accede a la comunidad de recursos de carrera remota."
+  locale={locale}
+>
+  <meta name="robots" content="noindex" slot="head" />
+  <div class="signin-page">
+    <div class="signin-card">
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">🔵</div>
+        <h1 style="margin:0 0 0.25rem;font-size:1.3rem;font-weight:800;">Comunidad JPR</h1>
+        <p style="margin:0;font-size:0.875rem;color:var(--tx-muted);">
+          Inicia sesión con tu cuenta de Google para acceder a tus recursos.
+        </p>
+      </div>
+      <SignIn
+        routing="hash"
+        appearance={{
+          variables: {
+            colorPrimary: '#e91e8b',
+            colorBackground: 'transparent',
+            colorText: 'var(--tx)',
+            borderRadius: '0.75rem',
+          },
+          elements: {
+            card: {
+              boxShadow: 'none',
+              border: 'none',
+              backgroundColor: 'transparent',
+              padding: 0,
+              width: '100%',
+            },
+            header: { display: 'none' },
+            footer: { display: 'none' },
+          }
+        }}
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .signin-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .signin-card {
+    width: 100%;
+    max-width: 26rem;
+    padding: 2rem;
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+</style>

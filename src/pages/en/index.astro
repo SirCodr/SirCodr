@@ -1,13 +1,14 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/sections/Hero.astro';
-import ExperienceTimeline from '../../components/sections/ExperienceTimeline.astro';
-import SkillsGrid from '../../components/sections/SkillsGrid.astro';
-import ProjectsSection from '../../components/sections/ProjectsSection.astro';
-import EducationCerts from '../../components/sections/EducationCerts.astro';
-import ContactCTA from '../../components/sections/ContactCTA.astro';
-import PageNav from '../../components/PageNav.astro';
-import { useTranslations } from '../../i18n/utils';
+export const prerender = true;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import ExperienceTimeline from '@/components/sections/ExperienceTimeline.astro';
+import SkillsGrid from '@/components/sections/SkillsGrid.astro';
+import ProjectsSection from '@/components/sections/ProjectsSection.astro';
+import EducationCerts from '@/components/sections/EducationCerts.astro';
+import ContactCTA from '@/components/sections/ContactCTA.astro';
+import PageNav from '@/components/PageNav.astro';
+import { useTranslations } from '@/i18n/utils';
 
 const locale = 'en' as const;
 const t = useTranslations(locale);

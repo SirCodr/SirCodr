@@ -1,0 +1,154 @@
+---
+import { SignOutButton, UserButton } from '@clerk/astro/components'
+
+interface Props {
+  activeSection?: string
+}
+const { activeSection } = Astro.props
+
+const navItems = [
+  { href: '/admin', label: 'Dashboard', icon: '📊', id: 'dashboard' },
+  { href: '/admin/usuarios', label: 'Usuarios', icon: '👥', id: 'usuarios' },
+]
+---
+
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <a href="/admin" class="sidebar-logo">
+      <span style="color:var(--color-accent);font-weight:900;">JPR</span>
+      <span style="font-size:0.7rem;font-weight:600;color:var(--tx-muted);margin-left:0.25rem;">ADMIN</span>
+    </a>
+
+    <nav aria-label="Navegación de administrador">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class={`nav-item ${activeSection === item.id ? 'nav-active' : ''}`}
+        >
+          <span class="nav-icon">{item.icon}</span>
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </nav>
+  </div>
+
+  <div class="sidebar-bottom">
+    <a href="/comunidad" class="nav-item" style="font-size:0.8rem;">
+      <span class="nav-icon">🌐</span>
+      <span>Ver Comunidad</span>
+    </a>
+    <div class="user-row">
+      <UserButton />
+      <SignOutButton redirectUrl="/">
+        <button class="signout-btn">Cerrar sesión</button>
+      </SignOutButton>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    width: 14rem;
+    min-width: 14rem;
+    background: #0f0f0f;
+    border-right: 1px solid #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.25rem 0;
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-top { display: flex; flex-direction: column; gap: 0.25rem; }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    padding: 0.5rem 1rem 1.25rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #f0f0f0;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #999;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    border-radius: 0;
+  }
+
+  .nav-item:hover {
+    background: #1a1a1a;
+    color: #f0f0f0;
+  }
+
+  .nav-active {
+    background: color-mix(in srgb, #e91e8b 15%, transparent);
+    color: #e91e8b !important;
+    font-weight: 700;
+  }
+
+  .nav-icon { font-size: 1rem; width: 1.25rem; text-align: center; }
+
+  .sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #1e1e1e;
+  }
+
+  .user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+  }
+
+  .signout-btn {
+    background: transparent;
+    border: none;
+    font-size: 0.75rem;
+    color: #666;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    transition: color 0.15s;
+  }
+
+  .signout-btn:hover { color: #999; }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      min-width: 0;
+      height: auto;
+      min-height: auto;
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .sidebar-top, .sidebar-bottom {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .sidebar-logo { padding: 0.25rem 0.5rem 0.25rem; }
+  }
+</style>

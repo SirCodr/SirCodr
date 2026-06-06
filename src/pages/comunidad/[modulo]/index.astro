@@ -1,0 +1,166 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PostCard from '@/components/community/PostCard.astro'
+import PaywallTeaser from '@/components/community/PaywallTeaser.astro'
+import { getModuleById, MODULES } from '@/data/modules'
+import { getPostsByModule } from '@/lib/community'
+import { canAccessModule, canAccessPost } from '@/lib/entitlements'
+import { isAdmin } from '@/lib/auth'
+import type { ModuleId } from '@/data/modules'
+
+const { modulo } = Astro.params
+const locale = 'es' as const
+
+// Validar módulo
+const moduleData = getModuleById(modulo as ModuleId)
+if (!moduleData) {
+  return Astro.redirect('/comunidad')
+}
+
+const { userId } = Astro.locals.auth()
+const isLoggedIn = !!userId
+const userIsAdmin = isLoggedIn && isAdmin(Astro.locals as any)
+const moduleUnlocked = userIsAdmin || canAccessModule(Astro.locals as any, modulo as ModuleId)
+
+const posts = await getPostsByModule(modulo as ModuleId)
+---
+
+<BaseLayout
+  title={`${moduleData.title} — Comunidad | JPR`}
+  description={moduleData.description}
+  locale={locale}
+>
+  <meta name="robots" content={moduleUnlocked ? 'noindex' : 'noindex'} slot="head" />
+
+  <div class="container-prose" style="padding: 2rem 0 4rem;">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a href="/comunidad">Comunidad</a>
+      <span>›</span>
+      <span>{moduleData.title}</span>
+    </nav>
+
+    <!-- Header módulo -->
+    <div class="module-header" style={`--mod-color: ${moduleData.accentColor};`}>
+      <span class="module-icon">{moduleData.icon}</span>
+      <div>
+        <h1 class="module-title">{moduleData.title}</h1>
+        <p class="module-desc">{moduleData.description}</p>
+      </div>
+      {moduleUnlocked ? (
+        <span class="badge-active">✓ Módulo activo</span>
+      ) : (
+        <span class="badge-locked">🔒 Bloqueado</span>
+      )}
+    </div>
+
+    <!-- Contenido -->
+    {posts.length === 0 ? (
+      <p style="color:var(--tx-muted);font-size:0.9rem;margin-top:2rem;">
+        Próximamente — el contenido de este módulo está en preparación.
+      </p>
+    ) : (
+      <div class="posts-list">
+        {posts.map((post) => {
+          const postId = post.id.replace(/\/index$/, '')
+          const slugParts = postId.split('/')
+          const slug = slugParts.slice(1).join('/')
+          const postUnlocked = userIsAdmin || canAccessPost(Astro.locals as any, post)
+          return (
+            <PostCard
+              post={post}
+              locked={!postUnlocked}
+              href={`/comunidad/${moduleData.id}/${slug}`}
+            />
+          )
+        })}
+      </div>
+    )}
+
+    {!moduleUnlocked && posts.length > 0 && (
+      <div style="margin-top:2rem;">
+        <PaywallTeaser post={posts[0]} isLoggedIn={isLoggedIn} />
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--tx-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .module-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-card);
+    flex-wrap: wrap;
+  }
+
+  .module-icon { font-size: 2rem; flex-shrink: 0; }
+
+  .module-title {
+    margin: 0 0 0.25rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+
+  .module-desc {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--tx-muted);
+    line-height: 1.5;
+  }
+
+  .badge-active {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, #059669 15%, transparent);
+    color: #059669;
+    align-self: center;
+    white-space: nowrap;
+  }
+
+  .badge-locked {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--tx-muted) 12%, transparent);
+    color: var(--tx-muted);
+    align-self: center;
+    white-space: nowrap;
+  }
+
+  .posts-list {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .posts-list { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

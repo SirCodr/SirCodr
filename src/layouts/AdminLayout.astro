@@ -1,0 +1,79 @@
+---
+import '@/styles/global.css'
+import AdminSidebar from '@/components/admin/AdminSidebar.astro'
+
+interface Props {
+  title: string
+  activeSection?: string
+}
+
+const { title, activeSection } = Astro.props
+
+// Guard - double check in case middleware was bypassed
+import { requireAdmin } from '@/lib/auth'
+const denied = requireAdmin(Astro.locals as any)
+if (denied) return denied
+---
+
+<!doctype html>
+<html lang="es" class="">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{title} — Admin | JPR</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme')
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const isDark = stored === 'dark' || (!stored && prefersDark)
+        if (isDark) document.documentElement.classList.add('dark')
+      })()
+    </script>
+  </head>
+  <body class="admin-body">
+    <div class="admin-layout">
+      <AdminSidebar activeSection={activeSection} />
+      <main class="admin-main">
+        <div class="admin-content">
+          <slot />
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+
+<style>
+  .admin-body {
+    background: var(--sf2);
+    color: var(--tx);
+    font-family: var(--font-sans);
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  .admin-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .admin-main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+  }
+
+  .admin-content {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .admin-layout { flex-direction: column; }
+  }
+</style>

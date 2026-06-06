@@ -1,0 +1,354 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro'
+import { MODULES } from '@/data/modules'
+---
+
+<AdminLayout title="Nuevo usuario" activeSection="usuarios">
+  <div class="page-header">
+    <a href="/admin/usuarios" class="back-link">← Volver a usuarios</a>
+    <h1 class="page-title">Nuevo usuario</h1>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite" style="display:none;"></div>
+
+  <div class="form-card">
+    <form id="create-form" novalidate>
+      <div class="form-grid">
+        <!-- Email -->
+        <div class="field field-full">
+          <label for="email" class="label">Email de Gmail <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required class="input"
+            placeholder="cliente@gmail.com"
+            autocomplete="off"
+          />
+          <p class="hint">El usuario deberá iniciar sesión con esta cuenta de Google.</p>
+        </div>
+
+        <!-- Nombre -->
+        <div class="field">
+          <label for="firstName" class="label">Nombre <span class="required">*</span></label>
+          <input type="text" id="firstName" name="firstName" required class="input" placeholder="Ana" />
+        </div>
+
+        <!-- Apellido -->
+        <div class="field">
+          <label for="lastName" class="label">Apellido</label>
+          <input type="text" id="lastName" name="lastName" class="input" placeholder="García" />
+        </div>
+
+        <!-- Módulos -->
+        <div class="field field-full">
+          <p class="label">Módulos desbloqueados</p>
+          <div class="modules-grid">
+            {MODULES.map((mod) => (
+              <label class="module-toggle">
+                <input type="checkbox" name="modules" value={mod.id} class="toggle-check" />
+                <div class="toggle-card">
+                  <span class="mod-icon">{mod.icon}</span>
+                  <div>
+                    <div class="mod-title">{mod.title}</div>
+                    <div class="mod-id">{mod.id}</div>
+                  </div>
+                </div>
+              </label>
+            ))}
+          </div>
+          <p class="hint">Puedes habilitar más módulos después desde el perfil del usuario.</p>
+        </div>
+
+        <!-- Notas internas -->
+        <div class="field field-full">
+          <label for="notes" class="label">Notas internas</label>
+          <textarea id="notes" name="notes" class="textarea" rows="3"
+            placeholder="Ej: Pagó asesoría de LinkedIn en junio 2026. Sector: tecnología. Meta: trabajo remoto USA."
+          ></textarea>
+          <p class="hint">Solo visible en el panel de administrador.</p>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a href="/admin/usuarios" class="btn-cancel">Cancelar</a>
+        <button type="submit" id="submit-btn" class="btn-submit">Crear usuario</button>
+      </div>
+    </form>
+
+    <!-- Mensaje post-creación con info para compartir -->
+    <div id="success-msg" style="display:none;" class="success-msg">
+      <div class="success-icon">✅</div>
+      <h2>Usuario creado</h2>
+      <p>Copia este mensaje y envíaselo al cliente por WhatsApp:</p>
+      <div id="wa-message" class="wa-preview"></div>
+      <div class="success-actions">
+        <button id="copy-btn" class="btn-copy">Copiar mensaje</button>
+        <a href="/admin/usuarios" class="btn-cancel">Ver lista de usuarios</a>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<style>
+  .page-header { margin-bottom: 1.5rem; }
+  .back-link { font-size: 0.8rem; color: var(--tx-muted); text-decoration: none; }
+  .back-link:hover { color: var(--tx); }
+  .page-title { margin: 0.5rem 0 0; font-size: 1.5rem; font-weight: 800; }
+
+  .toast {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .toast.error { background: color-mix(in srgb, #DC2626 12%, transparent); color: #DC2626; border: 1px solid color-mix(in srgb, #DC2626 30%, transparent); }
+  .toast.success { background: color-mix(in srgb, #059669 12%, transparent); color: #059669; border: 1px solid color-mix(in srgb, #059669 30%, transparent); }
+
+  .form-card {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-card);
+    max-width: 44rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .field-full { grid-column: 1 / -1; }
+
+  .label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--tx);
+  }
+
+  .required { color: var(--color-accent); }
+
+  .input, .textarea {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--bd);
+    border-radius: 0.375rem;
+    background: var(--sf2);
+    color: var(--tx);
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .input:focus, .textarea:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-color: var(--color-accent);
+  }
+
+  .textarea { resize: vertical; }
+
+  .hint {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--tx-muted);
+    line-height: 1.4;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .module-toggle { cursor: pointer; }
+
+  .toggle-check { position: absolute; opacity: 0; width: 0; height: 0; }
+
+  .toggle-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border: 1.5px solid var(--bd);
+    border-radius: 0.5rem;
+    background: var(--sf2);
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .toggle-check:checked + .toggle-card {
+    border-color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--sf2));
+  }
+
+  .mod-icon { font-size: 1.1rem; }
+  .mod-title { font-size: 0.8rem; font-weight: 700; }
+  .mod-id { font-size: 0.7rem; color: var(--tx-muted); }
+
+  .form-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--bd);
+  }
+
+  .btn-submit {
+    padding: 0.65rem 1.5rem;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-submit:not(:disabled):hover { opacity: 0.9; }
+
+  .btn-cancel {
+    padding: 0.65rem 1.25rem;
+    background: transparent;
+    border: 1px solid var(--bd);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--tx-muted);
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-cancel:hover { background: var(--sf2); color: var(--tx); }
+
+  .success-msg {
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .success-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+  .success-msg h2 { margin: 0 0 0.5rem; font-size: 1.2rem; font-weight: 800; }
+  .success-msg p { margin: 0 0 1rem; font-size: 0.875rem; color: var(--tx-muted); }
+
+  .wa-preview {
+    background: var(--sf2);
+    border: 1px solid var(--bd);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-size: 0.85rem;
+    text-align: left;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: var(--tx);
+  }
+
+  .success-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-copy {
+    padding: 0.6rem 1.25rem;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+
+  .btn-copy:hover { opacity: 0.9; }
+</style>
+
+<script>
+  const form = document.getElementById('create-form') as HTMLFormElement | null
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null
+  const toast = document.getElementById('toast') as HTMLElement | null
+  const successMsg = document.getElementById('success-msg') as HTMLElement | null
+  const waMessageEl = document.getElementById('wa-message') as HTMLElement | null
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement | null
+
+  function showToast(message: string, type: 'error' | 'success') {
+    if (!toast) return
+    toast.textContent = message
+    toast.className = `toast ${type}`
+    toast.style.display = 'block'
+    setTimeout(() => { if (toast) toast.style.display = 'none' }, 5000)
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    if (!submitBtn) return
+
+    const fd = new FormData(form!)
+    const email = (fd.get('email') as string).trim()
+    const firstName = (fd.get('firstName') as string).trim()
+    const lastName = (fd.get('lastName') as string).trim()
+    const notes = (fd.get('notes') as string).trim()
+    const modules = fd.getAll('modules') as string[]
+
+    if (!email || !firstName) {
+      showToast('Email y nombre son requeridos.', 'error')
+      return
+    }
+
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Creando...'
+
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, firstName, lastName, notes, unlockedModules: modules }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        showToast(data.error ?? 'Error al crear el usuario.', 'error')
+        return
+      }
+
+      // Mostrar mensaje para compartir con el cliente
+      const modulesText = modules.length > 0
+        ? `Módulos activos: ${modules.join(', ')}`
+        : 'Aún no tienes módulos asignados.'
+
+      const waMessage = `¡Hola ${firstName}! 👋\n\nYa está lista tu cuenta en la Comunidad JPR.\n\n🔗 Ingresa aquí: https://jotadev-portfolio.vercel.app/comunidad\n\n1. Haz clic en "Ingresar con Google"\n2. Usa tu cuenta: ${email}\n3. Listo — verás tus recursos disponibles\n\n${modulesText}\n\nCualquier duda me escribes por aquí. ¡A darle! 💪`
+
+      if (waMessageEl) waMessageEl.textContent = waMessage
+      if (form) form.style.display = 'none'
+      if (successMsg) successMsg.style.display = 'block'
+    } catch {
+      showToast('Error de conexión. Intenta nuevamente.', 'error')
+    } finally {
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Crear usuario'
+    }
+  })
+
+  copyBtn?.addEventListener('click', async () => {
+    const text = waMessageEl?.textContent ?? ''
+    try {
+      await navigator.clipboard.writeText(text)
+      if (copyBtn) {
+        copyBtn.textContent = '¡Copiado! ✓'
+        setTimeout(() => { if (copyBtn) copyBtn.textContent = 'Copiar mensaje' }, 2000)
+      }
+    } catch {
+      showToast('No se pudo copiar automáticamente. Selecciona el texto manualmente.', 'error')
+    }
+  })
+</script>

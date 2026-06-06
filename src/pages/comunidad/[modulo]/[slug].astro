@@ -1,0 +1,375 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PaywallTeaser from '@/components/community/PaywallTeaser.astro'
+import ResourceList from '@/components/community/ResourceList.astro'
+import DownloadButton from '@/components/community/DownloadButton.astro'
+import LockedBanner from '@/components/community/LockedBanner.astro'
+import { getModuleById } from '@/data/modules'
+import { getPostsByModule } from '@/lib/community'
+import { canAccessPost } from '@/lib/entitlements'
+import { isAdmin } from '@/lib/auth'
+import type { ModuleId } from '@/data/modules'
+
+const { modulo, slug } = Astro.params
+
+// Cargar todos los posts del módulo y buscar por slug
+const posts = await getPostsByModule(modulo as ModuleId)
+const post = posts.find((p) => {
+  const postId = p.id.replace(/\/index$/, '')
+  const postSlug = postId.split('/').slice(1).join('/')
+  return postSlug === slug
+})
+
+if (!post) return Astro.redirect('/comunidad')
+
+const moduleData = getModuleById(modulo as ModuleId)
+if (!moduleData) return Astro.redirect('/comunidad')
+
+const { userId } = Astro.locals.auth()
+const isLoggedIn = !!userId
+const userIsAdmin = isLoggedIn && isAdmin(Astro.locals as any)
+const hasAccess = userIsAdmin || canAccessPost(Astro.locals as any, post)
+
+const { Content } = await post.render()
+
+const formattedDate = post.data.publishedDate.toLocaleDateString('es-CO', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
+
+const typeLabels: Record<string, string> = {
+  guide: 'Guía',
+  tutorial: 'Tutorial',
+  tip: 'Tip',
+  template: 'Plantilla',
+}
+---
+
+<BaseLayout
+  title={`${post.data.title} | JPR Comunidad`}
+  description={post.data.description}
+  locale="es"
+>
+  <!-- Noindex para contenido gateado -->
+  {!hasAccess && <meta name="robots" content="noindex,nofollow" slot="head" />}
+
+  <article class="container-prose" style="padding: 2rem 0 5rem;">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a href="/comunidad">Comunidad</a>
+      <span>›</span>
+      <a href={`/comunidad/${moduleData.id}`}>{moduleData.title}</a>
+      <span>›</span>
+      <span>{post.data.title}</span>
+    </nav>
+
+    {hasAccess && !userIsAdmin && (
+      <!-- Banner de acceso activo — sutil recordatorio del módulo -->
+      <div class="access-banner">
+        <span>{moduleData.icon}</span>
+        <span>Módulo <strong>{moduleData.title}</strong></span>
+      </div>
+    )}
+
+    {userIsAdmin && (
+      <div class="admin-banner">⚙️ Vista de administrador — acceso completo</div>
+    )}
+
+    <!-- Header del post -->
+    <header class="post-header">
+      <div class="post-meta">
+        <span class="type-chip">{typeLabels[post.data.type]}</span>
+        {post.data.featured && <span class="featured-chip">⭐ Destacado</span>}
+        <time datetime={post.data.publishedDate.toISOString()} style="color:var(--tx-muted);font-size:0.8rem;">
+          {formattedDate}
+        </time>
+      </div>
+      <h1 class="post-title">{post.data.title}</h1>
+      <p class="post-description">{post.data.description}</p>
+
+      {hasAccess && post.data.pdfFile && (
+        <div style="margin-top:1rem;">
+          <DownloadButton
+            moduleSlug={moduleData.id}
+            postSlug={slug!}
+            filename={post.data.pdfFile}
+            label={`Descargar ${typeLabels[post.data.type]} en PDF`}
+          />
+        </div>
+      )}
+    </header>
+
+    <hr class="divider" />
+
+    {hasAccess ? (
+      <Fragment>
+        <div class="prose">
+          <Content />
+        </div>
+
+        {post.data.resources && post.data.resources.length > 0 && (
+          <ResourceList resources={post.data.resources} />
+        )}
+
+        {post.data.pdfFile && (
+          <div class="bottom-download">
+            <p style="margin:0 0 0.75rem;font-size:0.9rem;color:var(--tx-muted);">
+              ¿Quieres repasar este recurso offline?
+            </p>
+            <DownloadButton
+              moduleSlug={moduleData.id}
+              postSlug={slug!}
+              filename={post.data.pdfFile}
+              label={`Descargar ${typeLabels[post.data.type]} en PDF`}
+            />
+          </div>
+        )}
+      </Fragment>
+    ) : (
+      <PaywallTeaser post={post} isLoggedIn={isLoggedIn} />
+    )}
+
+    <!-- Navegación inferior -->
+    <nav class="bottom-nav" aria-label="Navegación del módulo">
+      <a href={`/comunidad/${moduleData.id}`}>
+        ← Volver a {moduleData.title}
+      </a>
+      <a href="/comunidad">Ver todos los módulos</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--tx-muted);
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .access-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #059669;
+    background: color-mix(in srgb, #059669 12%, transparent);
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+
+  .admin-banner {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--tx-muted);
+    background: var(--sf2);
+    border: 1px solid var(--bd);
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+
+  .post-header { margin-bottom: 1.5rem; }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .type-chip {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .featured-chip {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, #D97706 12%, transparent);
+    color: #D97706;
+  }
+
+  .post-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--tx);
+  }
+
+  .post-description {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--tx-muted);
+    line-height: 1.6;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--bd);
+    margin: 1.5rem 0;
+  }
+
+  /* Prose styles for MDX content */
+  .prose :global(h2) {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin: 2.5rem 0 0.75rem;
+    color: var(--tx);
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid var(--color-accent);
+    display: inline-block;
+  }
+
+  .prose :global(h3) {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 1.75rem 0 0.5rem;
+    color: var(--tx);
+  }
+
+  .prose :global(h4) {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 1.25rem 0 0.4rem;
+    color: var(--tx-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .prose :global(p) {
+    margin: 0 0 1rem;
+    line-height: 1.75;
+    font-size: 0.95rem;
+    color: var(--tx);
+  }
+
+  .prose :global(ul), .prose :global(ol) {
+    margin: 0.5rem 0 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 0.35rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .prose :global(code):not([class]) {
+    font-size: 0.82rem;
+    background: var(--sf2);
+    border: 1px solid var(--bd);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: 'Fira Code', monospace;
+  }
+
+  .prose :global(pre) {
+    background: var(--sf2);
+    border: 1px solid var(--bd);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .prose :global(blockquote) {
+    border-left: 3px solid var(--color-accent);
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    background: color-mix(in srgb, var(--color-accent) 5%, transparent);
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-size: 0.925rem;
+    color: var(--tx);
+  }
+
+  .prose :global(blockquote p) {
+    margin: 0;
+  }
+
+  .prose :global(strong) {
+    font-weight: 700;
+    color: var(--tx);
+  }
+
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+  }
+
+  .prose :global(th), .prose :global(td) {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--bd);
+    text-align: left;
+  }
+
+  .prose :global(th) {
+    background: var(--sf2);
+    font-weight: 700;
+  }
+
+  .prose :global(hr) {
+    border: none;
+    border-top: 1px solid var(--bd);
+    margin: 2rem 0;
+  }
+
+  .bottom-download {
+    margin: 2.5rem 0;
+    padding: 1.5rem;
+    background: var(--sf2);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    text-align: center;
+  }
+
+  .bottom-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bd);
+    font-size: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  .bottom-nav a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .bottom-nav a:hover { text-decoration: underline; }
+</style>

@@ -1,0 +1,181 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ModuleCard from '@/components/community/ModuleCard.astro'
+import PostCard from '@/components/community/PostCard.astro'
+import { MODULES } from '@/data/modules'
+import { getModuleStats, getAllPosts } from '@/lib/community'
+import { canAccessModule } from '@/lib/entitlements'
+import { isAdmin } from '@/lib/auth'
+
+const locale = 'es' as const
+
+// Auth state
+const { userId } = Astro.locals.auth()
+const isLoggedIn = !!userId
+const userIsAdmin = isLoggedIn && isAdmin(Astro.locals as any)
+
+// Content
+const moduleStats = await getModuleStats()
+const recentPosts = (await getAllPosts()).slice(0, 6)
+
+// Módulos desbloqueados del usuario
+const unlockedCount = userIsAdmin
+  ? MODULES.length
+  : moduleStats.filter((m) => canAccessModule(Astro.locals as any, m.id)).length
+---
+
+<BaseLayout
+  title="Comunidad — Recursos de carrera remota | JPR"
+  description="Guías, tutoriales, plantillas y tips para conseguir trabajo remoto internacional. Acceso exclusivo para clientes."
+  locale={locale}
+>
+  <!-- Hero -->
+  <section style="padding: 3rem 0 2rem;">
+    <div class="container-prose">
+      {isLoggedIn ? (
+        <div class="welcome-banner">
+          <div>
+            <h1 style="margin:0 0 0.25rem;font-size:1.6rem;font-weight:800;">
+              {userIsAdmin ? '⚙️ Panel de administrador' : '¡Bienvenido a la Comunidad!'}
+            </h1>
+            <p style="margin:0;color:var(--tx-muted);font-size:0.925rem;">
+              {userIsAdmin
+                ? 'Tienes acceso completo a todos los módulos.'
+                : `Tienes ${unlockedCount} de ${MODULES.length} módulos activos.`}
+            </p>
+          </div>
+          {userIsAdmin && (
+            <a href="/admin" class="admin-link">Ir al panel admin →</a>
+          )}
+        </div>
+      ) : (
+        <div style="text-align:center;max-width:42rem;margin:0 auto;">
+          <h1 style="margin:0 0 1rem;font-size:2rem;font-weight:900;line-height:1.2;">
+            Recursos exclusivos para tu<br/><span style="color:var(--color-accent);">búsqueda de trabajo remoto</span>
+          </h1>
+          <p style="margin:0 0 1.5rem;color:var(--tx-muted);font-size:1rem;line-height:1.6;">
+            Guías completas, plantillas listas y tutoriales paso a paso. Contenido práctico adaptado a tu industria — desbloqueas módulos a medida que avanzamos juntos.
+          </p>
+          <a href="/sign-in" class="cta-btn">Ingresar con Google</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Módulos -->
+  <section style="padding: 2rem 0;">
+    <div class="container-prose">
+      <h2 class="section-title">Módulos</h2>
+      <div class="modules-grid">
+        {moduleStats.map((mod) => {
+          const unlocked = userIsAdmin || canAccessModule(Astro.locals as any, mod.id)
+          return (
+            <ModuleCard
+              module={mod}
+              unlocked={unlocked}
+              postCount={mod.totalPosts}
+              href={`/comunidad/${mod.id}`}
+            />
+          )
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Últimos recursos -->
+  {recentPosts.length > 0 && (
+    <section style="padding: 2rem 0 4rem;">
+      <div class="container-prose">
+        <h2 class="section-title">Últimos recursos</h2>
+        <div class="posts-grid">
+          {recentPosts.map((post) => {
+            const unlocked = userIsAdmin || canAccessModule(Astro.locals as any, post.data.module)
+            const postId = post.id.replace(/\/index$/, '')
+            const [modSlug, ...slugParts] = postId.split('/')
+            const slug = slugParts.join('/')
+            return (
+              <PostCard
+                post={post}
+                locked={!unlocked}
+                href={`/comunidad/${post.data.module}/${slug}`}
+              />
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .welcome-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    flex-wrap: wrap;
+  }
+
+  .admin-link {
+    color: var(--color-accent);
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.925rem;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .cta-btn:hover { opacity: 0.9; }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0 0 1.25rem;
+    color: var(--tx);
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .modules-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 900px) {
+    .modules-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .posts-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 900px) {
+    .posts-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

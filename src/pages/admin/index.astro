@@ -1,0 +1,317 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro'
+import { listStudents } from '@/lib/clerk-admin'
+import { getModuleStats } from '@/lib/community'
+
+const studentsResult = await listStudents({ limit: 100 })
+const totalStudents = studentsResult.totalCount ?? studentsResult.data.length
+const moduleStats = await getModuleStats()
+const totalPosts = moduleStats.reduce((acc, m) => acc + m.totalPosts, 0)
+
+const recentStudents = studentsResult.data.slice(0, 5).map((user) => {
+  const meta = (user.publicMetadata ?? {}) as { unlockedModules?: string[]; notes?: string }
+  return {
+    id: user.id,
+    name: [user.firstName, user.lastName].filter(Boolean).join(' ') || '—',
+    email: user.emailAddresses[0]?.emailAddress ?? '—',
+    moduleCount: Array.isArray(meta.unlockedModules) ? meta.unlockedModules.length : 0,
+    locked: user.locked,
+    hasImage: user.hasImage,
+    imageUrl: user.imageUrl,
+    createdAt: new Date(user.createdAt).toLocaleDateString('es-CO'),
+  }
+})
+---
+
+<AdminLayout title="Dashboard" activeSection="dashboard">
+  <div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <a href="/admin/usuarios/nuevo" class="btn-primary">+ Nuevo usuario</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-icon">👥</span>
+      <div>
+        <div class="stat-value">{totalStudents}</div>
+        <div class="stat-label">Usuarios totales</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📚</span>
+      <div>
+        <div class="stat-value">{moduleStats.length}</div>
+        <div class="stat-label">Módulos disponibles</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📄</span>
+      <div>
+        <div class="stat-value">{totalPosts}</div>
+        <div class="stat-label">Recursos publicados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent users -->
+  <section style="margin-top:2rem;">
+    <div class="section-header">
+      <h2 class="section-title">Usuarios recientes</h2>
+      <a href="/admin/usuarios" class="link-all">Ver todos →</a>
+    </div>
+    <div class="users-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Módulos</th>
+            <th>Estado</th>
+            <th>Creado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {recentStudents.map((user) => (
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    {user.hasImage && <img src={user.imageUrl} width="28" height="28" alt="" class="user-avatar" />}
+                    <div>
+                      <div class="user-name">{user.name}</div>
+                      <div class="user-email">{user.email}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="module-count">{user.moduleCount}</span>
+                </td>
+                <td>
+                  {user.locked
+                    ? <span class="badge-inactive">Inactivo</span>
+                    : <span class="badge-active">Activo</span>
+                  }
+                </td>
+                <td class="date-cell">{user.createdAt}</td>
+                <td>
+                  <a href={`/admin/usuarios/${user.id}`} class="action-link">Editar</a>
+                </td>
+              </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Módulos overview -->
+  <section style="margin-top:2rem;">
+    <h2 class="section-title">Módulos</h2>
+    <div class="modules-list">
+      {moduleStats.map((mod) => (
+        <div class="module-row">
+          <span class="mod-icon">{mod.icon}</span>
+          <div class="mod-info">
+            <div class="mod-title">{mod.title}</div>
+            <div class="mod-count">{mod.totalPosts} recursos</div>
+          </div>
+          <span class="mod-id"><code>{mod.id}</code></span>
+        </div>
+      ))}
+    </div>
+  </section>
+</AdminLayout>
+
+<style>
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--tx);
+  }
+
+  .btn-primary {
+    padding: 0.6rem 1.25rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-primary:hover { opacity: 0.9; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-card {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .stat-icon { font-size: 1.75rem; }
+
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--tx);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--tx-muted);
+    margin-top: 0.15rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--tx);
+  }
+
+  .link-all {
+    font-size: 0.8rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .users-table {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+
+  th {
+    background: var(--sf2);
+    padding: 0.6rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--tx-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--bd);
+    color: var(--tx);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .user-avatar {
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .user-name { font-weight: 600; font-size: 0.875rem; }
+  .user-email { font-size: 0.75rem; color: var(--tx-muted); }
+
+  .module-count {
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--sf2);
+    border-radius: 999px;
+  }
+
+  .badge-active {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, #059669 15%, transparent);
+    color: #059669;
+  }
+
+  .badge-inactive {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, #DC2626 12%, transparent);
+    color: #DC2626;
+  }
+
+  .date-cell { color: var(--tx-muted); font-size: 0.8rem; }
+
+  .action-link {
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+
+  .modules-list {
+    background: var(--sf);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .module-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .module-row:last-child { border-bottom: none; }
+
+  .mod-icon { font-size: 1.25rem; width: 1.5rem; text-align: center; flex-shrink: 0; }
+
+  .mod-info { flex: 1; min-width: 0; }
+  .mod-title { font-weight: 600; font-size: 0.875rem; }
+  .mod-count { font-size: 0.75rem; color: var(--tx-muted); }
+
+  .mod-id code {
+    font-size: 0.72rem;
+    background: var(--sf2);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.25rem;
+    color: var(--tx-muted);
+  }
+</style>
