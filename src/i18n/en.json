@@ -2,7 +2,9 @@
   "nav": {
     "home": "Home",
     "services": "Services",
-    "contact": "Contact"
+    "contact": "Contact",
+    "community": "Community",
+    "sign_in": "Sign in"
   },
   "hero": {
     "greeting": "Hi, I'm",
@@ -84,5 +86,24 @@
   },
   "lang": {
     "switch": "Español"
+  },
+  "community": {
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "request_access": "Request access",
+    "modules_active": "active modules",
+    "sign_in": "Join the Community",
+    "paywall_title": "Exclusive content",
+    "paywall_body_student": "This module is not included in your current plan. Contact me to unlock it.",
+    "paywall_body_anon": "This content is for members only. Request access to get started."
+  },
+  "admin": {
+    "title": "Admin panel",
+    "users": "Users",
+    "new_user": "New user",
+    "save": "Save changes",
+    "disable": "Disable account",
+    "enable": "Enable account",
+    "reinvite": "Regenerate welcome"
   }
 }

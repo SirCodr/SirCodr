@@ -34,3 +34,6 @@ docs/
 
 # README lives in the remote repo, not tracked here
 README.md
+
+# clerk configuration (can include secrets)
+/.clerk/

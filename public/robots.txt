@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Allow: /comunidad
+Disallow: /admin/
+Disallow: /api/
+Disallow: /sign-in
+Disallow: /comunidad/*/
 
 Sitemap: https://juanpablorestrepo.dev/sitemap-index.xml

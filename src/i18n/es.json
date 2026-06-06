@@ -2,7 +2,9 @@
   "nav": {
     "home": "Inicio",
     "services": "Servicios",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "community": "Comunidad",
+    "sign_in": "Ingresar"
   },
   "hero": {
     "greeting": "Hola, soy",
@@ -84,5 +86,24 @@
   },
   "lang": {
     "switch": "English"
+  },
+  "community": {
+    "locked": "Bloqueado",
+    "unlocked": "Desbloqueado",
+    "request_access": "Solicitar acceso",
+    "modules_active": "módulos activos",
+    "sign_in": "Ingresa a la Comunidad",
+    "paywall_title": "Contenido exclusivo",
+    "paywall_body_student": "Este módulo aún no está disponible en tu plan. Escríbeme para desbloquearlo.",
+    "paywall_body_anon": "Este contenido es exclusivo para miembros. Solicita acceso para ingresar."
+  },
+  "admin": {
+    "title": "Panel de administrador",
+    "users": "Usuarios",
+    "new_user": "Nuevo usuario",
+    "save": "Guardar cambios",
+    "disable": "Desactivar cuenta",
+    "enable": "Activar cuenta",
+    "reinvite": "Regenerar bienvenida"
   }
 }
