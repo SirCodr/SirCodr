@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import { SignIn } from '@clerk/astro/components'
 
-// Si ya está logueado, redirect a comunidad
 const { userId } = Astro.locals.auth()
 if (userId) return Astro.redirect('/comunidad')
 
 const locale = 'es' as const
+// La URL de callback que Clerk redirige después de que Google autentica al usuario
+const callbackUrl = new URL('/sso-callback', Astro.url.origin).href
 ---
 
 <BaseLayout
@@ -14,58 +14,226 @@ const locale = 'es' as const
   description="Accede a la comunidad de recursos de carrera remota."
   locale={locale}
 >
-  <meta name="robots" content="noindex" slot="head" />
+  <meta name="robots" content="noindex,nofollow" slot="head" />
   <div class="signin-page">
     <div class="signin-card">
-      <div style="text-align:center;margin-bottom:1.5rem;">
-        <div style="font-size:2rem;margin-bottom:0.5rem;">🔵</div>
-        <h1 style="margin:0 0 0.25rem;font-size:1.3rem;font-weight:800;">Comunidad JPR</h1>
-        <p style="margin:0;font-size:0.875rem;color:var(--tx-muted);">
-          Inicia sesión con tu cuenta de Google para acceder a tus recursos.
-        </p>
+      <!-- Branding -->
+      <div class="signin-brand">
+        <span class="brand-logo">JPR<span class="brand-dot">.</span></span>
       </div>
-      <SignIn
-        routing="hash"
-        appearance={{
-          variables: {
-            colorPrimary: '#e91e8b',
-            colorBackground: 'transparent',
-            colorText: 'var(--tx)',
-            borderRadius: '0.75rem',
-          },
-          elements: {
-            card: {
-              boxShadow: 'none',
-              border: 'none',
-              backgroundColor: 'transparent',
-              padding: 0,
-              width: '100%',
-            },
-            header: { display: 'none' },
-            footer: { display: 'none' },
-          }
-        }}
-      />
+      <h1 class="signin-title">Comunidad JPR</h1>
+      <p class="signin-subtitle">
+        Inicia sesión con tu cuenta de Google para acceder a tus recursos de carrera remota.
+      </p>
+
+      <!-- Botón Google completamente custom -->
+      <button id="btn-google" class="btn-google" type="button" aria-label="Continuar con Google">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+        <span id="btn-label">Continuar con Google</span>
+        <span id="btn-spinner" class="btn-spinner" hidden aria-hidden="true"></span>
+      </button>
+
+      <!-- Error inline -->
+      <p id="signin-error" class="signin-error" hidden role="alert"></p>
+
+      <p class="signin-note">
+        Solo clientes con invitación pueden ingresar.
+        <a href="/comunidad/no-autorizado" class="signin-note-link">¿Necesitas acceso?</a>
+      </p>
     </div>
   </div>
 </BaseLayout>
 
 <style>
   .signin-page {
-    min-height: 70vh;
+    min-height: calc(100vh - 3.5rem);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
+    background: radial-gradient(
+      ellipse 60% 40% at 50% -10%,
+      color-mix(in srgb, var(--color-accent) 10%, transparent),
+      transparent
+    );
   }
 
   .signin-card {
     width: 100%;
-    max-width: 26rem;
-    padding: 2rem;
+    max-width: 22rem;
+    padding: 2.5rem 2rem;
     background: var(--sf);
     border: 1px solid var(--bd);
-    border-radius: var(--radius-card);
+    border-radius: 1.25rem;
     box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
+
+  .signin-brand { margin-bottom: 1.25rem; }
+
+  .brand-logo {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--tx);
+  }
+
+  .brand-dot { color: var(--color-accent); }
+
+  .signin-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--tx);
+    letter-spacing: -0.02em;
+  }
+
+  .signin-subtitle {
+    margin: 0 0 2rem;
+    font-size: 0.875rem;
+    color: var(--tx-muted);
+    line-height: 1.55;
+  }
+
+  .btn-google {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--sf2);
+    border: 1.5px solid var(--bd);
+    border-radius: 0.625rem;
+    font-size: 0.925rem;
+    font-weight: 600;
+    color: var(--tx);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-google:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+  }
+
+  .btn-google:active:not(:disabled) { scale: 0.98; }
+
+  .btn-google:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid color-mix(in srgb, var(--tx) 25%, transparent);
+    border-top-color: var(--tx);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { rotate: 360deg; } }
+
+  .signin-error {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #DC2626;
+    background: color-mix(in srgb, #DC2626 10%, var(--sf));
+    border: 1px solid color-mix(in srgb, #DC2626 25%, transparent);
+    text-align: left;
+  }
+
+  .signin-note {
+    font-size: 0.78rem;
+    color: var(--tx-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .signin-note-link {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .signin-note-link:hover { text-decoration: underline; }
 </style>
+
+<script is:inline define:vars={{ callbackUrl }}>
+  const btn = document.getElementById('btn-google')
+  const label = document.getElementById('btn-label')
+  const spinner = document.getElementById('btn-spinner')
+  const errorEl = document.getElementById('signin-error')
+
+  function showError(msg) {
+    if (!errorEl) return
+    errorEl.textContent = msg
+    errorEl.hidden = false
+  }
+
+  function setLoading(loading) {
+    btn.disabled = loading
+    label.textContent = loading ? 'Conectando...' : 'Continuar con Google'
+    spinner.hidden = !loading
+  }
+
+  function triggerGoogleSignIn(clerk) {
+    clerk.client.signIn
+      .authenticateWithRedirect({
+        strategy: 'oauth_google',
+        redirectUrl: callbackUrl,
+        redirectUrlComplete: '/comunidad',
+      })
+      .catch(function (err) {
+        setLoading(false)
+        const msg =
+          err?.errors?.[0]?.longMessage ||
+          err?.errors?.[0]?.message ||
+          'Error al conectar con Google. Inténtalo de nuevo.'
+        showError(msg)
+      })
+  }
+
+  btn.addEventListener('click', function () {
+    setLoading(true)
+    if (errorEl) errorEl.hidden = true
+
+    const clerk = window.Clerk
+
+    if (clerk && clerk.loaded) {
+      triggerGoogleSignIn(clerk)
+    } else if (clerk) {
+      var unsub = clerk.addListener(function (state) {
+        if (state.client) {
+          unsub()
+          triggerGoogleSignIn(clerk)
+        }
+      })
+    } else {
+      // Clerk aún no cargó — esperar al evento global
+      document.addEventListener(
+        'clerk:loaded',
+        function () { triggerGoogleSignIn(window.Clerk) },
+        { once: true }
+      )
+    }
+  })
+</script>
