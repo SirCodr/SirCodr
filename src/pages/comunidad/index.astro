@@ -32,6 +32,13 @@ const unlockedCount = userIsAdmin
 >
   <CommunityNav isAdmin={userIsAdmin} />
 
+  <!-- Overlay de activación de invitación -->
+  <div id="ticket-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(12,12,15,0.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;flex-direction:column;gap:1rem;">
+    <div style="width:44px;height:44px;border:3px solid #2a2a3a;border-top-color:#6c63ff;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+    <p style="color:#e0e0f0;font-size:1rem;font-weight:600;margin:0;">Activando tu cuenta…</p>
+    <p style="color:#9090a8;font-size:0.825rem;margin:0;">Un momento, ya casi está listo.</p>
+  </div>
+
   <!-- Hero -->
   <section style="padding: 3rem 0 2rem;">
     <div class="container-prose">
@@ -181,40 +188,57 @@ const unlockedCount = userIsAdmin
   @media (min-width: 900px) {
     .posts-grid { grid-template-columns: repeat(3, 1fr); }
   }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 </style>
 
 <script is:inline>
-  // Si la URL tiene __clerk_ticket es porque el usuario llegó desde el link de invitación.
-  // Procesamos el ticket para activar su cuenta y luego limpiamos la URL.
-  var ticket = new URLSearchParams(window.location.search).get('__clerk_ticket')
-  if (ticket) {
-    function activateTicket(clerk) {
-      clerk.client.signUp.create({ strategy: 'ticket', ticket: ticket })
-        .then(function(signUp) {
-          if (signUp.status === 'complete') {
-            return clerk.setActive({ session: signUp.createdSessionId })
-              .then(function() {
-                // Limpiar el ticket de la URL y recargar para mostrar la comunidad autenticada
-                window.history.replaceState({}, '', '/comunidad')
-                window.location.reload()
-              })
-          }
-        })
-        .catch(function() {
-          // Ticket inválido o expirado — redirigir a sign-in
-          window.location.href = '/sign-in'
-        })
-    }
+(function() {
+  var params = new URLSearchParams(window.location.search)
+  var ticket = params.get('__clerk_ticket')
+  if (!ticket) return
 
-    var clerk = window.Clerk
-    if (clerk && clerk.loaded) {
-      activateTicket(clerk)
-    } else if (clerk) {
-      clerk.addListener(function(state) {
-        if (state.client) activateTicket(window.Clerk)
-      })
-    } else {
-      document.addEventListener('clerk:loaded', function() { activateTicket(window.Clerk) }, { once: true })
+  // Mostrar overlay de carga inmediatamente
+  var overlay = document.getElementById('ticket-overlay')
+  if (overlay) overlay.style.display = 'flex'
+
+  function activateTicket(clerk) {
+    var signUpObj = clerk.client && clerk.client.signUp
+    if (!signUpObj) {
+      window.location.href = '/sign-in'
+      return
     }
+    signUpObj.create({ strategy: 'ticket', ticket: ticket })
+      .then(function(result) {
+        if (result.status === 'complete') {
+          return clerk.setActive({ session: result.createdSessionId })
+            .then(function() {
+              window.history.replaceState({}, '', '/comunidad')
+              window.location.reload()
+            })
+        } else {
+          window.location.href = '/sign-in'
+        }
+      })
+      .catch(function(err) {
+        console.error('[clerk ticket]', err)
+        window.location.href = '/sign-in'
+      })
   }
+
+  // Polling hasta que Clerk cargue — no depende del nombre del evento
+  var attempts = 0
+  var interval = setInterval(function() {
+    attempts++
+    if (window.Clerk && window.Clerk.loaded) {
+      clearInterval(interval)
+      activateTicket(window.Clerk)
+    } else if (attempts >= 200) { // 10s timeout
+      clearInterval(interval)
+      window.location.href = '/sign-in'
+    }
+  }, 50)
+})()
 </script>
