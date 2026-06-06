@@ -1,10 +1,10 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro'
+import CommunityLayout from '@/layouts/CommunityLayout.astro'
 import PaywallTeaser from '@/components/community/PaywallTeaser.astro'
 import ResourceList from '@/components/community/ResourceList.astro'
 import DownloadButton from '@/components/community/DownloadButton.astro'
 import LockedBanner from '@/components/community/LockedBanner.astro'
-import CommunityNav from '@/components/community/CommunityNav.astro'
+import { render } from 'astro:content'
 import { getModuleById } from '@/data/modules'
 import { getPostsByModule } from '@/lib/community'
 import { canAccessPost } from '@/lib/entitlements'
@@ -31,7 +31,7 @@ const isLoggedIn = !!userId
 const userIsAdmin = isLoggedIn && isAdmin(Astro.locals as any)
 const hasAccess = userIsAdmin || canAccessPost(Astro.locals as any, post)
 
-const { Content } = await post.render()
+const { Content } = await render(post)
 
 const formattedDate = post.data.publishedDate.toLocaleDateString('es-CO', {
   year: 'numeric',
@@ -47,15 +47,11 @@ const typeLabels: Record<string, string> = {
 }
 ---
 
-<BaseLayout
+<CommunityLayout
   title={`${post.data.title} | JPR Comunidad`}
   description={post.data.description}
-  locale="es"
+  noindex={!hasAccess}
 >
-  <!-- Noindex para contenido gateado -->
-  {!hasAccess && <meta name="robots" content="noindex,nofollow" slot="head" />}
-
-  <CommunityNav isAdmin={userIsAdmin} />
 
   <article class="container-prose" style="padding: 2rem 0 5rem;">
     <!-- Breadcrumb -->
@@ -141,7 +137,7 @@ const typeLabels: Record<string, string> = {
       <a href="/comunidad">Ver todos los módulos</a>
     </nav>
   </article>
-</BaseLayout>
+</CommunityLayout>
 
 <style>
   .breadcrumb {

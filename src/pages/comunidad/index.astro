@@ -1,8 +1,7 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro'
+import CommunityLayout from '@/layouts/CommunityLayout.astro'
 import ModuleCard from '@/components/community/ModuleCard.astro'
 import PostCard from '@/components/community/PostCard.astro'
-import CommunityNav from '@/components/community/CommunityNav.astro'
 import { MODULES } from '@/data/modules'
 import { getModuleStats, getAllPosts } from '@/lib/community'
 import { canAccessModule } from '@/lib/entitlements'
@@ -25,13 +24,10 @@ const unlockedCount = userIsAdmin
   : moduleStats.filter((m) => canAccessModule(Astro.locals as any, m.id)).length
 ---
 
-<BaseLayout
+<CommunityLayout
   title="Comunidad — Recursos de carrera remota | JPR"
   description="Guías, tutoriales, plantillas y tips para conseguir trabajo remoto internacional. Acceso exclusivo para clientes."
-  locale={locale}
 >
-  <CommunityNav isAdmin={userIsAdmin} />
-
   <!-- Overlay de activación de invitación -->
   <div id="ticket-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(12,12,15,0.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;flex-direction:column;gap:1rem;">
     <div style="width:44px;height:44px;border:3px solid #2a2a3a;border-top-color:#6c63ff;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
@@ -115,7 +111,7 @@ const unlockedCount = userIsAdmin
       </div>
     </section>
   )}
-</BaseLayout>
+</CommunityLayout>
 
 <style>
   .welcome-banner {

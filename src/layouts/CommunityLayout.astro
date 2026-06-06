@@ -1,0 +1,106 @@
+---
+import '@/styles/global.css'
+import CommunityHeader from '@/components/community/CommunityHeader.astro'
+import CommunityFooter from '@/components/community/CommunityFooter.astro'
+import CommunityNav from '@/components/community/CommunityNav.astro'
+import { isAdmin } from '@/lib/auth'
+
+interface Props {
+  title: string
+  description: string
+  ogImage?: string
+  noindex?: boolean
+}
+
+const { title, description, ogImage, noindex = false } = Astro.props
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jotadev-portfolio.vercel.app')
+const ogImageURL = ogImage ?? `${canonicalURL.origin}/og-default.png`
+
+const { userId } = Astro.locals.auth()
+const isLoggedIn = !!userId
+const userIsAdmin = isLoggedIn && isAdmin(Astro.locals as any)
+---
+
+<!doctype html>
+<html lang="es" class="">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Head slot for extra meta tags (noindex, etc.) -->
+    <slot name="head" />
+
+    <!-- Theme script: runs before paint to avoid FOUC -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme')
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const isDark = stored === 'dark' || (!stored && prefersDark)
+        if (isDark) document.documentElement.classList.add('dark')
+      })()
+    </script>
+  </head>
+  <body style="background-color: var(--bg); color: var(--tx);">
+    <CommunityHeader />
+    <CommunityNav isAdmin={userIsAdmin} />
+    <main>
+      <slot />
+    </main>
+    <CommunityFooter />
+
+    <!-- Vercel Analytics -->
+    <script>
+      import { inject } from '@vercel/analytics'
+      inject()
+    </script>
+
+    <!-- IntersectionObserver fallback for scroll reveal -->
+    <script is:inline>
+      (function () {
+        if (CSS.supports('animation-timeline', 'view()')) return
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible')
+                observer.unobserve(e.target)
+              }
+            })
+          },
+          { threshold: 0.1 }
+        )
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+      })()
+    </script>
+  </body>
+</html>

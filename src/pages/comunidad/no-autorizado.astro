@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro'
+import CommunityLayout from '@/layouts/CommunityLayout.astro'
 import { buildWhatsAppLink } from '@/data/contact'
 import { SignOutButton } from '@clerk/astro/components'
 
@@ -7,12 +7,11 @@ const { userId } = Astro.locals.auth()
 const waLink = buildWhatsAppLink({ locale: 'es', intent: 'asesoria' })
 ---
 
-<BaseLayout
+<CommunityLayout
   title="Acceso no autorizado — JPR Comunidad"
   description="Tu cuenta no tiene acceso a la comunidad todavía."
-  locale="es"
+  noindex={true}
 >
-  <meta name="robots" content="noindex" slot="head" />
   <div class="page">
     <div class="card">
       <div class="icon">🔒</div>
@@ -37,7 +36,7 @@ const waLink = buildWhatsAppLink({ locale: 'es', intent: 'asesoria' })
       </div>
     </div>
   </div>
-</BaseLayout>
+</CommunityLayout>
 
 <style>
   .page {

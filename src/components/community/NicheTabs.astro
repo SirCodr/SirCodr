@@ -54,7 +54,9 @@ const id = `niche-tabs-${Math.random().toString(36).slice(2, 7)}`
       class="tab-panel"
       data-niche={niche}
     >
-      <slot name={niche} />
+      {niche === 'software' && <slot name="software" />}
+      {niche === 'sales' && <slot name="sales" />}
+      {niche === 'trade' && <slot name="trade" />}
     </div>
   ))}
 </div>

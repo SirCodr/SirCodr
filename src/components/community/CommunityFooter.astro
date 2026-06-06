@@ -1,0 +1,69 @@
+---
+const year = new Date().getFullYear()
+---
+
+<footer class="comm-footer">
+  <div class="container-prose">
+    <div class="comm-footer-inner">
+      <span class="comm-copyright">© {year} JPR — Todos los derechos reservados</span>
+      <div class="comm-footer-links">
+        <a href="/privacidad" class="footer-link">Privacidad</a>
+        <a href="/terminos" class="footer-link">Términos</a>
+        <a href="/" class="footer-link footer-link-portfolio">Volver al portfolio →</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .comm-footer {
+    margin-top: 4rem;
+    border-top: 1px solid var(--bd);
+    padding: 1.5rem 0;
+  }
+
+  .comm-footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .comm-copyright {
+    font-size: 0.8rem;
+    color: var(--tx-muted);
+  }
+
+  .comm-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer-link {
+    font-size: 0.8rem;
+    color: var(--tx-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-link:hover { color: var(--tx); }
+
+  .footer-link-portfolio {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .footer-link-portfolio:hover { opacity: 0.8; color: var(--color-accent); }
+
+  @media (min-width: 640px) {
+    .comm-footer-inner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+</style>
