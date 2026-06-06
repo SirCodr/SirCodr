@@ -1,0 +1,394 @@
+---
+title: "Plantilla de CV lista para usar — edita con tus datos"
+description: "Plantilla de hoja de vida profesional con estructura probada, secciones optimizadas para ATS y ejemplos adaptados a tu industria. Solo rellena los campos marcados con {{variables}}."
+teaser: "Descarga la plantilla base de CV con estructura probada para mercado remoto internacional. Incluye variantes adaptadas para desarrollo de software, ventas y comercio internacional."
+module: "cv"
+type: "template"
+niches: ["software", "sales", "trade"]
+publishedDate: 2026-06-03
+order: 1
+featured: true
+pdfFile: "plantilla-cv-por-nicho.pdf"
+resources:
+  - label: "Cómo revisar si tu CV pasa el ATS — Jobscan (gratis)"
+    url: "https://www.jobscan.co"
+    type: "url"
+  - label: "Canva — plantillas visuales de CV"
+    url: "https://canva.com/resumes"
+    type: "url"
+---
+
+import NicheTabs from '../../../../components/community/NicheTabs.astro'
+
+## Cómo usar esta plantilla
+
+1. **Descarga el PDF** (botón arriba) — úsalo como referencia visual
+2. **Elige la variante de tu industria** usando las tabs
+3. **Copia la estructura** y reemplaza los `{{campos}}` con tu información real
+4. **Sigue las reglas ATS** — descritas en cada sección
+
+> **¿Qué es un ATS?** Applicant Tracking System — el software que usan las empresas para filtrar CVs automáticamente antes de que un humano lo vea. Un CV mal formateado nunca llega a ojos del reclutador.
+
+---
+
+## Reglas ATS — aplica siempre, sin importar tu industria
+
+- **Formato:** PDF generado desde Word/Google Docs, NO diseñado en Canva o con imágenes
+- **Fuente:** Arial, Calibri o Times New Roman, tamaño 10-12pt
+- **Sin tablas, columnas múltiples ni headers/footers** (los ATS no los leen bien)
+- **Fechas consistentes:** usa siempre el mismo formato (Ene 2023 o 01/2023, pero siempre igual)
+- **Keywords del job posting:** incorpora las palabras exactas de la oferta donde sea natural
+- **Longitud:** 1 página si tienes menos de 3 años de experiencia; 2 páginas máx si tienes más
+
+---
+
+## La plantilla
+
+<NicheTabs nicheTabs={["software", "sales", "trade"]}>
+
+<Fragment slot="software">
+
+### CV para Desarrollo de Software
+
+---
+
+**Instrucciones de uso:**
+- Reemplaza cada `{{variable}}` con tu información real
+- Las secciones en _cursiva_ son opcionales si no tienes esa información aún
+- El stack tecnológico debe coincidir con las ofertas a las que aplicas
+
+---
+
+```
+{{email}} | {{telefono}} | linkedin.com/in/{{linkedin_slug}} | github.com/{{github_username}}
+{{ciudad}}, Colombia  (Open to Remote)
+
+────────────────────────────────────────────────────────────
+{{NOMBRE COMPLETO}}
+{{TÍTULO PROFESIONAL: Frontend Developer / Backend Developer / Full Stack Developer}}
+────────────────────────────────────────────────────────────
+
+{{X}} años de experiencia construyendo {{tipo_de_productos: aplicaciones web / APIs / productos SaaS}}.
+Especializado en {{stack_principal: React + TypeScript / Node.js + NestJS}}.
+He trabajado en {{entorno: startups / empresas medianas / agencias}} enfocándome en
+{{impacto: rendimiento y UX / escalabilidad / velocidad de entrega}}.
+{{nivel_ingles: Inglés B2 certificado / Inglés conversacional / Inglés avanzado}}.
+
+────────────────────────────────────────────────────────────
+EXPERIENCIA LABORAL
+────────────────────────────────────────────────────────────
+
+{{CARGO}} en {{EMPRESA}}                              {{MES_AÑO_INICIO}} – {{MES_AÑO_FIN / Presente}}
+{{descripcion_corta: startup de fintech / agencia digital / producto SaaS B2B}}
+
+RESPONSABILIDADES Y LOGROS:
+• {{logro_1: Desarrollé/Migré/Optimicé}} {{qué}} → {{resultado con número}}
+• {{logro_2: Implementé/Diseñé/Automaticé}} {{qué}} → {{resultado con número}}
+• {{logro_3: Reduje/Aumenté/Mejoré}} {{qué}} de {{X}} a {{Y}} ({{%}} de mejora)
+
+Stack: {{STACK_TECNOLOGICO: React · TypeScript · Node.js · PostgreSQL · Docker}}
+
+────────────────────────────────────────────────────────────
+HABILIDADES TÉCNICAS
+────────────────────────────────────────────────────────────
+
+Frontend:   {{React / Next.js / Vue / Angular}} · JavaScript · TypeScript · {{CSS framework}}
+Backend:    {{Node.js / NestJS / Python / Django}} · REST APIs · GraphQL
+Bases:      {{PostgreSQL / MongoDB / MySQL}} · Redis (básico)
+DevOps:     Git · Docker · {{AWS / GCP / Vercel}} · CI/CD (GitHub Actions)
+Tools:      Figma · {{Jira / Linear}} · Slack · Postman
+
+────────────────────────────────────────────────────────────
+HABILIDADES BLANDAS
+────────────────────────────────────────────────────────────
+
+Trabajo autónomo y remoto · Comunicación asíncrona · Pensamiento analítico ·
+Revisión de código · Documentación técnica
+
+────────────────────────────────────────────────────────────
+EDUCACIÓN
+────────────────────────────────────────────────────────────
+
+{{titulo_obtenido: Tecnólogo en Desarrollo de Software / Ingeniería de Sistemas}}
+{{institucion}} ({{año_inicio}} – {{año_fin / Expected}})
+
+_Certificaciones (opcional):_
+• {{certificacion: AWS Cloud Practitioner / Google Associate}} | {{año}}
+• {{certificacion: English B2 – Cambridge / IELTS}} | {{año}}
+
+────────────────────────────────────────────────────────────
+IDIOMAS
+────────────────────────────────────────────────────────────
+
+Español  — Nativo
+Inglés   — {{nivel: B2 Upper Intermediate / C1 Advanced / Conversacional}}
+```
+
+**Ejemplo con datos reales:**
+
+```
+juan@gmail.com | +57 300 000 0000 | linkedin.com/in/juan-perez-dev | github.com/juandev
+Medellín, Colombia  (Open to Remote)
+
+JUAN CAMILO PÉREZ GÓMEZ
+Frontend Developer
+
+3 años de experiencia construyendo aplicaciones web en React y TypeScript.
+Especializado en SaaS B2B y dashboards de datos. He trabajado en startups colombianas
+enfocándome en rendimiento y experiencia de usuario. Inglés B2 certificado.
+
+EXPERIENCIA LABORAL
+
+Frontend Developer en DataFlow SAS                              Ene 2023 – Presente
+Startup de analítica de datos B2B sirviendo 200+ empresas PYME en Colombia
+
+RESPONSABILIDADES Y LOGROS:
+• Desarrollé dashboard principal en React + D3.js → reducción 35% en tiempo de análisis
+• Migré app de Create React App a Vite → tiempo de build de 4min a 45s (-81%)
+• Implementé design system con 40+ componentes reutilizables → 60% menos código repetido
+
+Stack: React · TypeScript · D3.js · TailwindCSS · Vite · GitHub Actions
+
+HABILIDADES TÉCNICAS
+
+Frontend:   React · Next.js · TypeScript · JavaScript · TailwindCSS · CSS
+Backend:    Node.js (básico) · REST APIs · PostgreSQL (básico)
+DevOps:     Git · Vercel · GitHub Actions
+Tools:      Figma · Linear · Slack · Postman
+
+EDUCACIÓN
+
+Tecnólogo en Desarrollo de Software
+Institución Universitaria Digital (2020 – 2023)
+
+IDIOMAS
+
+Español  — Nativo
+Inglés   — B2 Upper Intermediate (Cambridge B2 First, 2024)
+```
+
+</Fragment>
+
+<Fragment slot="sales">
+
+### CV para Ventas & Business Development
+
+---
+
+**Instrucciones de uso:**
+- Usa verbos de acción + números en cada logro
+- El % y $ son tus mejores amigos — siempre que sea real
+- Bilingual es un diferencial enorme: destácalo visiblemente
+
+---
+
+```
+{{email}} | {{telefono}} | linkedin.com/in/{{linkedin_slug}}
+{{ciudad}}, Colombia  ·  Open to Remote
+
+────────────────────────────────────────────────────────────
+{{NOMBRE COMPLETO}}
+{{TÍTULO: Sales Development Rep / Business Development / Inside Sales}}
+────────────────────────────────────────────────────────────
+
++{{años_experiencia}} {{año/s}} de experiencia en {{área: ventas B2B / desarrollo de negocios / generación de leads}}.
+Especializado en {{especialidad: outbound sales / lead qualification / account management}}.
+He gestionado {{qué: pipelines de hasta $X / +Y leads mensuales / equipos de Z personas}}.
+Bilingüe español-inglés. {{certificacion_idioma: B2 Cambridge / IELTS X.X}}.
+
+────────────────────────────────────────────────────────────
+EXPERIENCIA LABORAL
+────────────────────────────────────────────────────────────
+
+{{CARGO}} en {{EMPRESA}}                              {{MES_AÑO_INICIO}} – {{MES_AÑO_FIN}}
+{{descripcion: agencia de marketing digital / startup SaaS / empresa de comercio}}
+
+RESPONSABILIDADES Y LOGROS:
+• Gestioné {{X}}+ leads cualificados/mes con tasa de contacto del {{Y}}%
+• {{Desarrollé / Automaticé / Optimicé}} proceso de {{qué}} → reducción de {{X}} a {{Y}}
+• Contribuí a {{N}} adquisiciones de clientes nuevos (pipeline de ${{monto}})
+• Conduje prospección en español e inglés, ampliando alcance al mercado {{mercado}}
+
+CRM y Tools: {{Salesforce / HubSpot / Pipedrive}} · {{Apollo / LinkedIn Sales Navigator}} · {{Outreach / Lemlist}}
+
+────────────────────────────────────────────────────────────
+HABILIDADES
+────────────────────────────────────────────────────────────
+
+Ventas:       Lead Generation · B2B Sales · Outbound · Account Management
+              Sales Prospecting · Consultative Selling · Pipeline Management
+CRM:          {{Salesforce}} · {{HubSpot}} · Email Marketing · Outreach Automation
+Soft skills:  Comunicación · Negociación · Gestión del tiempo · Trabajo remoto
+
+────────────────────────────────────────────────────────────
+EDUCACIÓN
+────────────────────────────────────────────────────────────
+
+{{titulo: Negocios Internacionales / Administración / Marketing}}
+{{universidad}} ({{año_inicio}} – {{año_fin / Expected}})
+
+_Certificaciones:_
+• {{HubSpot Sales Certification / Salesforce Trailhead}} | {{año}}
+• {{Inglés B2 – Cambridge / TOEFL}} | {{año}}
+
+────────────────────────────────────────────────────────────
+IDIOMAS
+────────────────────────────────────────────────────────────
+
+Español  — Nativo
+Inglés   — {{nivel: B2 / C1 / Fluent}}
+```
+
+**Ejemplo con datos reales:**
+
+```
+maria@gmail.com | +57 311 000 0000 | linkedin.com/in/maria-garcia-sales
+Bogotá, Colombia  ·  Open to Remote
+
+MARÍA CAMILA GARCÍA RUIZ
+Sales Development Representative
+
+2 años de experiencia en ventas B2B y generación de leads.
+Especializada en outbound sales para empresas tech y SaaS.
+He gestionado +250 leads cualificados mensuales con 85%+ tasa de contacto.
+Bilingüe español-inglés. B2 Cambridge (2024).
+
+EXPERIENCIA LABORAL
+
+SDR en MarketingPro Agency                              Ago 2023 – Presente
+Agencia digital B2B sirviendo 50+ clientes en LATAM y Norteamérica
+
+RESPONSABILIDADES Y LOGROS:
+• Gestioné 250+ leads cualificados/mes — tasa de contacto del 85% (promedio industria: 60%)
+• Establecí relaciones con 15+ decision makers, contribuyendo a 5 nuevos clientes ($150K pipeline)
+• Conduje prospección bilingüe (ES/EN), ampliando alcance al segmento norteamericano
+• Superé cuota mensual en 120% de forma consistente en 6 meses consecutivos
+
+CRM y Tools: Salesforce · HubSpot · LinkedIn Sales Navigator · Email Marketing
+
+HABILIDADES
+
+Ventas:       Lead Generation · B2B Sales · Outbound · Consultative Selling
+CRM:          Salesforce · HubSpot · Email Marketing
+Soft skills:  Comunicación · Bilingüe · Trabajo remoto · Negociación
+
+EDUCACIÓN
+
+Negocios Internacionales — 6to semestre
+Universidad del Norte (2022 – Expected 2026)
+
+Certificaciones:
+• HubSpot Sales Certification | 2024
+• Cambridge English B2 First | 2024
+
+IDIOMAS
+
+Español  — Nativo
+Inglés   — B2 Upper Intermediate (certificado)
+```
+
+</Fragment>
+
+<Fragment slot="trade">
+
+### CV para Comercio Internacional
+
+---
+
+**Instrucciones de uso:**
+- Documenta experiencias con shippers, freight forwarders, aduanas
+- Los números de volumen (TEUs, toneladas, # de envíos, $) son muy valorados
+- Certificaciones de idioma y plataformas (VUCE, SAP, etc.) van muy bien
+
+---
+
+```
+{{email}} | {{telefono}} | linkedin.com/in/{{linkedin_slug}}
+{{ciudad}}, Colombia  ·  Open to Remote
+
+────────────────────────────────────────────────────────────
+{{NOMBRE COMPLETO}}
+{{TÍTULO: International Trade Specialist / Comercio Exterior Analyst / Trade Operations}}
+────────────────────────────────────────────────────────────
+
+{{X}} año/s de experiencia en {{área: comercio exterior / logística internacional / operaciones de importación-exportación}}.
+Especializado en {{especialidad: exportaciones / importaciones / supply chain / documentación aduanera}}.
+He gestionado {{qué: +N declaraciones/mes / X envíos anuales / coordinación con Y operadores logísticos}}.
+{{nivel_ingles: Inglés B2 / Inglés avanzado}}.
+
+────────────────────────────────────────────────────────────
+EXPERIENCIA LABORAL
+────────────────────────────────────────────────────────────
+
+{{CARGO}} en {{EMPRESA}}                              {{MES_AÑO_INICIO}} – {{MES_AÑO_FIN}}
+{{descripcion: exportadora de café / importadora de textiles / agencia de aduana}}
+
+RESPONSABILIDADES Y LOGROS:
+• Procesé {{N}}+ {{declaraciones de exportación/importación}} mensuales con 0% rechazos aduaneros
+• Coordiné con {{N}} operadores logísticos, reduciendo demoras de tránsito en {{X}}%
+• Desarrollé plantillas de documentación estándar → reducción de {{tiempo}} por operación
+• Gestioné comunicación en inglés con {{compradores / proveedores / agentes}} en {{países}}
+• Identifiqué {{riesgo/oportunidad}} generando ahorro/beneficio de ${{monto}}
+
+Plataformas y Tools: {{VUCE · MUISCA · SAP (básico)}} · Excel · Google Workspace
+
+────────────────────────────────────────────────────────────
+HABILIDADES
+────────────────────────────────────────────────────────────
+
+Comercio:     International Trade · Import-Export · Customs Clearance
+              Incoterms 2020 · DTA · Régimen Aduanero · Logística Internacional
+Supply Chain: Freight Coordination · Supplier Management · Letters of Credit
+Plataformas:  VUCE · MUISCA · SAP (básico) · Excel Avanzado
+Soft skills:  Atención al detalle · Comunicación intercultural · Trabajo remoto
+
+────────────────────────────────────────────────────────────
+EDUCACIÓN
+────────────────────────────────────────────────────────────
+
+{{titulo: Negocios Internacionales / Comercio Exterior / Relaciones Internacionales}}
+{{universidad}} ({{año_inicio}} – {{año_fin / Expected}})
+
+_Certificaciones:_
+• {{ERCA — Exportador Responsable}} | {{año}}
+• {{Inglés B2 – Cambridge / TOEFL}} | {{año}}
+
+────────────────────────────────────────────────────────────
+IDIOMAS
+────────────────────────────────────────────────────────────
+
+Español  — Nativo
+Inglés   — {{nivel: B2 / C1 / Avanzado}}
+```
+
+</Fragment>
+
+</NicheTabs>
+
+---
+
+## Checklist antes de enviar tu CV ✅
+
+**Contenido:**
+- [ ] Nombre y datos de contacto actualizados en la primera línea
+- [ ] Perfil profesional con número/logro específico
+- [ ] Cada experiencia tiene 3+ logros con métricas
+- [ ] Sin clichés ("hard worker", "team player", "proactivo")
+- [ ] Keywords del job posting incorporadas naturalmente
+
+**Formato:**
+- [ ] PDF generado desde Word/Google Docs (no Canva)
+- [ ] Fuente legible (Arial/Calibri, 10-12pt)
+- [ ] Sin tablas ni columnas múltiples
+- [ ] Máximo 1-2 páginas
+- [ ] Nombre del archivo: `NombreApellido_CV_2026.pdf`
+
+**ATS:**
+- [ ] Corriste el CV por Jobscan.co con el job posting
+- [ ] Score ATS superior al 70%
+- [ ] Fechas en formato consistente
+
+**Revisión final:**
+- [ ] Cero errores ortográficos
+- [ ] Todo en inglés si aplicas a empresas internacionales
+- [ ] Pide a alguien de confianza que lo lea antes de enviarlo
