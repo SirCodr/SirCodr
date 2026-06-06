@@ -286,6 +286,28 @@ const locale = 'es' as const
   // Estado compartido entre pasos
   var signInAttempt = null
 
+  // Mapa de códigos de error de Clerk → mensajes en español
+  var CLERK_ERRORS = {
+    form_identifier_not_found:       'No encontramos una cuenta con ese correo. Solo pueden ingresar usuarios invitados.',
+    form_identifier_exists:          'Ya existe una cuenta con ese correo.',
+    form_password_incorrect:         'Contraseña incorrecta.',
+    form_code_incorrect:             'Código incorrecto. Verifica e intenta de nuevo.',
+    verification_expired:            'El código expiró. Haz clic en "Enviar código" para recibir uno nuevo.',
+    verification_failed:             'Verificación fallida. Intenta de nuevo.',
+    too_many_requests:               'Demasiados intentos. Espera unos minutos antes de intentarlo de nuevo.',
+    session_exists:                  'Ya hay una sesión activa.',
+    identifier_already_signed_in:    'Este correo ya tiene sesión iniciada.',
+    not_allowed_access:              'No tienes permiso para ingresar.',
+    strategy_for_user_invalid:       'Este correo no tiene habilitado el ingreso por código. Contacta al administrador.',
+    user_locked:                     'Tu cuenta está deshabilitada. Contacta al administrador.',
+  }
+
+  function clerkErrorMsg(err, fallback) {
+    if (!err || !err.errors || !err.errors[0]) return fallback
+    var e = err.errors[0]
+    return CLERK_ERRORS[e.code] || e.longMessage || e.message || fallback
+  }
+
   function showError(msg) {
     if (!errorEl) return
     errorEl.textContent = msg
@@ -355,14 +377,9 @@ const locale = 'es' as const
         })
         .catch(function(err) {
           setLoading(btnSend, sendLabel, sendSpinner, false, 'Enviar código')
-          var msg
-          if (err && err._custom) {
-            msg = err.message
-          } else {
-            msg = (err && err.errors && err.errors[0])
-              ? (err.errors[0].longMessage || err.errors[0].message)
-              : 'No pudimos verificar ese correo. ¿Fue invitado con esta dirección?'
-          }
+          var msg = (err && err._custom)
+            ? err.message
+            : clerkErrorMsg(err, 'No pudimos verificar ese correo. ¿Fue invitado con esta dirección?')
           showError(msg)
         })
     })
@@ -397,10 +414,7 @@ const locale = 'es' as const
       })
       .catch(function(err) {
         setLoading(btnVerify, verifyLabel, verifySpinner, false, 'Ingresar')
-        var msg = (err && err.errors && err.errors[0])
-          ? (err.errors[0].longMessage || err.errors[0].message)
-          : 'Código incorrecto o expirado. Inténtalo de nuevo.'
-        showError(msg)
+        showError(clerkErrorMsg(err, 'Código incorrecto o expirado. Inténtalo de nuevo.'))
       })
   })
 
