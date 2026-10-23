@@ -1,0 +1,40 @@
+---
+import Icon from './Icon.astro'
+import { googleRating, googleReviewsUrl, reviews } from '../data/reviews'
+---
+<section class="reviews section-space" id="resenas" aria-labelledby="reviews-title" data-review-carousel>
+  <div class="reviews-heading" data-reveal>
+    <div>
+      <span class="eyebrow"><span class="tiny-line"></span> EL ESTILO DEJA HUELLA</span>
+      <h2 id="reviews-title">Ellos tienen<br /><em>la palabra.</em></h2>
+    </div>
+    <div class="reviews-reputation">
+      <span class="reviews-google-label">GOOGLE MAPS</span>
+      <div class="reviews-rating" aria-label={`${googleRating.value.toLocaleString('es-CO')} de 5 en Google, ${googleRating.count} opiniones`}><span>{googleRating.value.toLocaleString('es-CO')}</span><span>/ 5</span></div>
+      <span class="reviews-stars" aria-hidden="true"><span>★★★★★</span><span style={`width:${googleRating.value / 5 * 100}%`}>★★★★★</span></span>
+      <span class="reviews-count">{googleRating.count} opiniones</span>
+    </div>
+  </div>
+
+  <p class="reviews-caption">La experiencia, en sus palabras.</p>
+
+  <div class="reviews-viewport" data-review-viewport>
+    <div class="reviews-track" id="reviews-track">
+      {reviews.map((review, index) => (
+        <article class="review-card" aria-labelledby={`review-author-${review.id}`}>
+          <div class="review-author-row">
+            <span class:list={['review-avatar', `review-avatar--${index % 3}`]} aria-hidden="true">{review.author.split(' ').filter(Boolean).slice(0, 2).map((word) => word[0]).join('')}</span>
+            <div><h3 id={`review-author-${review.id}`}>{review.author}</h3><span>{review.localGuide ? 'Local Guide' : 'Google'}</span></div>
+          </div>
+          <span class="review-five-stars" aria-label={`${review.rating} de 5 estrellas`}>★★★★★</span>
+          <blockquote class="review-quote"><p>{review.transcript}</p></blockquote>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <div class="reviews-bottom"><a class="text-link" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Ver todas las reseñas en Google <Icon name="arrow" /></a></div>
+</section>
+<script>
+  import '../scripts/reviews'
+</script>

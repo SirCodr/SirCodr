@@ -1,0 +1,34 @@
+---
+import '../styles/global.css'
+import '../styles/reviews.css'
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#141914" />
+    <meta name="description" content="Barbería premium en Laureles, Medellín. Corte de cabello, diseño de barba, keratina, color y combos de cuidado con asesoría personalizada." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/cormorant-regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/fonts/manrope-regular.ttf" as="font" type="font/ttf" crossorigin />
+    <title>Barbería premium en Laureles, Medellín | Cavaliere</title>
+    <noscript><style>.menu-toggle,#load-booking,.location-map-status{display:none!important}.location-map iframe{visibility:visible!important}</style></noscript>
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && !window.location.hash) {
+        document.documentElement.classList.add('intro-active');
+        // Always reveal the document even if the bundled script fails to load.
+        window.setTimeout(() => document.documentElement.classList.remove('intro-active'), 2600);
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <div class="intro-curtain" aria-hidden="true"><span>CAVALIERE<small>EL ESTILO ESTÁ EN LOS DETALLES</small><small class="intro-credit">DISEÑO WEB POR <b>JUAN RESTREPO</b></small></span></div>
+    <slot />
+    <script>
+      import '../scripts/motion'
+    </script>
+  </body>
+</html>

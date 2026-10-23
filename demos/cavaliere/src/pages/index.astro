@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Brand from '../components/Brand.astro'
+import Icon from '../components/Icon.astro'
+import BarberPole from '../components/BarberPole.astro'
+import Booking from '../components/Booking.astro'
+import Reviews from '../components/Reviews.astro'
+import Location from '../components/Location.astro'
+import PortfolioPromo from '../components/PortfolioPromo.astro'
+
+const services = [
+  { number: '01', name: 'Corte y barba', tag: 'PRECISIÓN EN CADA DETALLE', description: 'Corte de cabello para caballero, diseño de barba y opciones de pigmentación, según el estilo que buscas.' },
+  { number: '02', name: 'Keratina y color', tag: 'TRATAMIENTOS CAPILARES', description: 'Keratina y tintura para renovar tu estilo. El valor puede variar según el volumen del cabello.' },
+  { number: '03', name: 'Combos y cuidado', tag: 'ARMA TU EXPERIENCIA', description: 'Combos de corte y barba con servicios complementarios como mascarillas, masajes y pigmentación. Te asesoramos para elegir.' },
+]
+---
+<Layout>
+  <header class="site-header" id="inicio">
+    <Brand />
+    <nav class="desktop-nav" aria-label="Navegación principal"><a href="#experiencia">La experiencia</a><a href="#servicios">Servicios</a><a href="#resenas">Reseñas</a><a href="#ubicacion">Ubicación</a></nav>
+    <div class="header-actions"><a class="header-booking" href="#reservar">Reserva tu cita <Icon name="arrow" /></a><button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Abrir menú"><Icon name="menu" /><Icon name="close" /></button></div>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Navegación móvil" hidden><a href="#experiencia">La experiencia <span>01</span></a><a href="#servicios">Servicios <span>02</span></a><a href="#resenas">Reseñas <span>03</span></a><a href="#ubicacion">Ubicación <span>04</span></a><a href="#reservar">Reserva tu cita <Icon name="arrow" /></a></nav>
+  </header>
+
+  <main id="contenido">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-image"><img src="/images/barbershop.webp" width="1800" height="1200" alt="El detalle de un ritual de barba con tijeras, fotografía de referencia" fetchpriority="high" /><div class="hero-image-shade"></div></div>
+      <div class="hero-copy">
+        <h1 id="hero-title"><span>Barbería</span><span>en Laureles,</span><span><em>Medellín.</em></span></h1>
+        <p class="hero-description">Corte de cabello, diseño de barba, y más. Te asesoramos para elegir el servicio que mejor va con tu estilo y reservar en Laureles.</p>
+        <div class="hero-cta"><a href="#reservar" class="button button--gold">Reserva tu experiencia <Icon name="arrow" /></a></div>
+      </div>
+      <BarberPole />
+      <div class="hero-side-note" aria-hidden="true">AUTENTICIDAD. CERTEZA. COMPROMISO.</div>
+      <div class="hero-bottom"><a href="#experiencia" class="scroll-invite"><span class="scroll-circle"><Icon name="down" /></span> DESCUBRE EL RITUAL</a><span class="hero-location"><Icon name="pin" /> MEDELLÍN, COLOMBIA</span><span class="hero-edition">01 — CAVALIERE</span></div>
+    </section>
+
+    <div class="values-strip" aria-label="Oficio, estilo y carácter"><span>OFICIO</span><Icon name="spark" /><span>ESTILO</span><Icon name="spark" /><span>CARÁCTER</span><Icon name="spark" /><span class="values-last">CAVALIERE</span></div>
+
+    <section class="experience section-space" id="experiencia" aria-labelledby="experience-title">
+      <div class="experience-visual" data-reveal><div class="experience-art"><span class="experience-art-kicker">AUTENTICIDAD · CERTEZA · COMPROMISO</span><img class="experience-art-seal" src="/images/cavaliere-logo.svg" width="300" height="300" alt="Sello de Premium Cavaliere Barbers" loading="lazy" /><span class="experience-art-title">EL ESTILO<br />ESTÁ EN LOS DETALLES</span><span class="experience-art-location">LAURELES · MEDELLÍN</span></div><span class="image-caption">CORTE · BARBA · CUIDADO PERSONAL</span></div>
+      <div class="experience-copy" data-reveal><span class="eyebrow"><span class="tiny-line"></span> BIENVENIDO A CAVALIERE</span><h2 id="experience-title">Hay cosas<br />que se hacen<br /><em>con carácter.</em></h2><p>Una buena conversación. Una pausa sin afán. La confianza de sentarte y saber que estás en buenas manos.</p><p>Creemos en el oficio, en escuchar antes de cortar y en esos pequeños detalles que hacen toda la diferencia. Ese es nuestro ritual.</p><a class="text-link" href="#servicios">Encuentra el tuyo <Icon name="arrow" /></a></div>
+    </section>
+
+    <section class="services section-space" id="servicios" aria-labelledby="services-title">
+      <div class="section-heading" data-reveal><div><span class="eyebrow"><span class="tiny-line"></span> BARBERÍA Y CUIDADO PERSONAL</span><h2 id="services-title">Servicios para <em>tu estilo.</em></h2></div></div>
+      <div class="service-list">{services.map((service) => <a class="service-row" href="#reservar" data-reveal><span class="service-number">{service.number}</span><div class="service-name"><span class="eyebrow">{service.tag}</span><h3>{service.name}</h3></div><p>{service.description}</p><span class="service-arrow"><Icon name="arrow" /></span></a>)}</div>
+      <p class="services-note">Consulta precios y disponibilidad en la agenda. Algunos tratamientos, como keratina y tintura, pueden variar según el cabello.</p>
+    </section>
+    <Reviews />
+    <Location />
+    <Booking />
+  </main>
+
+  <footer class="site-footer"><div class="footer-main"><Brand footer /><p>Autenticidad en el estilo.<br />Compromiso en cada detalle.</p><a href="#inicio" class="back-top" aria-label="Volver al inicio"><Icon name="down" /></a></div><div class="footer-bottom"><div class="footer-credit"><span class="footer-credit-kicker"><span aria-hidden="true"></span> DISEÑO WEB · JOTADEV</span><span class="footer-credit-name">Juan Restrepo</span><p class="footer-demo-note">Concepto de diseño para Cavaliere · Demo, no sitio oficial.</p></div><a class="footer-credit-cta" href="https://jotadev-portfolio.vercel.app" target="_blank" rel="noopener noreferrer">Conoce mi trabajo <span class="footer-credit-arrow" aria-hidden="true">↗</span></a></div></footer>
+  <PortfolioPromo />
+</Layout>

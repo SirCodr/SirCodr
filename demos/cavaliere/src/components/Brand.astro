@@ -1,0 +1,8 @@
+---
+interface Props { footer?: boolean }
+const { footer = false } = Astro.props
+---
+<a href="#inicio" class:list={['brand', { 'brand--footer': footer }]} aria-label="Cavaliere, inicio">
+  <img class="brand-logo" src="/images/cavaliere-logo.svg" width="88" height="88" alt="Premium Cavaliere Barbers" />
+  <span class="brand-type" aria-hidden="true">CAVALIERE<small>PREMIUM BARBERS</small></span>
+</a>

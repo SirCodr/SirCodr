@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro'
+const address = 'Cl 34A #66A-63, Laureles - Estadio, Medellín, Antioquia, Colombia'
+const embedUrl = 'https://maps.google.com/maps?hl=es&output=embed&cid=1326190842347595931'
+---
+<section class="location section-space" id="ubicacion" aria-labelledby="location-title">
+  <div class="location-heading" data-reveal>
+    <div>
+      <span class="eyebrow"><span class="tiny-line"></span> NOS ENCUENTRAS EN LAURELES</span>
+      <h2 id="location-title">El próximo<br />ritual empieza <em>aquí.</em></h2>
+    </div>
+  </div>
+
+  <div class="location-layout">
+    <div class="location-details" data-reveal>
+      <span class="location-index">CAVALIERE · MEDELLÍN</span>
+      <div class="location-pin" aria-hidden="true"><Icon name="pin" /></div>
+      <h3>Laureles<br /><em>— Estadio</em></h3>
+      <address>{address}</address>
+    </div>
+
+    <div class="location-map" data-reveal data-map-state="loading" aria-busy="true">
+      <iframe
+        id="location-map-frame"
+        src={embedUrl}
+        title="Mapa de Barbería Cavaliere en Laureles, Medellín"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+      ></iframe>
+      <div class="location-map-status" id="location-map-status" role="status">
+        <span class="loading-spinner" aria-hidden="true"></span>
+        <span id="location-map-message">Cargando el mapa de Cavaliere…</span>
+      </div>
+      <div class="location-map-label"><span aria-hidden="true"></span> LAURELES · MEDELLÍN</div>
+    </div>
+  </div>
+</section>
+<script>
+  import '../scripts/location'
+</script>

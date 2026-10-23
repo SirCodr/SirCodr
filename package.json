@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "node scripts/preview.mjs",
     "astro": "astro"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "typescript": "^6.0.3"
   },
   "devDependencies": {
+    "@astrojs/node": "^10.1.4",
     "sharp": "^0.34.5"
   }
 }

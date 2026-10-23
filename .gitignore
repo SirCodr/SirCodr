@@ -38,3 +38,7 @@ README.md
 # clerk configuration (can include secrets)
 /.clerk/
 .vercel
+
+# local browser verification artifacts
+/output/
+/.playwright-cli/

@@ -1,0 +1,37 @@
+---
+import Icon from './Icon.astro'
+const bookingUrl = 'https://app.bookitit.com/es/hosteds/widgetdefault/2143a0cf603e0cb02bc1869a46641a244#services'
+---
+<section class="booking section-space" id="reservar" aria-labelledby="booking-title">
+  <div class="booking-copy" data-reveal>
+    <span class="eyebrow"><span class="tiny-line"></span> TU MOMENTO, A TU RITMO</span>
+    <h2 id="booking-title">El próximo<br />capítulo de<br />tu <em>estilo.</em></h2>
+    <p>Haz una pausa. Nosotros nos encargamos de los detalles.</p>
+    <div class="booking-steps">
+      <p><span>01</span> Encuentra tu servicio</p>
+      <p><span>02</span> Elige tu día y hora</p>
+      <p><span>03</span> Nos vemos en la silla</p>
+    </div>
+    <span class="booking-signature">Te esperamos, caballero.</span>
+  </div>
+  <div class="booking-panel" data-reveal>
+    <div class="booking-panel-heading"><span class="eyebrow">RESERVA TU VISITA</span><Icon name="scissors" /></div>
+    <div id="booking-placeholder" class="booking-placeholder">
+      <span class="booking-monogram"><img src="/images/cavaliere-logo.svg" width="96" height="96" alt="Premium Cavaliere Barbers" loading="lazy" /></span>
+      <h3>Tenemos una silla<br />para ti.</h3>
+      <p>Consulta servicios, precios y horarios en la agenda de Cavaliere Unicentro.</p>
+      <button id="load-booking" class="button button--dark" type="button" aria-controls="booking-frame">Ver horarios disponibles <Icon name="arrow" /></button>
+      <p class="booking-demo-note">Estás explorando una demo de diseño. Al continuar, abrirás la agenda real de Cavaliere dentro de esta página.</p>
+    </div>
+    <div class="booking-frame-wrap" id="booking-frame" hidden>
+      <p id="booking-status" class="booking-status" role="status">Cargando los servicios y horarios de reserva…</p>
+      <div id="booking-iframe-mount"></div>
+      <button type="button" class="text-button booking-retry" id="retry-booking">Volver a cargar la agenda <span aria-hidden="true">↻</span></button>
+    </div>
+    <div class="booking-alternative"><span>¿Prefieres abrir la agenda aparte?</span><a href={bookingUrl} target="_blank" rel="noopener noreferrer">Abrir agenda <Icon name="arrow" /></a></div>
+    <noscript><p class="booking-noscript">Puedes consultar los horarios desde el enlace «Abrir agenda».</p></noscript>
+  </div>
+</section>
+<script>
+  import '../scripts/booking'
+</script>
