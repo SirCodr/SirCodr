@@ -1,25 +1,31 @@
 ---
 import Icon from './Icon.astro'
+import Handdrawn from './Handdrawn.astro'
+import '../styles/booking-trazo.css'
+
 const bookingUrl = 'https://app.bookitit.com/es/hosteds/widgetdefault/2143a0cf603e0cb02bc1869a46641a244#services'
+const whatsappMessage = encodeURIComponent('Hola, quiero consultar disponibilidad para un servicio en Cavaliere Laureles.')
+const whatsappUrl = `https://wa.me/573135254428?text=${whatsappMessage}`
 ---
-<section class="booking section-space" id="reservar" aria-labelledby="booking-title">
-  <div class="booking-copy" data-reveal>
-    <span class="eyebrow"><span class="tiny-line"></span> TU MOMENTO, A TU RITMO</span>
-    <h2 id="booking-title">El próximo<br />capítulo de<br />tu <em>estilo.</em></h2>
-    <p>Haz una pausa. Nosotros nos encargamos de los detalles.</p>
-    <div class="booking-steps">
-      <p><span>01</span> Encuentra tu servicio</p>
-      <p><span>02</span> Elige tu día y hora</p>
-      <p><span>03</span> Nos vemos en la silla</p>
+<section class="booking booking-collage" id="reservar" aria-labelledby="booking-title">
+  <div class="booking-scene" data-reveal>
+    <p class="booking-scene-label">AGENDA TU CITA <span aria-hidden="true"></span></p>
+    <div class="booking-glow" aria-hidden="true"></div>
+    <h2 id="booking-title" class="booking-poster-title"><span>NOS VEMOS</span><span>EN LA <em>SILLA.</em></span></h2>
+    <Handdrawn name="underline" class="booking-poster-underline" />
+    <p class="booking-scene-copy">Tu estilo.<br />Tu momento.<br />Te esperamos en Laureles.</p>
+    <div class="booking-chair" data-float="10" aria-hidden="true">
+      <img src="/images/collage-chair.webp" width="1024" height="1536" alt="" loading="lazy" decoding="async" />
     </div>
-    <span class="booking-signature">Te esperamos, caballero.</span>
+    <div class="booking-chair-note" aria-hidden="true"><span>Un mejor día<br />empieza aquí.</span><Handdrawn name="arrow" /></div>
   </div>
+
   <div class="booking-panel" data-reveal>
     <div class="booking-panel-heading"><span class="eyebrow">RESERVA TU VISITA</span><Icon name="scissors" /></div>
     <div id="booking-placeholder" class="booking-placeholder">
       <span class="booking-monogram"><img src="/images/cavaliere-logo.svg" width="96" height="96" alt="Premium Cavaliere Barbers" loading="lazy" /></span>
       <h3>Tenemos una silla<br />para ti.</h3>
-      <p>Consulta servicios, precios y horarios en la agenda de Cavaliere Unicentro.</p>
+      <p>Consulta servicios, precios y horarios en la agenda de Cavaliere Laureles.</p>
       <button id="load-booking" class="button button--dark" type="button" aria-controls="booking-frame">Ver horarios disponibles <Icon name="arrow" /></button>
       <p class="booking-demo-note">Estás explorando una demo de diseño. Al continuar, abrirás la agenda real de Cavaliere dentro de esta página.</p>
     </div>
@@ -29,6 +35,12 @@ const bookingUrl = 'https://app.bookitit.com/es/hosteds/widgetdefault/2143a0cf60
       <button type="button" class="text-button booking-retry" id="retry-booking">Volver a cargar la agenda <span aria-hidden="true">↻</span></button>
     </div>
     <div class="booking-alternative"><span>¿Prefieres abrir la agenda aparte?</span><a href={bookingUrl} target="_blank" rel="noopener noreferrer">Abrir agenda <Icon name="arrow" /></a></div>
+    <div class="booking-contact">
+      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp a Barbería Cavaliere">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"><path d="M20.1 11.7a8.1 8.1 0 0 1-12 7.1l-4.2 1.1 1.1-4.1a8.1 8.1 0 1 1 15.1-4.1Z"/><path d="M8.5 7.9c.2-.4.4-.4.7-.4h.4c.2 0 .3.1.4.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.2.2-.2.4 0 .6.4.7 1 1.3 1.7 1.7.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.6.8c.2.1.4.2.4.4 0 .2-.1.8-.5 1.2-.4.4-1.1.7-1.8.6-.7-.1-1.6-.4-2.7-1-1-.6-1.8-1.4-2.4-2.3-.6-.9-.9-1.8-.9-2.5 0-.7.4-1.2.7-1.4Z"/></svg>
+        Escríbenos por WhatsApp <Icon name="arrow" />
+      </a>
+    </div>
     <noscript><p class="booking-noscript">Puedes consultar los horarios desde el enlace «Abrir agenda».</p></noscript>
   </div>
 </section>

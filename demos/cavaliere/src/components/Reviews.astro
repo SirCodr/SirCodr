@@ -1,39 +1,48 @@
 ---
-import Icon from './Icon.astro'
 import { googleRating, googleReviewsUrl, reviews } from '../data/reviews'
+import Icon from './Icon.astro'
+import '../styles/voices-trazo.css'
 ---
-<section class="reviews section-space" id="resenas" aria-labelledby="reviews-title" data-review-carousel>
-  <div class="reviews-heading" data-reveal>
-    <div>
-      <span class="eyebrow"><span class="tiny-line"></span> EL ESTILO DEJA HUELLA</span>
-      <h2 id="reviews-title">Ellos tienen<br /><em>la palabra.</em></h2>
+<section class="voices" id="resenas" aria-labelledby="voices-title" data-voices>
+  <div class="voices-inner">
+    <header class="voices-heading">
+      <span class="eyebrow">VOCES CAVALIERE <span class="tiny-line"></span></span>
+      <h2 id="voices-title">El buen trato<br /><em>también se nota.</em></h2>
+      <p>Historias reales de quienes vuelven a sentarse en nuestra silla.</p>
+    </header>
+
+    <div class="voices-mirror">
+      <div class="voices-reputation">
+        <a class="voices-stamp" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer" aria-label={`${googleRating.value.toLocaleString('es-CO')} de 5, ${googleRating.count} opiniones. Ver reseñas en Google, abre en otra pestaña`}>
+          <span class="voices-stamp-score">{googleRating.value.toLocaleString('es-CO')}<small>/ 5</small></span>
+          <span class="voices-stamp-stars" aria-hidden="true">★★★★★</span>
+          <span class="voices-stamp-count">{googleRating.count} opiniones</span>
+          <span class="voices-stamp-google">Google ↗</span>
+        </a>
+      </div>
+
+      <div class="voices-sheet">
+        <span class="voices-quotation" aria-hidden="true">“</span>
+        <div class="voices-quotes" id="voices-quotes" aria-live="off" aria-atomic="true">
+          {reviews.map((review, index) => (
+            <figure class:list={['voices-testimony', { 'voices-testimony--long': review.transcript.length > 200 }]} data-voice hidden={index !== 0}>
+              <blockquote><p>{review.transcript}</p></blockquote>
+              <figcaption><span class="voices-author">{review.author}</span><span class="voices-source">{review.localGuide ? 'Local Guide · Google' : 'Opinión en Google'}</span></figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="voices-navigation" data-voices-controls hidden>
+          <button type="button" data-voice-previous aria-label="Reseña anterior" aria-controls="voices-quotes"><Icon name="left" /></button>
+          <span class="voices-page" data-voice-page aria-hidden="true">01 / {String(reviews.length).padStart(2, '0')}</span>
+          <button type="button" data-voice-next aria-label="Siguiente reseña" aria-controls="voices-quotes"><Icon name="right" /></button>
+        </div>
+        <span class="voices-handnote" aria-hidden="true">Cada historia<br />cuenta.</span>
+        <span class="mirror-glint" aria-hidden="true"></span>
+      </div>
     </div>
-    <div class="reviews-reputation">
-      <span class="reviews-google-label">GOOGLE MAPS</span>
-      <div class="reviews-rating" aria-label={`${googleRating.value.toLocaleString('es-CO')} de 5 en Google, ${googleRating.count} opiniones`}><span>{googleRating.value.toLocaleString('es-CO')}</span><span>/ 5</span></div>
-      <span class="reviews-stars" aria-hidden="true"><span>★★★★★</span><span style={`width:${googleRating.value / 5 * 100}%`}>★★★★★</span></span>
-      <span class="reviews-count">{googleRating.count} opiniones</span>
-    </div>
+
+    <div class="voices-footer"><span>Tu experiencia también nos importa.</span><a href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Leer reseñas en Google <span aria-hidden="true">↗</span></a></div>
   </div>
-
-  <p class="reviews-caption">La experiencia, en sus palabras.</p>
-
-  <div class="reviews-viewport" data-review-viewport>
-    <div class="reviews-track" id="reviews-track">
-      {reviews.map((review, index) => (
-        <article class="review-card" aria-labelledby={`review-author-${review.id}`}>
-          <div class="review-author-row">
-            <span class:list={['review-avatar', `review-avatar--${index % 3}`]} aria-hidden="true">{review.author.split(' ').filter(Boolean).slice(0, 2).map((word) => word[0]).join('')}</span>
-            <div><h3 id={`review-author-${review.id}`}>{review.author}</h3><span>{review.localGuide ? 'Local Guide' : 'Google'}</span></div>
-          </div>
-          <span class="review-five-stars" aria-label={`${review.rating} de 5 estrellas`}>★★★★★</span>
-          <blockquote class="review-quote"><p>{review.transcript}</p></blockquote>
-        </article>
-      ))}
-    </div>
-  </div>
-
-  <div class="reviews-bottom"><a class="text-link" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Ver todas las reseñas en Google <Icon name="arrow" /></a></div>
 </section>
 <script>
   import '../scripts/reviews'

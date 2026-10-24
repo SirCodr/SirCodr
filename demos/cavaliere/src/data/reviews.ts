@@ -16,16 +16,16 @@ export const googleRating = { value: 4.7, count: 243, checkedOn: '2026-10-23' }
 // Text transcribed from the review screenshots provided by the user.
 export const reviews: Review[] = [
   {
+    id: 'jorge-andres-moreno-velez', author: 'Jorge Andres Moreno Velez', rating: 5, localGuide: true,
+    transcript: 'Barberia con clase y el costo beneficio es muy bueno. Un ambiente agradable y atención no se diga. Para niños también tienen servicio.',
+  },
+  {
     id: 'mario-castro', author: 'Mario Castro', rating: 5, localGuide: true,
     transcript: 'Excelente servicio el babero Daniel muy profesional, Diana una administradora ejemplar pendiente de todos los clientes, totalmente recomendada....',
   },
   {
     id: 'didier-gonzalez', author: 'Didier Gonzalez', rating: 5, localGuide: true,
     transcript: 'Excelente!!!! Dani es un máster, un servicio perfecto a un muy buen precio',
-  },
-  {
-    id: 'jorge-andres-moreno-velez', author: 'Jorge Andres Moreno Velez', rating: 5, localGuide: true,
-    transcript: 'Barberia con clase y el costo beneficio es muy bueno. Un ambiente agradable y atención no se diga. Para niños también tienen servicio.',
   },
   {
     id: 'felipe-ospina', author: 'felipe ospina', rating: 5, localGuide: false,

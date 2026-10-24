@@ -1,0 +1,180 @@
+:root {
+  --ink: #090a09;
+  --deep: #050605;
+  --paper: #f1eee7;
+  --gold: #c8a86e;
+  --muted: #b6b1a4;
+  --line: #d7bd8540;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 82% 8%, #b08b4b0b, transparent 27rem),
+    var(--ink);
+}
+
+.site-header {
+  background: #090a09ed;
+  border-bottom-color: #d7bd8526;
+  backdrop-filter: blur(16px);
+}
+
+.hero {
+  background:
+    radial-gradient(ellipse at 78% 38%, #c8a86e12, transparent 31rem),
+    linear-gradient(115deg, #090a09 4%, #0b0c0b 62%, #11100d);
+}
+
+.hero-image {
+  opacity: 0.64;
+}
+
+.hero-image img {
+  filter: saturate(0.22) contrast(1.06);
+}
+
+.hero-image-shade {
+  background:
+    linear-gradient(90deg, #090a09 0%, #090a09db 12%, #090a0950 47%, #090a0980 100%),
+    linear-gradient(0deg, #090a09 0%, transparent 34%, #090a0940 100%);
+}
+
+.hero-copy {
+  max-width: 760px;
+}
+
+.hero h1 {
+  color: #f2eee6;
+  text-shadow: 0 3px 34px #0009;
+}
+
+.hero h1 em {
+  color: #d2b475;
+  text-shadow: 0 0 30px #c8a86e2b;
+}
+
+.hero-gentleman {
+  position: absolute;
+  z-index: 1;
+  right: 4.5%;
+  bottom: -2%;
+  height: min(96%, 900px);
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 22px 45px #000b) drop-shadow(0 0 36px #bd9d5b20);
+  transform-origin: 50% 68%;
+  animation: gentleman-arrive 1.3s cubic-bezier(.2,.7,.2,1) both, gentleman-breathe 8s ease-in-out 1.3s infinite;
+}
+
+@keyframes gentleman-arrive {
+  from { opacity: 0; transform: translateY(20px) scale(1.035); filter: blur(8px) drop-shadow(0 22px 45px #000b); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0) drop-shadow(0 22px 45px #000b) drop-shadow(0 0 36px #bd9d5b20); }
+}
+
+@keyframes gentleman-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.018); }
+}
+
+.hero-side-note,
+.hero-location,
+.hero-edition {
+  color: #d3c8b0;
+}
+
+.pole-anchor {
+  right: 3.4%;
+  bottom: 135px;
+  z-index: 3;
+  filter: drop-shadow(0 0 20px #d1b37320);
+}
+
+.barber-pole {
+  filter: drop-shadow(0 10px 20px #000b) drop-shadow(0 0 13px #d1b37326);
+}
+
+.scroll-circle {
+  border-color: #d1b78a80;
+  box-shadow: inset 0 0 15px #d1b78a12, 0 0 20px #d1b78a0d;
+}
+
+.location {
+  background:
+    radial-gradient(ellipse at 6% 84%, #be99521a, transparent 24rem),
+    #0c0d0c;
+}
+
+.location-layout {
+  background: #111211;
+  border-color: #c8a86e40;
+  box-shadow: 0 24px 80px #0007;
+}
+
+.location-details::after {
+  content: "✦";
+  right: 16px;
+  bottom: 6px;
+  color: #d1b78a12;
+  font: 240px/1 var(--serif);
+}
+
+.location-index {
+  color: var(--gold);
+  letter-spacing: 2.5px;
+}
+
+.site-footer {
+  background: #080908;
+  border-top-color: #d1b78a24;
+}
+
+.intro-curtain {
+  background: #080908;
+}
+
+@media (min-width: 1600px) {
+  .hero-gentleman { right: 7%; }
+}
+
+@media (max-width: 1100px) {
+  .hero-gentleman { right: 3%; height: 87%; }
+  .pole-anchor { right: 2%; bottom: 130px; transform: scale(.85); transform-origin: right bottom; }
+}
+
+@media (max-width: 900px) {
+  .hero-gentleman { right: -2%; height: 78%; opacity: .82; }
+  .pole-anchor { right: 2%; bottom: 150px; }
+}
+
+@media (max-width: 680px) {
+  .hero-image { opacity: .42; }
+  .hero-image-shade {
+    background:
+      linear-gradient(90deg, #090a09ed, #090a099e 64%, #090a0942),
+      linear-gradient(0deg, #090a09 0%, #090a0955 52%, #090a0970 100%);
+  }
+  .hero-gentleman {
+    right: -10%;
+    bottom: 0;
+    height: 44%;
+    opacity: .78;
+    -webkit-mask-image: linear-gradient(90deg, transparent 16%, #000 72%);
+    mask-image: linear-gradient(90deg, transparent 16%, #000 72%);
+    filter: drop-shadow(0 14px 32px #000c) drop-shadow(0 0 28px #bd9d5b20);
+  }
+  .hero-copy { z-index: 2; }
+  .pole-anchor {
+    right: -10px;
+    bottom: 137px;
+    transform: scale(.56);
+  }
+  .hero-edition { color: #b8a77f; }
+  .location-details::after { font-size: 190px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-gentleman { animation: none; }
+}

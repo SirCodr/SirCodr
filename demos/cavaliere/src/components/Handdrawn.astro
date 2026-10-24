@@ -1,0 +1,6 @@
+---
+interface Props { name: 'underline' | 'arrow'; class?: string }
+const { name, class: className } = Astro.props
+---
+{name === 'underline' && <svg class={className} viewBox="0 0 420 36" fill="none" aria-hidden="true"><path d="M5 18C91 8 263 7 406 12 300 16 199 20 137 29L203 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="m10 22 257-9" stroke="currentColor" stroke-width="1" opacity=".6"/></svg>}
+{name === 'arrow' && <svg class={className} viewBox="0 0 160 105" fill="none" aria-hidden="true"><path d="M9 8c21 65 74 69 130 58m-22-22 27 21-30 17" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="m119 48 27 15-25 17" stroke="currentColor" stroke-width=".8" opacity=".6"/></svg>}

@@ -1,80 +1,93 @@
 export {}
 
-const carousel = document.querySelector<HTMLElement>('[data-review-carousel]')
-const viewport = carousel?.querySelector<HTMLElement>('[data-review-viewport]')
-const track = carousel?.querySelector<HTMLElement>('.reviews-track')
-const cards = Array.from(track?.querySelectorAll<HTMLElement>('.review-card') ?? [])
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-let timer: ReturnType<typeof setTimeout> | undefined
-let animation: Animation | undefined
-let current = 0
-let visible = false
+const section = document.querySelector<HTMLElement>('[data-voices]')
+const quotes = Array.from(section?.querySelectorAll<HTMLElement>('[data-voice]') ?? [])
+const controls = section?.querySelector<HTMLElement>('[data-voices-controls]')
+const counter = section?.querySelector<HTMLElement>('[data-voice-page]')
+const quoteRegion = section?.querySelector<HTMLElement>('#voices-quotes')
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-if (carousel && viewport && track && cards.length > 1) {
-  // The second set makes the last-to-first transition continuous. It has no
-  // accessibility-tree entries or IDs; screen readers read the six originals.
-  cards.forEach((card) => {
-    const clone = card.cloneNode(true) as HTMLElement
-    clone.classList.add('review-card--clone')
-    clone.setAttribute('aria-hidden', 'true')
-    clone.inert = true
-    clone.removeAttribute('aria-labelledby')
-    clone.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'))
-    track.append(clone)
+if (section && controls && quotes.length > 1) {
+  let current = 0
+  let animation: Animation | undefined
+  let outgoingAnimation: Animation | undefined
+  let autoAdvance: ReturnType<typeof setInterval> | undefined
+
+  controls.hidden = false
+
+  const stopAutoAdvance = () => {
+    if (autoAdvance) clearInterval(autoAdvance)
+    autoAdvance = undefined
+  }
+
+  const startAutoAdvance = () => {
+    stopAutoAdvance()
+    if (document.hidden || section.matches(':hover') || section.contains(document.activeElement)) return
+    autoAdvance = setInterval(() => show(1, false), 2000)
+  }
+
+  const show = (direction: number, announce: boolean) => {
+    animation?.cancel()
+    outgoingAnimation?.cancel()
+    const previous = quotes[current]
+    quotes.forEach((quote, index) => {
+      if (index !== current) {
+        quote.hidden = true
+        quote.style.removeProperty('opacity')
+        quote.style.removeProperty('transform')
+      }
+    })
+    current = (current + direction + quotes.length) % quotes.length
+    const next = quotes[current]
+    next.hidden = false
+    if (counter) counter.textContent = `${String(current + 1).padStart(2, '0')} / ${String(quotes.length).padStart(2, '0')}`
+    quoteRegion?.setAttribute('aria-live', announce ? 'polite' : 'off')
+    if (announce) window.setTimeout(() => quoteRegion?.setAttribute('aria-live', 'off'), 1200)
+
+    if (motionPreference.matches) {
+      previous.hidden = true
+      return
+    }
+
+    outgoingAnimation = previous.animate([
+      { opacity: 1 },
+      { opacity: 0 },
+    ], { duration: 620, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' })
+    animation = next.animate([
+      { opacity: 0 },
+      { opacity: 1 },
+    ], { delay: 520, duration: 430, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'both' })
+    outgoingAnimation.onfinish = () => {
+      previous.hidden = true
+      previous.style.removeProperty('opacity')
+      previous.style.removeProperty('transform')
+    }
+    animation.onfinish = () => {
+      next.style.removeProperty('opacity')
+      next.style.removeProperty('transform')
+    }
+  }
+
+  section.querySelector('[data-voice-previous]')?.addEventListener('click', () => {
+    show(-1, true)
+    startAutoAdvance()
+  })
+  section.querySelector('[data-voice-next]')?.addEventListener('click', () => {
+    show(1, true)
+    startAutoAdvance()
   })
 
-  const offset = (index: number) => {
-    const card = track.children[index] as HTMLElement
-    return card.offsetLeft - cards[0].offsetLeft
-  }
-  const transform = (index: number) => `translate3d(${-offset(index)}px, 0, 0)`
+  section.addEventListener('pointerenter', stopAutoAdvance)
+  section.addEventListener('pointerleave', startAutoAdvance)
+  section.addEventListener('focusin', stopAutoAdvance)
+  section.addEventListener('focusout', (event) => {
+    if (!section.contains(event.relatedTarget as Node | null)) startAutoAdvance()
+  })
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopAutoAdvance()
+    else startAutoAdvance()
+  })
+  motionPreference.addEventListener('change', () => animation?.cancel())
 
-  function schedule() {
-    clearTimeout(timer)
-    if (!visible || reducedMotion.matches || document.hidden) return
-    // Start one card transition every two seconds (650ms transition + 1.35s hold).
-    timer = setTimeout(advance, 1350)
-  }
-
-  function advance() {
-    if (!track || !visible || reducedMotion.matches || document.hidden) return
-    const next = current + 1
-    animation = track.animate([
-      { transform: transform(current) },
-      { transform: transform(next) },
-    ], { duration: 650, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' })
-    animation.onfinish = () => {
-      current = next === cards.length ? 0 : next
-      track.style.transform = transform(current)
-      animation?.cancel()
-      animation = undefined
-      schedule()
-    }
-  }
-
-  function syncLayout() {
-    clearTimeout(timer)
-    animation?.cancel()
-    animation = undefined
-    if (!carousel || !track) return
-    if (reducedMotion.matches) {
-      carousel.removeAttribute('data-enhanced')
-      track.style.removeProperty('transform')
-      current = 0
-    } else {
-      carousel.setAttribute('data-enhanced', '')
-      track.style.transform = transform(current)
-    }
-    schedule()
-  }
-
-  // No hover, focus, dragging, keyboard, or manual control changes this carousel.
-  new IntersectionObserver(([entry]) => {
-    visible = entry.isIntersecting
-    schedule()
-  }, { threshold: 0.15 }).observe(viewport)
-  new ResizeObserver(syncLayout).observe(viewport)
-  reducedMotion.addEventListener('change', syncLayout)
-  document.addEventListener('visibilitychange', schedule)
-  syncLayout()
+  startAutoAdvance()
 }

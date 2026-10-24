@@ -1,0 +1,75 @@
+---
+import Icon from './Icon.astro'
+import '../styles/services-trazo.css'
+
+const rituals = [
+  {
+    name: 'Corte y barba',
+    descriptor: 'PRECISIÓN Y ESTILO',
+    description: 'Corte de cabello para caballero, diseño de barba y opciones de pigmentación, según el estilo que buscas.',
+    image: 'collage-cut-tools.webp',
+    className: 'ritual-card--cut',
+  },
+  {
+    name: 'Keratina y color',
+    descriptor: 'TEXTURA Y TONO',
+    description: 'Keratina y tintura para renovar tu estilo. El valor puede variar según el volumen del cabello.',
+    image: 'collage-color-tools.webp',
+    className: 'ritual-card--color',
+  },
+  {
+    name: 'Combos y cuidado',
+    descriptor: 'TU RITUAL COMPLETO',
+    description: 'Combos de corte y barba con servicios complementarios como mascarillas, masajes y pigmentación.',
+    image: 'collage-care-tools.webp',
+    className: 'ritual-card--care',
+  },
+]
+---
+
+<section class="workshop-services" id="servicios" aria-labelledby="workshop-title">
+  <div class="workshop-cutline" aria-hidden="true" data-reveal>
+    <span class="cutline-stroke cutline-stroke--base"></span>
+    <span class="cutline-stroke cutline-stroke--draw"></span>
+    <svg class="workshop-cut-scissors" viewBox="0 0 100 58" fill="none">
+      <g stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+        <g class="workshop-shear-arm workshop-shear-arm--upper"><ellipse cx="16" cy="13" rx="13" ry="10" transform="rotate(15 16 13)" /><path d="m28 18 20 11 46 19-43-15" /></g>
+        <g class="workshop-shear-arm workshop-shear-arm--lower"><ellipse cx="16" cy="45" rx="13" ry="10" transform="rotate(-15 16 45)" /><path d="m28 40 20-11 46-19-43 15" /></g>
+        <circle cx="48" cy="29" r="3" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="workshop-layout">
+    <header class="workshop-intro">
+      <p class="services-eyebrow">SERVICIOS <span aria-hidden="true"></span></p>
+      <h2 id="workshop-title">Diseñado<br /><em>a tu manera.</em></h2>
+      <svg class="workshop-underline" viewBox="0 0 260 25" fill="none" aria-hidden="true"><path d="M3 14C73 7 160 4 252 9c-63 2-96 7-143 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      <p class="workshop-intro-copy">Un buen ritual empieza con una conversación.<br />El estilo lo definimos contigo.</p>
+      <span class="workshop-note" aria-hidden="true">Encuentra<br />tu forma.</span>
+      <svg class="workshop-handarrow" viewBox="0 0 100 70" fill="none" aria-hidden="true"><path d="M5 5c-8 42 32 66 87 36M74 33l20 6-6 21" /></svg>
+    </header>
+
+    <div class="workshop-posters">
+      {rituals.map((ritual) => (
+        <a class={`ritual-card ${ritual.className}`} href="#reservar" aria-label={`${ritual.name}. ${ritual.description} Consultar disponibilidad.`}>
+          <div class="ritual-art" aria-hidden="true">
+            <span class="ritual-descriptor">{ritual.descriptor}</span>
+            <span class="ritual-inkstroke"></span>
+            <img class="ritual-object" src={`/images/${ritual.image}`} width="800" height="800" alt="" loading="lazy" decoding="async" />
+            <svg class="ritual-doodle" viewBox="0 0 150 70" fill="none"><path d="M4 58C45 50 45 13 140 10M119 2l24 8-17 18" /></svg>
+            <span class="ritual-edge" aria-hidden="true"></span>
+          </div>
+          <div class="ritual-copy">
+            <h3>{ritual.name}</h3>
+            <span class="ritual-gold-rule" aria-hidden="true"></span>
+            <p>{ritual.description}</p>
+          </div>
+          <span class="ritual-reserve">Consultar servicio <Icon name="arrow" /></span>
+          <span class="ritual-foil" aria-hidden="true"></span>
+        </a>
+      ))}
+    </div>
+  </div>
+  <p class="workshop-footnote">Cada estilo tiene su propio ritual. Consulta precios y disponibilidad en la agenda.</p>
+</section>

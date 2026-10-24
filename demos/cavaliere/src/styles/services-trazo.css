@@ -1,0 +1,186 @@
+.workshop-services {
+  --service-bg: #0c0c0b;
+  --service-panel: #171615;
+  --service-gold: var(--gold, #d1b78a);
+  position: relative;
+  isolation: isolate;
+  padding: 132px var(--page-gutter, 5vw) 74px;
+  overflow: hidden;
+  color: var(--paper, #f0ede4);
+  background: var(--service-bg);
+  scroll-margin-top: 32px;
+}
+
+.workshop-cutline {
+  --cut-end: 78%;
+  position: absolute;
+  z-index: 4;
+  top: 24px;
+  left: var(--page-gutter, 5vw);
+  right: var(--page-gutter, 5vw);
+  height: 38px;
+  color: var(--service-gold);
+  pointer-events: none;
+}
+
+.cutline-stroke {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 16px;
+  height: 1px;
+  background-image: linear-gradient(90deg, currentColor 50%, transparent 0);
+  background-size: 7px 1px;
+  opacity: .34;
+}
+
+.cutline-stroke--draw {
+  right: auto;
+  width: var(--cut-end);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: .88;
+}
+
+.workshop-cut-scissors {
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: var(--cut-end);
+  width: 70px;
+  height: 42px;
+  transform: translateX(-50%) rotate(-5deg);
+  filter: drop-shadow(0 3px 7px #0009);
+}
+
+.workshop-shear-arm { transform-origin: 48px 29px; }
+.cutline-caption {
+  position: absolute;
+  top: 22px;
+  right: 12%;
+  font: 600 7px/1 var(--sans, sans-serif);
+  letter-spacing: .18em;
+  color: #aaa99d;
+}
+
+.workshop-cutline.is-visible .cutline-stroke--draw { animation: cutline-reveal 850ms cubic-bezier(.2,.7,.2,1) both; }
+.workshop-cutline.is-visible .workshop-shear-arm--upper { animation: shear-upper 780ms ease-in-out 120ms 3; }
+.workshop-cutline.is-visible .workshop-shear-arm--lower { animation: shear-lower 780ms ease-in-out 120ms 3; }
+@keyframes cutline-reveal { to { transform: scaleX(1); } }
+@keyframes shear-upper { 0%,100% { transform: rotate(0); } 45%,60% { transform: rotate(-9deg); } }
+@keyframes shear-lower { 0%,100% { transform: rotate(0); } 45%,60% { transform: rotate(9deg); } }
+
+.workshop-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, .76fr) minmax(0, 2.2fr);
+  gap: clamp(28px, 4vw, 68px);
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+.workshop-intro { position: relative; min-width: 0; padding-top: 7px; }
+.services-eyebrow { display: flex; align-items: center; gap: 14px; font: 600 9px/1 var(--sans); color: var(--gold); letter-spacing: .2em; }
+.services-eyebrow span { width: 53px; height: 1px; background: linear-gradient(90deg, var(--gold), transparent); }
+.workshop-intro h2 { margin: 29px 0 0; font: 400 clamp(54px, 5.7vw, 82px)/.9 var(--serif, Georgia, serif); letter-spacing: -.045em; }
+.workshop-intro h2 em { color: var(--gold); }
+.workshop-underline { display: block; width: 82%; height: 24px; margin: 5px 0 19px; color: var(--gold); }
+.workshop-underline path { stroke-dasharray: 1; }
+.workshop-intro-copy { color: #b5b6af; font: 400 clamp(15px, 1.35vw, 19px)/1.4 var(--serif, Georgia, serif); max-width: 300px; }
+.workshop-note { position: absolute; left: 3px; bottom: 12%; color: var(--gold); font: italic 26px/.92 var(--serif, Georgia, serif); transform: rotate(-7deg); }
+.workshop-handarrow { position: absolute; left: 105px; bottom: 4%; width: 75px; height: 58px; overflow: visible; transform: rotate(-4deg); }
+.workshop-handarrow path { stroke: var(--gold); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 200; stroke-dashoffset: 0; }
+
+.workshop-posters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(13px, 1.5vw, 23px); align-items: stretch; padding: 8px 0 2px; perspective: 1200px; }
+.ritual-card {
+  --card-angle: 0deg;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 400px;
+  padding: 14px 18px 17px;
+  overflow: hidden;
+  color: var(--paper);
+  background: linear-gradient(150deg, #22201c 0%, #151412 52%, #0d0c0b 100%);
+  border: 1px solid #d1b78a37;
+  box-shadow: inset 0 0 0 5px #ffffff03, 0 18px 32px #0007;
+  transform: perspective(1000px) rotateY(var(--card-angle));
+  transition: transform .45s ease, border-color .45s ease, box-shadow .45s ease;
+}
+.ritual-card::before { content: ''; position: absolute; inset: 8px; border: 1px solid #d1b78a17; pointer-events: none; }
+.ritual-card--color { border-color: #d1b78a61; }
+.ritual-card:hover,.ritual-card:focus-visible { transform: translateY(-6px); border-color: #d1b78a9c; box-shadow: inset 0 0 0 5px #ffffff04, 0 23px 42px #000b, 0 0 26px #d1b78a13; }
+.ritual-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
+.ritual-art { position: relative; height: clamp(185px, 18.5vw, 270px); margin: 0 -8px 5px; isolation: isolate; }
+.ritual-art::before { content: ''; position: absolute; inset: 12% 5% 7%; z-index: -1; background: radial-gradient(ellipse, #a98b552b, transparent 67%); filter: blur(18px); }
+.ritual-descriptor { position: absolute; z-index: 2; left: 10px; top: 7px; color: #c0aa7f; font: 600 7px/1 var(--sans); letter-spacing: .18em; }
+.ritual-object { position: absolute; z-index: 1; inset: 13px -8% 0 auto; width: 111%; height: 96%; max-width: none; object-fit: contain; filter: drop-shadow(3px 12px 12px #000b) saturate(.78); transform: rotate(-5deg); transition: transform .55s cubic-bezier(.2,.7,.25,1); }
+.ritual-card--color .ritual-object { transform: rotate(5deg); }
+.ritual-card--care .ritual-object { transform: rotate(-4deg); }
+.ritual-card:hover .ritual-object,.ritual-card:focus-visible .ritual-object { transform: translateY(-5px) rotate(0) scale(1.035); }
+.ritual-inkstroke { position: absolute; z-index: -1; right: -2%; bottom: 17%; width: 71%; height: 23%; background: linear-gradient(100deg, #7b6340b0, #d1b78a25 68%, transparent); opacity: .78; transform: rotate(-25deg); clip-path: polygon(0 27%, 12% 8%, 34% 16%, 46% 0, 71% 18%, 100% 9%, 93% 43%, 100% 70%, 67% 83%, 38% 65%, 12% 100%, 6% 68%); }
+.ritual-doodle { position: absolute; z-index: 3; width: 86px; height: 48px; right: 1px; bottom: 12%; transform: rotate(-9deg); overflow: visible; opacity: .8; }
+.ritual-doodle path { stroke: var(--gold); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 200; stroke-dashoffset: 200; filter: drop-shadow(0 0 4px #c6a15a6b); }
+.ritual-card:hover .ritual-doodle path,.ritual-card:focus-visible .ritual-doodle path { stroke-dashoffset: 0; transition: stroke-dashoffset .65s ease; }
+.ritual-edge { position: absolute; z-index: 4; inset: 0 auto 0 0; width: 1px; background: linear-gradient(transparent,#d1b78a88 24% 78%,transparent); }
+.ritual-copy { position: relative; z-index: 2; }
+.ritual-copy h3 { font: 400 clamp(25px, 2.1vw, 33px)/.98 var(--serif, Georgia, serif); letter-spacing: -.02em; }
+.ritual-gold-rule { display: block; width: 42px; height: 1px; margin: 13px 0 10px; background: linear-gradient(90deg,var(--gold),transparent); }
+.ritual-copy p { color: #aeb0a8; font-size: 9px; line-height: 1.75; }
+.ritual-reserve { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 39px; margin-top: auto; padding-top: 10px; color: var(--gold); font-size: 8px; letter-spacing: .08em; border-top: 1px solid #d1b78a37; }
+.ritual-reserve svg { width: 16px; height: 16px; transition: transform .25s; }
+.ritual-card:hover .ritual-reserve svg { transform: translate(3px,-3px); }
+.ritual-foil { position: absolute; z-index: 5; inset: -60% -80%; pointer-events: none; background: linear-gradient(112deg, transparent 43%, #ffffff00 47%, #f4dba655 49%, #fff7df80 50%, #d5b36a44 51%, transparent 57%); transform: translateX(-55%) rotate(8deg); transition: transform .9s ease; mix-blend-mode: screen; }
+.ritual-card:hover .ritual-foil,.ritual-card:focus-visible .ritual-foil { transform: translateX(48%) rotate(8deg); }
+.workshop-footnote { max-width: 1450px; margin: 26px auto 0; text-align: right; color: #83867d; font-size: 8px; letter-spacing: .06em; }
+
+@media (max-width: 1050px) {
+  .workshop-layout { grid-template-columns: minmax(210px,.7fr) minmax(0,2fr); gap: 25px; }
+  .ritual-card { min-height: 375px; padding-inline: 14px; }
+  .ritual-copy h3 { font-size: 27px; }
+  .workshop-note { bottom: 7%; }
+}
+
+@media (max-width: 760px) {
+  .workshop-services { padding: 108px 24px 58px; }
+  .workshop-cutline { left: 24px; right: 24px; top: 20px; --cut-end: 70%; }
+  .cutline-caption { right: 0; top: 22px; font-size: 6px; }
+  .workshop-cut-scissors { width: 59px; left: var(--cut-end); }
+  .workshop-layout { display: block; }
+  .workshop-intro { padding: 0; }
+  .workshop-intro h2 { margin-top: 22px; font-size: clamp(54px, 12vw, 72px); }
+  .workshop-underline { width: 68%; margin: 3px 0 12px; }
+  .workshop-intro-copy { max-width: 290px; font-size: 16px; }
+  .workshop-note { left: auto; right: 8px; bottom: 0; font-size: 21px; }
+  .workshop-handarrow { left: auto; right: 88px; bottom: -3px; width: 57px; }
+  .workshop-posters { grid-template-columns: 1fr; gap: 15px; margin-top: 30px; padding: 0 0 1px; perspective: none; }
+  .ritual-card,.ritual-card--color,.ritual-card--care { min-height: 230px; display: grid; grid-template-columns: minmax(125px,.82fr) minmax(0,1fr); grid-template-rows: auto 1fr auto; column-gap: 13px; padding: 15px; transform: none; }
+  .ritual-card:hover,.ritual-card:focus-visible { transform: translateY(-3px); }
+  .ritual-art { grid-column: 1; grid-row: 1 / 4; height: 195px; margin: 0; align-self: center; }
+  .ritual-descriptor { font-size: 6px; left: 1px; }
+  .ritual-object { inset: 15px -12% 0 auto; width: 122%; height: 90%; }
+  .ritual-copy { grid-column: 2; grid-row: 1 / 3; align-self: center; }
+  .ritual-copy h3 { font-size: clamp(24px, 6vw, 31px); }
+  .ritual-copy p { font-size: 8px; line-height: 1.65; }
+  .ritual-gold-rule { margin: 10px 0 8px; }
+  .ritual-reserve { grid-column: 2; grid-row: 3; min-height: 34px; margin-top: 5px; font-size: 7px; }
+  .ritual-doodle { width: 61px; right: -1px; bottom: 9%; }
+  .ritual-inkstroke { width: 90%; }
+  .workshop-footnote { margin-top: 18px; text-align: left; line-height: 1.7; }
+}
+
+@media (max-width: 390px) {
+  .workshop-services { padding-inline: 20px; }
+  .workshop-cutline { left: 20px; right: 20px; --cut-end: 66%; }
+  .cutline-caption { letter-spacing: .1em; }
+  .ritual-card,.ritual-card--color,.ritual-card--care { grid-template-columns: 112px minmax(0,1fr); column-gap: 10px; min-height: 220px; padding: 12px; }
+  .ritual-art { height: 180px; }
+  .ritual-copy h3 { font-size: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workshop-cutline.is-visible .cutline-stroke--draw { transform: scaleX(1); animation: none; }
+  .workshop-cutline.is-visible .workshop-shear-arm--upper,.workshop-cutline.is-visible .workshop-shear-arm--lower { animation: none; }
+  .ritual-card,.ritual-object,.ritual-foil { transition: none; }
+}
