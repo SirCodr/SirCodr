@@ -288,7 +288,7 @@ em {
   gap: 30px;
 }
 .desktop-nav a {
-  font-size: 11px;
+  font-size: 14px;
   padding: 16px 0;
   color: #d4d4c9;
   transition: color 0.2s;
@@ -642,7 +642,7 @@ em {
   bottom: 0;
   width: 50.1%;
   background: #0f130e;
-  animation: curtain-left 1s cubic-bezier(0.76, 0, 0.24, 1) 0.85s both;
+  animation: curtain-left 1s cubic-bezier(0.4, 0, 0.2, 1) 0.85s both;
 }
 .intro-curtain::before {
   left: 0;
@@ -1377,7 +1377,7 @@ em {
     gap: 20px;
   }
   .desktop-nav a {
-    font-size: 10px;
+    font-size: 12px;
   }
   .brand-type {
     font-size: 17px;

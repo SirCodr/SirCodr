@@ -132,7 +132,7 @@ body {
 }
 
 .intro-curtain {
-  background: #080908;
+  background: transparent;
 }
 
 @media (min-width: 1600px) {
@@ -157,19 +157,19 @@ body {
       linear-gradient(0deg, #090a09 0%, #090a0955 52%, #090a0970 100%);
   }
   .hero-gentleman {
-    right: -10%;
-    bottom: 0;
-    height: 44%;
-    opacity: .78;
-    -webkit-mask-image: linear-gradient(90deg, transparent 16%, #000 72%);
-    mask-image: linear-gradient(90deg, transparent 16%, #000 72%);
-    filter: drop-shadow(0 14px 32px #000c) drop-shadow(0 0 28px #bd9d5b20);
+    right: -8%;
+    bottom: 1%;
+    height: 53%;
+    opacity: .96;
+    -webkit-mask-image: linear-gradient(90deg, transparent 27%, #000 64%);
+    mask-image: linear-gradient(90deg, transparent 27%, #000 64%);
+    filter: brightness(1.16) drop-shadow(0 14px 32px #000c) drop-shadow(0 0 28px #bd9d5b20);
   }
   .hero-copy { z-index: 2; }
   .pole-anchor {
-    right: -10px;
-    bottom: 137px;
-    transform: scale(.56);
+    right: 58px;
+    bottom: 124px;
+    transform: scale(.62);
   }
   .hero-edition { color: #b8a77f; }
   .location-details::after { font-size: 190px; }

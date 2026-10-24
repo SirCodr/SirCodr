@@ -65,6 +65,19 @@ mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click'
   const destination = document.querySelector<HTMLElement>(link.hash)
   if (destination) { destination.tabIndex = -1; destination.focus({ preventScroll: true }) }
 }))
+
+document.querySelectorAll<HTMLAnchorElement>('a[href*="#"]').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    const url = new URL(link.href, window.location.href)
+    if (url.origin !== window.location.origin || url.pathname !== window.location.pathname || !url.hash) return
+    const destination = document.getElementById(decodeURIComponent(url.hash.slice(1)))
+    if (!destination) return
+    event.preventDefault()
+    if (window.location.hash !== url.hash) window.history.pushState(null, '', url.hash)
+    destination.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' })
+  })
+})
+
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') closeMenu(true)
 })
