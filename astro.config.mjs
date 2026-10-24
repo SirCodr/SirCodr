@@ -15,7 +15,7 @@ const adapter = process.env.ASTRO_LOCAL_PREVIEW === '1'
 export default defineConfig({
   output: 'server',
   adapter,
-  site: 'https://jotadev-portfolio.vercel.app',
+  site: 'https://jotarestrepo.com',
   integrations: [sitemap(), clerk(), mdx()],
   vite: {
     plugins: [tailwindcss()]

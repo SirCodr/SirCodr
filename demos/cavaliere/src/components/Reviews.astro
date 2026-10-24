@@ -25,7 +25,7 @@ import '../styles/voices-trazo.css'
         <span class="voices-quotation" aria-hidden="true">“</span>
         <div class="voices-quotes" id="voices-quotes" aria-live="off" aria-atomic="true">
           {reviews.map((review, index) => (
-            <figure class:list={['voices-testimony', { 'voices-testimony--long': review.transcript.length > 200 }]} data-voice hidden={index !== 0}>
+            <figure class:list={['voices-testimony', { 'voices-testimony--long': review.transcript.length > 200 }]} data-voice aria-hidden={index !== 0 ? 'true' : 'false'}>
               <blockquote><p>{review.transcript}</p></blockquote>
               <figcaption><span class="voices-author">{review.author}</span><span class="voices-source">{review.localGuide ? 'Local Guide · Google' : 'Opinión en Google'}</span></figcaption>
             </figure>

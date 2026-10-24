@@ -14,7 +14,7 @@ interface Props {
 
 const { title, description, ogImage, noindex = false } = Astro.props
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jotadev-portfolio.vercel.app')
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jotarestrepo.com')
 const ogImageURL = ogImage ?? `${canonicalURL.origin}/og-default.png`
 
 const { userId } = Astro.locals.auth()

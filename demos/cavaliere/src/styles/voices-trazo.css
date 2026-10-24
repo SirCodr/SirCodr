@@ -30,9 +30,10 @@
 .voices-stamp-google { margin-top:8px;color:#b1a17c; }
 .voices-sheet { position:relative;display:flex;flex-direction:column;justify-content:center;min-width:0;padding:39px clamp(26px,5vw,70px) 26px;overflow:hidden; }
 .voices-quotation { position:absolute;left:22px;top:4px;color:#c59c5d;font:400 106px/.85 var(--serif);opacity:.78;pointer-events:none; }
-.voices-quotes { position:relative;display:grid;grid-template-columns:minmax(0,1fr);min-height:196px;align-items:stretch; }
+.voices-quotes { position:relative;display:grid;grid-template-columns:minmax(0,1fr);align-items:stretch; }
 .voices-testimony { grid-area:1 / 1;display:flex;flex-direction:column;justify-content:center;margin:0;width:100%; }
-.voices-testimony[hidden],.voices-navigation[hidden] { display:none; }
+.voices-testimony[aria-hidden="true"] { visibility:hidden;pointer-events:none; }
+.voices-navigation[hidden] { display:none; }
 .voices-testimony blockquote { margin:0;padding:0;border:0; }
 .voices-testimony blockquote p { max-width:720px;margin:0;color:#f1efe9;font:400 clamp(31px,3.7vw,50px)/.98 var(--serif);letter-spacing:-.035em; }
 .voices-testimony--long blockquote p { font-size:clamp(25px,2.55vw,34px);line-height:1.06; }
@@ -64,7 +65,6 @@
   .voices-stamp-count,.voices-stamp-google { font-size:8px; }
   .voices-sheet { grid-row:1;padding:39px 24px 21px; }
   .voices-quotation { left:14px;top:8px;font-size:85px; }
-  .voices-quotes { min-height:220px; }
   .voices-testimony blockquote p { font-size:clamp(31px,8vw,39px); }
   .voices-testimony--long blockquote p { font-size:clamp(24px,6.3vw,29px); }
   .voices-testimony figcaption { margin-top:17px; }
@@ -76,6 +76,5 @@
 @media(max-width:370px) {
   .voices { padding-inline:20px; }
   .voices-sheet { padding-inline:18px; }
-  .voices-quotes { min-height:240px; }
 }
 @media(prefers-reduced-motion:reduce) { .voices-stamp,.voices-navigation button { transition:none; } }

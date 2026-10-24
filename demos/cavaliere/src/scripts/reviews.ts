@@ -32,20 +32,20 @@ if (section && controls && quotes.length > 1) {
     const previous = quotes[current]
     quotes.forEach((quote, index) => {
       if (index !== current) {
-        quote.hidden = true
+        quote.setAttribute('aria-hidden', 'true')
         quote.style.removeProperty('opacity')
         quote.style.removeProperty('transform')
       }
     })
     current = (current + direction + quotes.length) % quotes.length
     const next = quotes[current]
-    next.hidden = false
+    next.setAttribute('aria-hidden', 'false')
     if (counter) counter.textContent = `${String(current + 1).padStart(2, '0')} / ${String(quotes.length).padStart(2, '0')}`
     quoteRegion?.setAttribute('aria-live', announce ? 'polite' : 'off')
     if (announce) window.setTimeout(() => quoteRegion?.setAttribute('aria-live', 'off'), 1200)
 
     if (motionPreference.matches) {
-      previous.hidden = true
+      previous.setAttribute('aria-hidden', 'true')
       return
     }
 
@@ -58,7 +58,7 @@ if (section && controls && quotes.length > 1) {
       { opacity: 1 },
     ], { delay: 520, duration: 430, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'both' })
     outgoingAnimation.onfinish = () => {
-      previous.hidden = true
+      previous.setAttribute('aria-hidden', 'true')
       previous.style.removeProperty('opacity')
       previous.style.removeProperty('transform')
     }

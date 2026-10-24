@@ -3,7 +3,7 @@
 Esta demo es un concepto de diseño de JotaDev. No se presenta como web oficial del negocio.
 
 - Fotografía de portada: https://images.unsplash.com/photo-1503951914875-452162b0f3f1. Fotografía de referencia, no del local.
-- Personaje ilustrado del hero (`public/images/cavaliere-gentleman.png`): imagen conceptual generada para esta demo; no representa a un barbero ni cliente de Cavaliere.
+- Personaje ilustrado del hero (`public/images/cavaliere-gentleman.webp`): imagen conceptual generada para esta demo; no representa a un barbero ni cliente de Cavaliere.
 - Tijeras que separan el hero de servicios: dibujo vectorial original en SVG, integrado como una línea de corte animada.
 - Fotografías editoriales de los cards de servicios y la silla de reserva: imágenes conceptuales generadas para esta demo; no representan al equipo ni el local.
 - Fotografías distribuidas por Unsplash: https://unsplash.com/license.

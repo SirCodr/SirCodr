@@ -14,8 +14,8 @@ interface Props {
 }
 
 const { title, description, locale, ogImage, structuredData } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jotadev-portfolio.vercel.app');
-const alternateURL = new URL(getAlternateUrl(Astro.url), Astro.site ?? 'https://jotadev-portfolio.vercel.app');
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jotarestrepo.com');
+const alternateURL = new URL(getAlternateUrl(Astro.url), Astro.site ?? 'https://jotarestrepo.com');
 const alternateLocale = locale === 'es' ? 'en' : 'es';
 const ogImageURL = ogImage ?? `${canonicalURL.origin}/og-default.png`;
 ---
@@ -33,7 +33,7 @@ const ogImageURL = ogImage ?? `${canonicalURL.origin}/og-default.png`;
     <link rel="canonical" href={canonicalURL} />
     <link rel="alternate" hreflang={locale} href={canonicalURL} />
     <link rel="alternate" hreflang={alternateLocale} href={alternateURL} />
-    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site ?? 'https://jotadev-portfolio.vercel.app')} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site ?? 'https://jotarestrepo.com')} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
