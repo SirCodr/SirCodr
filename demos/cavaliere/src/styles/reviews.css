@@ -541,6 +541,11 @@
 .promo-credit .promo-copy > span { color: #bfc1b3; }
 .promo-credit .promo-copy strong { color: #e2c693; }
 @media (max-width: 680px) {
+  body.booking-visible .portfolio-promo {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .portfolio-promo {
     width: 45px;
     flex-direction: column;

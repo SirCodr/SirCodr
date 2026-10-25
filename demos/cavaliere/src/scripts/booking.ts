@@ -7,12 +7,26 @@ const bookingStatus = document.querySelector<HTMLParagraphElement>('#booking-sta
 const loadButton = document.querySelector<HTMLButtonElement>('#load-booking')
 const retryButton = document.querySelector<HTMLButtonElement>('#retry-booking')
 let loadTimeout: ReturnType<typeof setTimeout> | undefined
+let bookingVisibilityObserver: IntersectionObserver | undefined
+
+function trackBookingVisibility() {
+  if (!frameWrap) return
+  const bounds = frameWrap.getBoundingClientRect()
+  document.body.classList.toggle('booking-visible', bounds.top < window.innerHeight && bounds.bottom > 0)
+
+  if (!('IntersectionObserver' in window)) return
+  bookingVisibilityObserver ??= new IntersectionObserver(([entry]) => {
+    document.body.classList.toggle('booking-visible', entry.isIntersecting)
+  })
+  bookingVisibilityObserver.observe(frameWrap)
+}
 
 function loadBooking() {
   if (!mount || !placeholder || !frameWrap || !bookingStatus) return
   clearTimeout(loadTimeout)
   placeholder.hidden = true
   frameWrap.hidden = false
+  trackBookingVisibility()
   frameWrap.dataset.state = 'loading'
   frameWrap.setAttribute('aria-busy', 'true')
   bookingStatus.textContent = 'Cargando los servicios y horarios de reserva…'

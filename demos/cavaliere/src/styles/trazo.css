@@ -167,12 +167,25 @@ body {
   }
   .hero-copy { z-index: 2; }
   .pole-anchor {
-    right: 58px;
-    bottom: 124px;
-    transform: scale(.62);
+    left: calc(max(12px, env(safe-area-inset-left)) + 3px);
+    right: auto;
+    bottom: max(110px, calc(100% - 100svh + 198px));
+    transform: scale(.55);
+    transform-origin: left bottom;
   }
   .hero-edition { color: #b8a77f; }
   .location-details::after { font-size: 190px; }
+}
+
+@media (max-width: 360px) {
+  .pole-anchor {
+    left: calc(max(12px, env(safe-area-inset-left)) + 6px);
+    transform: scale(.48);
+  }
+}
+
+@media (min-width: 600px) and (max-width: 680px) {
+  .pole-anchor { transform: scale(.45); }
 }
 
 @media (prefers-reduced-motion: reduce) {
