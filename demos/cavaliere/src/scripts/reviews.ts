@@ -12,6 +12,7 @@ if (section && controls && quotes.length > 1) {
   let animation: Animation | undefined
   let outgoingAnimation: Animation | undefined
   let autoAdvance: ReturnType<typeof setInterval> | undefined
+  let sectionVisible = false
 
   controls.hidden = false
 
@@ -22,7 +23,7 @@ if (section && controls && quotes.length > 1) {
 
   const startAutoAdvance = () => {
     stopAutoAdvance()
-    if (document.hidden || section.matches(':hover') || section.contains(document.activeElement)) return
+    if (document.hidden || !sectionVisible || motionPreference.matches || section.matches(':hover') || section.contains(document.activeElement)) return
     autoAdvance = setInterval(() => show(1, false), 2000)
   }
 
@@ -87,7 +88,29 @@ if (section && controls && quotes.length > 1) {
     if (document.hidden) stopAutoAdvance()
     else startAutoAdvance()
   })
-  motionPreference.addEventListener('change', () => animation?.cancel())
+  motionPreference.addEventListener('change', () => {
+    if (motionPreference.matches) {
+      stopAutoAdvance()
+      animation?.cancel()
+      outgoingAnimation?.cancel()
+      quotes.forEach((quote, index) => {
+        quote.style.removeProperty('opacity')
+        quote.style.removeProperty('transform')
+        quote.setAttribute('aria-hidden', index === current ? 'false' : 'true')
+      })
+    } else {
+      startAutoAdvance()
+    }
+  })
+
+  if ('IntersectionObserver' in window) {
+    const visibility = new IntersectionObserver((entries) => {
+      sectionVisible = entries.some((entry) => entry.isIntersecting)
+      if (sectionVisible) startAutoAdvance()
+      else stopAutoAdvance()
+    }, { threshold: 0.1 })
+    visibility.observe(section)
+  }
 
   startAutoAdvance()
 }

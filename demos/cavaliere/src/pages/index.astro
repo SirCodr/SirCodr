@@ -21,13 +21,18 @@ import PortfolioPromo from '../components/PortfolioPromo.astro'
   <main id="contenido">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-image"><img src="/images/barbershop.webp" width="1800" height="1200" alt="El detalle de un ritual de barba con tijeras, fotografía de referencia" fetchpriority="high" /><div class="hero-image-shade"></div></div>
-      <div class="hero-copy">
+      <div class="hero-main">
         <h1 id="hero-title"><span>Tu estilo</span><span>habla antes</span><span><em>que tú.</em></span></h1>
-        <p class="hero-description">Corte de cabello, diseño de barba, asesoría y todo un ritual para encontrar un estilo que se sienta tuyo.</p>
-        <div class="hero-cta"><a href="#reservar" class="button button--gold">Reserva tu experiencia <Icon name="arrow" /></a></div>
+        <div class="hero-copy">
+          <p class="hero-description">Corte de cabello, diseño de barba, asesoría y todo un ritual para encontrar un estilo que se sienta tuyo.</p>
+          <div class="hero-cta"><a href="#reservar" class="button button--gold"><span>Reserva tu experiencia</span><Icon name="arrow" /></a></div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <img class="hero-gentleman" src="/images/cavaliere-gentleman.webp" width="1024" height="1536" alt="" aria-hidden="true" fetchpriority="high" decoding="async" />
+          <p class="hero-art-fallback" hidden>EL ESTILO ESTÁ<br />EN LOS DETALLES</p>
+          <BarberPole />
+        </div>
       </div>
-      <img class="hero-gentleman" src="/images/cavaliere-gentleman.webp" width="1024" height="1536" alt="Ilustración de un caballero con traje oscuro y bigote" fetchpriority="high" />
-      <BarberPole />
       <div class="hero-side-note" aria-hidden="true">AUTENTICIDAD. CERTEZA. COMPROMISO.</div>
       <div class="hero-bottom"><a href="#servicios" class="scroll-invite"><span class="scroll-circle"><Icon name="down" /></span> DESCUBRE EL RITUAL</a><span class="hero-location"><Icon name="pin" /> MEDELLÍN, COLOMBIA</span><span class="hero-edition">CAVALIERE · LAURELES</span></div>
     </section>

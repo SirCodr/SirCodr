@@ -12,15 +12,14 @@ import '../styles/trazo.css'
     <meta name="description" content="Barbería premium en Laureles, Medellín. Corte de cabello, diseño de barba, keratina, color y combos de cuidado con asesoría personalizada." />
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" href="/fonts/cormorant-regular.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/manrope-regular.ttf" as="font" type="font/ttf" crossorigin />
     <title>Barbería premium en Laureles, Medellín | Cavaliere</title>
     <noscript><style>.menu-toggle,#load-booking,.location-map-status{display:none!important}.location-map iframe{visibility:visible!important}</style></noscript>
     <script is:inline>
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && !window.location.hash) {
-        document.documentElement.classList.add('intro-active');
-        // Always reveal the document even if the bundled script fails to load.
-        window.setTimeout(() => document.documentElement.classList.remove('intro-active'), 2800);
+        document.documentElement.classList.add('intro-pending');
+        window.__cavaliereIntroFailsafe = window.setTimeout(() => {
+          document.documentElement.classList.remove('intro-pending', 'intro-active', 'intro-mobile');
+        }, 2600);
       }
     </script>
   </head>
