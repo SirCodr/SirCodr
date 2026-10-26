@@ -1,0 +1,142 @@
+---
+import { Image } from 'astro:assets'
+import type { Locale } from '@/i18n/utils'
+import { projects } from '@/data/projects'
+import { downloadableSkills, portfolioCopy, websites } from '@/data/portfolio'
+import { buildWhatsAppLink } from '@/data/contact'
+import character from '@/assets/portfolio/jota-character.webp'
+import phonePortrait from '@/assets/avatar.webp'
+import Arrow from './Arrow.astro'
+import SocialLinks from './SocialLinks.astro'
+import SectionDivider from './SectionDivider.astro'
+import ProjectPreview from './ProjectPreview.astro'
+
+interface Props { locale: Locale }
+const { locale } = Astro.props
+const copy = portfolioCopy[locale]
+const featured = projects.filter(project => project.featured)
+const contact = buildWhatsAppLink({ locale, intent: 'project' })
+---
+<section class="hero" id="inicio" aria-labelledby="hero-title">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow entrance delay-1"><span aria-hidden="true"></span>{copy.hero.eyebrow}</p>
+      <h1 id="hero-title" class="entrance delay-2">{copy.hero.lead}<br /><em>JOTA.</em></h1>
+      <p class="hero-intro entrance delay-3">{copy.hero.intro}<br />{copy.hero.automation}</p>
+      <div class="hero-actions entrance delay-3">
+        <a class="button primary" href={contact} target="_blank" rel="noopener noreferrer">{copy.hero.contact}<Arrow /></a>
+        <a class="plain-link" href={`#${copy.ids.projects}`}>{copy.hero.projects} <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="entrance delay-4"><SocialLinks /></div>
+    </div>
+    <div class="hero-art entrance delay-2">
+      <div class="art-panel">
+        <div class="art-grid" aria-hidden="true"></div>
+        <span class="art-type" aria-hidden="true">JR</span>
+        <div class="avatar-frame">
+          <Image src={character} alt={copy.hero.portrait} width={720} widths={[320, 480, 720, 960]} sizes="(max-width: 760px) 88vw, (min-width: 1600px) 660px, 45vw" format="webp" quality={85} loading="eager" fetchpriority="high" />
+        </div>
+        <span class="art-index" aria-hidden="true">{copy.hero.role}</span>
+        <span class="panel-coordinate" aria-hidden="true">6°14′ N / 75°34′ O</span>
+      </div>
+      <div class="floating orb" aria-hidden="true"></div>
+      <div class="floating bracket" aria-hidden="true">&lt;/&gt;</div>
+      <div class="floating location-sticker" aria-hidden="true"><span>CO</span>Medellín,<br />Colombia <b>↗</b></div>
+      <div class="floating eyes" aria-hidden="true"><i><b></b></i><i><b></b></i></div>
+    </div>
+  </div>
+  <div class="hero-bottom">
+    <span>JUAN PABLO RESTREPO</span>
+    <a href={`#${copy.ids.projects}`} aria-label={copy.hero.down}><span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
+<SectionDivider kind="swoop" />
+<section class="projects-section section" id={copy.ids.projects} aria-labelledby="projects-title">
+  {locale === 'es' && <span class="anchor-alias" id="projects" aria-hidden="true"></span>}
+  <div class="section-heading">
+    <h2 id="projects-title">{copy.projects.title}</h2>
+    <p>{copy.projects.description}</p>
+  </div>
+  <div class="project-grid">
+    {featured.map(project => (
+      <article class="project-card">
+        <ProjectPreview locale={locale} name={project.name} preview={project.preview} />
+        <div class="project-info">
+          <div><h3>{project.name}</h3><p>{project.summary[locale]}</p></div>
+          <a class="round-link" href={project.demo} target="_blank" rel="noopener noreferrer" aria-label={`${copy.projects.visit} ${project.name}`}><Arrow /></a>
+        </div>
+        <div class="project-tags">{project.tags.map(tag => <span>{tag[locale]}</span>)}</div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<SectionDivider kind="diagonal" />
+<section class="webs-section section" id={copy.ids.websites} aria-labelledby="websites-title">
+  <div class="section-heading">
+    <h2 id="websites-title">{copy.websites.title}</h2>
+    <p>{copy.websites.description}</p>
+  </div>
+  {websites.map(website => (
+    <article class="web-feature">
+      <ProjectPreview locale={locale} name={website.name} preview={website.preview} />
+      <div class="web-info">
+        <span class="eyebrow">{copy.websites.category}</span>
+        <h3>{website.name}</h3>
+        <p>{website.description[locale]}</p>
+        <div class="web-actions">
+          <a class="button outline" href={buildWhatsAppLink({ locale, intent: 'website' })} target="_blank" rel="noopener noreferrer">{copy.websites.contact}<Arrow /></a>
+          <a class="plain-link" href={website.demo} target="_blank" rel="noopener noreferrer">{copy.websites.demo} <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </article>
+  ))}
+</section>
+
+<SectionDivider kind="curve" />
+<section class="skills-section section" id={copy.ids.skills} aria-labelledby="skills-title">
+  <div class="section-heading">
+    <h2 id="skills-title">{copy.skills.title}</h2>
+    <p>{copy.skills.description}</p>
+  </div>
+  <div class="skills-grid">
+    {downloadableSkills.map((skill, index) => (
+      <article class="skill-card">
+        {skill.slug === 'story-board-motion' ? (
+          <div class="skill-preview storyboard-preview" aria-hidden="true">
+            <div class="story-board">
+              <span>{copy.skills.storyboard}</span>
+              <div class="story-scenes"><i>01<b>{copy.skills.text}</b></i><i>02<b>{copy.skills.demo}</b></i><i>03<b>{copy.skills.motion}</b></i></div>
+              <div class="story-tracks"><i></i><i></i><i></i><b></b></div>
+            </div>
+            <span class="skill-visual-index">.SKILL / 01</span>
+          </div>
+        ) : (
+          <div class="skill-preview talking-preview" aria-hidden="true">
+            <div class="phone-demo">
+              <Image src={phonePortrait} width={330} alt="" loading="lazy" format="webp" quality={80} />
+              <div class="caption-demo"><span>{copy.skills.camera}</span><b>{copy.skills.captions}</b></div>
+              <div class="audio-bars">{Array.from({ length: 9 }, () => <i></i>)}</div>
+            </div>
+            <span class="skill-visual-index">.SKILL / {String(index + 1).padStart(2, '0')}</span>
+            <span class="video-corner">REC ●</span>
+          </div>
+        )}
+        <div class="skill-content">
+          <span class="eyebrow">{skill.name.toUpperCase()}</span>
+          <h3>{skill.title[locale]}</h3>
+          <p>{skill.description[locale]}</p>
+          <a class="skill-link" href={buildWhatsAppLink({ locale, intent: skill.intent })} target="_blank" rel="noopener noreferrer">{copy.skills.buy}<Arrow /></a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<SectionDivider kind="contact-cut" />
+<section class="contact-section" id={copy.ids.contact} aria-labelledby="contact-title">
+  {locale === 'es' && <span class="anchor-alias" id="contact" aria-hidden="true"></span>}
+  <div><span class="eyebrow">{copy.contact.eyebrow}</span><h2 id="contact-title">{copy.contact.title}<span aria-hidden="true">↗</span></h2></div>
+  <a class="button primary" href={contact} target="_blank" rel="noopener noreferrer">{copy.contact.action}<Arrow /></a>
+</section>

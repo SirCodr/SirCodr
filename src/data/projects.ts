@@ -1,66 +1,89 @@
+import type { LocalizedText, PortfolioPreview } from '@/data/portfolio'
+import rastropayPoster from '@/assets/portfolio/rastropay-poster.webp'
+import chronoPoster from '@/assets/portfolio/chrono-poster.webp'
+
 export interface Project {
   slug: string
   name: string
-  summary: { es: string; en: string }
-  description: { es: string; en: string }
-  highlights: { es: string; en: string }[]
+  summary: LocalizedText
+  description: LocalizedText
+  highlights: LocalizedText[]
   stack: string[]
   github: string
-  demo?: string
+  demo: string
   screenshots?: string[]
   featured: boolean
   year: string
+  tags: LocalizedText[]
+  preview: PortfolioPreview
 }
 
 export const projects: Project[] = [
   {
-    slug: 'paytrack',
-    name: 'PayTrack',
+    slug: 'rastropay',
+    name: 'Rastropay',
+    featured: true,
+    year: '2026',
     summary: {
-      es: 'App fintech para registrar, simular y controlar el pago de tus tarjetas de crédito, con IA integrada.',
-      en: 'Fintech app to track, simulate and control credit card payments, with integrated AI.'
+      es: 'Gastos, movimientos bancarios automatizados y presupuesto en una sola aplicación.',
+      en: 'Expenses, automated bank transactions and budgeting in one app.'
     },
     description: {
-      es: 'PayTrack es una aplicación personal de finanzas que conecta con Gmail para importar movimientos bancarios automáticamente, permite simular estrategias de pago anticipado de cuotas y cuenta con un asistente de IA (Gemini) para responder preguntas sobre tus gastos en tiempo real.',
-      en: 'PayTrack is a personal finance app that connects with Gmail to automatically import bank transactions, allows you to simulate early payment strategies for installments, and features an AI assistant (Gemini) to answer questions about your expenses in real time.'
+      es: 'Una aplicación de finanzas personales para importar movimientos desde Gmail, organizar el presupuesto y consultar gastos y tarjetas.',
+      en: 'A personal finance app for importing transactions from Gmail, organizing a budget, and reviewing expenses and cards.'
     },
     highlights: [
       {
-        es: 'Sincronización automática con Gmail: detecta cobros de Nequi, Bancolombia, Davivienda y más sin ingresar datos a mano.',
-        en: 'Auto Gmail sync: detects charges from Nequi, Bancolombia, Davivienda and more without manual entry.'
+        es: 'Importación de movimientos desde Gmail.',
+        en: 'Import transactions from Gmail.'
       },
       {
-        es: 'Simulador de pago acelerado con 3 estrategias distintas y exportación del plan en PDF.',
-        en: 'Accelerated payment simulator with 3 strategies and PDF plan export.'
-      },
-      {
-        es: 'Presupuesto mensual con grupos de compromisos, seguimiento de pagos y resumen de porcentaje cubierto vs pendiente.',
-        en: 'Monthly budget with commitment groups, payment tracking and summary of covered vs. pending percentage.'
-      },
-      {
-        es: 'Dashboard financiero en tiempo real: ingresos, egresos, disponible y desglose por método de pago.',
-        en: 'Real-time financial dashboard: income, expenses, available balance and breakdown by payment method.'
+        es: 'Presupuesto, tarjetas y reportes financieros.',
+        en: 'Budgeting, cards and financial reports.'
       }
     ],
-    stack: [
-      'Next.js 15',
-      'TypeScript',
-      'Tailwind CSS v4',
-      'Prisma',
-      'PostgreSQL',
-      'Clerk',
-      'Gemini AI',
-      'Zustand',
-      'shadcn/ui'
+    stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'Clerk'],
+    github: 'https://github.com/SirCodr/PayTrack',
+    demo: 'https://rastropay.com/',
+    tags: [
+      { es: 'Finanzas personales', en: 'Personal finance' },
+      { es: 'Automatizado', en: 'Automated' }
     ],
-    github: 'https://github.com/Sircodr/paytrack',
-    screenshots: [
-      '/screenshots/paytrack-dashboard.webp',
-      '/screenshots/paytrack-transactions.webp',
-      '/screenshots/paytrack-budget.webp',
-      '/screenshots/paytrack-card.webp'
-    ],
+    preview: {
+      video: '/media/portfolio/rastropay.mp4',
+      poster: rastropayPoster
+    }
+  },
+  {
+    slug: 'chrono',
+    name: 'Chrono',
     featured: true,
-    year: '2025'
+    year: '2026',
+    summary: {
+      es: 'Una línea de tiempo para registrar actividades y consultar cuándo las hiciste.',
+      en: 'A timeline to record activities and see when you last did them.'
+    },
+    description: {
+      es: 'Registros cronológicos con categorías, búsqueda por fechas y conexión opcional a Google Calendar. Los registros se guardan localmente en el navegador.',
+      en: 'Chronological records with categories, date filters and an optional Google Calendar connection. Records are stored locally in the browser.'
+    },
+    highlights: [
+      {
+        es: 'Registro y consulta de actividades por fecha y categoría.',
+        en: 'Record and browse activities by date and category.'
+      },
+      {
+        es: 'Conexión opcional a Google Calendar.',
+        en: 'Optional Google Calendar connection.'
+      }
+    ],
+    stack: ['Next.js', 'TypeScript', 'IndexedDB', 'Google Calendar'],
+    github: 'https://github.com/SirCodr/chrono',
+    demo: 'https://chrono99.vercel.app/',
+    tags: [
+      { es: 'Registros y actividades', en: 'Activity records' },
+      { es: 'Calendario', en: 'Calendar' }
+    ],
+    preview: { video: '/media/portfolio/chrono.mp4', poster: chronoPoster }
   }
 ]

@@ -1,0 +1,12 @@
+---
+interface Props { kind: 'swoop' | 'diagonal' | 'curve' | 'contact-cut' }
+const { kind } = Astro.props
+---
+<div class:list={['section-divider', kind]} aria-hidden="true">
+  {kind === 'swoop' && (
+    <svg viewBox="0 0 1440 140" preserveAspectRatio="none" focusable="false">
+      <path d="M0 101C360 101 464-12 870 36S1270 116 1440 18V140H0Z" fill="var(--accent)" />
+      <path d="M0 116C360 116 464 3 870 51S1270 131 1440 33V140H0Z" fill="currentColor" />
+    </svg>
+  )}
+</div>

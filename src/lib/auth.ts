@@ -1,6 +1,4 @@
-import type { AstroLocals } from '@clerk/astro/server'
-
-type AuthLocals = App.Locals & AstroLocals
+export type AuthLocals = Pick<App.Locals, 'auth'>
 
 /**
  * Obtiene el usuario actual desde Astro.locals (inyectado por Clerk middleware).

@@ -1,7 +1,5 @@
 import type { CollectionEntry } from 'astro:content'
-import { isAdmin, getUnlockedModulesFromLocals } from '@/lib/auth'
-
-type AuthLocals = App.Locals & import('@clerk/astro/server').AstroLocals
+import { isAdmin, getUnlockedModulesFromLocals, type AuthLocals } from '@/lib/auth'
 type Post = CollectionEntry<'community'>
 
 /**

@@ -1,0 +1,23 @@
+@font-face{font-family:Manrope;src:url('/fonts/portfolio/manrope-regular.ttf');font-weight:400;font-display:swap}
+@font-face{font-family:Manrope;src:url('/fonts/portfolio/manrope-semibold.ttf');font-weight:600;font-display:swap}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{display:flex;flex-direction:column;background:#111315;color:#fff;font:12px/1.6 Manrope,sans-serif}
+a{color:inherit;text-decoration:none}
+.comparison-bar{flex:none;padding:18px 28px 14px;background:#191d20;border-bottom:1px solid #fff2}
+.bar-top{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.identity{display:flex;align-items:center;gap:15px;white-space:nowrap}
+.identity span{color:#c2c9ce;font-size:11px}
+.options{display:flex;gap:7px}
+button{min-height:42px;border:1px solid #ffffff30;background:transparent;color:#fff;padding:9px 16px;cursor:pointer;font:600 11px/1.5 Manrope,sans-serif}
+button[aria-pressed=true]{border-color:#ff6b2b;background:#ff6b2b;color:#111315}
+button span{margin-left:9px;font-size:9px;opacity:.7}
+button:hover{border-color:#ff6b2b}
+button:focus-visible,a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.description{display:flex;justify-content:space-between;gap:24px;margin-top:13px;color:#d1d6da}
+.description p{margin:0;font-size:11px}
+.description>span{font-size:10px;color:#9ca6ad;text-align:right}
+iframe{display:block;width:100%;flex:1;min-height:0;border:0;background:#111315}
+.fallback{padding:20px}
+@media(max-width:850px){.bar-top{align-items:flex-start}.identity span{display:none}.description>span{display:none}button span{display:none}.comparison-bar{padding:13px 18px}.options{gap:5px}button{padding:9px 12px}}
+@media(max-width:500px){.bar-top{gap:12px;align-items:center}.identity img{width:32px;height:auto}.comparison-bar{padding:11px 12px}.options{flex:1}.options button{flex:1;padding:8px 5px;font-size:9px;min-height:44px}.description{margin-top:9px;min-height:34px}.description p{font-size:10px}}

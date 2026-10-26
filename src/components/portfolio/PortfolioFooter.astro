@@ -1,0 +1,19 @@
+---
+import type { Locale } from '@/i18n/utils'
+import { portfolioCopy } from '@/data/portfolio'
+import Brand from './Brand.astro'
+import SocialLinks from './SocialLinks.astro'
+
+interface Props { locale: Locale }
+const { locale } = Astro.props
+const copy = portfolioCopy[locale]
+---
+<footer class="site-footer">
+  <Brand locale={locale} />
+  <p>Juan Pablo Restrepo<br />Medellín, Colombia</p>
+  <SocialLinks />
+  <a class="language-link" href={copy.language.href} lang={locale === 'es' ? 'en' : 'es'} aria-label={copy.language.accessible}>
+    {copy.language.label}
+  </a>
+  <span class="footer-year">© {new Date().getUTCFullYear()}</span>
+</footer>

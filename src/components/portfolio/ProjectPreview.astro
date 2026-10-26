@@ -1,0 +1,37 @@
+---
+import { getImage } from 'astro:assets'
+import type { Locale } from '@/i18n/utils'
+import { portfolioCopy, type PortfolioPreview } from '@/data/portfolio'
+
+interface Props { locale: Locale; name: string; preview: PortfolioPreview }
+const { locale, name, preview } = Astro.props
+const copy = portfolioCopy[locale].motion
+const poster = await getImage({ src: preview.poster, width: 1280, format: 'webp', quality: 82 })
+---
+<div class="project-media" data-project-preview>
+  <video
+    class="project-loop"
+    width="1280"
+    height="800"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster={poster.src}
+    aria-label={`${copy.preview} ${name}`}
+    data-preview-src={preview.video}
+  >
+    <a href={preview.video}>{copy.open}: {name}</a>
+  </video>
+  <button
+    type="button"
+    class="media-toggle"
+    data-video-toggle
+    data-pause-label={`${copy.pausePreview} ${name}`}
+    data-play-label={`${copy.playPreview} ${name}`}
+    aria-label={`${copy.pausePreview} ${name}`}
+    aria-pressed="false"
+    hidden
+  ><span aria-hidden="true">Ⅱ</span></button>
+  <noscript><a class="preview-fallback" href={preview.video}>{copy.open} <span aria-hidden="true">↗</span></a></noscript>
+</div>

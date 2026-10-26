@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Movimiento — pruebas del portfolio</title>
+    <link rel="icon" href="/portfolio/jr.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./options.css" />
+    <script src="./options.js" defer></script>
+  </head>
+  <body>
+    <header class="comparison-bar">
+      <div class="bar-top">
+        <a href="/" class="identity"><img src="/portfolio/jr.svg" width="40" height="21" alt="JR" /> <span>Pruebas de movimiento</span></a>
+        <div class="options" role="group" aria-label="Comparar movimientos">
+          <button type="button" data-mode="orbit" aria-pressed="true">Órbita del avatar <span>Favorita</span></button>
+          <button type="button" data-mode="edges" aria-pressed="false">Por los bordes</button>
+          <button type="button" data-mode="scroll" aria-pressed="false">Con el scroll</button>
+        </div>
+      </div>
+      <div class="description" aria-live="polite">
+        <p data-description>La bola y el código rodean el panel naranja, pasando por delante y por detrás. Se mueve solo.</p>
+        <span data-hint>Recorrido lento · profundidad · movimiento concentrado en el hero</span>
+      </div>
+    </header>
+    <iframe src="/" title="Portfolio con la propuesta de movimiento seleccionada" id="portfolio-preview"></iframe>
+    <noscript><p class="fallback">Activa JavaScript para comparar las animaciones o <a href="/">abre el portfolio</a>.</p></noscript>
+  </body>
+</html>

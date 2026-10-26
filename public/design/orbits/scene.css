@@ -1,0 +1,10 @@
+/* Loaded only inside the comparison iframe. */
+body[data-orbit-study] .hero-art>.orb,
+body[data-orbit-study] .hero-art>.bracket,
+.orbit-study-layer>.floating{animation:none!important;translate:none;pointer-events:none;right:auto;bottom:auto;margin:0;left:0;top:0;transform-origin:center}
+body[data-orbit-study] .art-panel{z-index:2}
+body[data-orbit-study] .location-sticker,
+body[data-orbit-study] .eyes{z-index:5}
+.orbit-study-layer{position:fixed;inset:0;z-index:8;pointer-events:none;overflow:clip;contain:layout style}
+.orbit-study-layer>.bracket{backdrop-filter:none}
+@media(prefers-reduced-motion:reduce){.orbit-study-layer{display:none}}

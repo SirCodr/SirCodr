@@ -1,0 +1,60 @@
+---
+import '@/styles/portfolio.css'
+import type { Locale } from '@/i18n/utils'
+import { portfolioCopy, socialLinks } from '@/data/portfolio'
+import PortfolioHeader from '@/components/portfolio/PortfolioHeader.astro'
+import PortfolioFooter from '@/components/portfolio/PortfolioFooter.astro'
+
+interface Props { locale: Locale }
+const { locale } = Astro.props
+const copy = portfolioCopy[locale]
+const canonicalURL = new URL(locale === 'es' ? '/' : '/en/', Astro.site ?? 'https://jotarestrepo.com')
+const alternateURL = new URL(locale === 'es' ? '/en/' : '/', canonicalURL)
+const ogImage = new URL('/photo_avatar.webp', canonicalURL)
+const person = {
+  '@context': 'https://schema.org', '@type': 'Person', name: 'Juan Pablo Restrepo', alternateName: 'Jota',
+  jobTitle: locale === 'es' ? 'Desarrollador web' : 'Web developer', url: canonicalURL.href,
+  sameAs: socialLinks.map(link => link.href),
+  address: { '@type': 'PostalAddress', addressLocality: 'Medellín', addressCountry: 'CO' },
+  knowsLanguage: ['Spanish', 'English'],
+}
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111315" />
+    <title>{copy.title}</title>
+    <meta name="description" content={copy.description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" hreflang={locale} href={canonicalURL} />
+    <link rel="alternate" hreflang={locale === 'es' ? 'en' : 'es'} href={alternateURL} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', canonicalURL)} />
+    <link rel="icon" type="image/svg+xml" href="/portfolio/jr.svg" />
+    <link rel="preload" href="/fonts/portfolio/archivo-black.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={copy.title} />
+    <meta property="og:description" content={copy.description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="Juan Pablo Restrepo — Jota" />
+    <meta property="og:locale" content={locale === 'es' ? 'es_CO' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={copy.title} />
+    <meta name="twitter:description" content={copy.description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(person).replace(/</g, '\u003c')} />
+  </head>
+  <body data-portfolio>
+    <a class="skip-link" href={`#${copy.ids.projects}`}>{copy.skip}</a>
+    <PortfolioHeader locale={locale} />
+    <main><slot /></main>
+    <PortfolioFooter locale={locale} />
+    <script>
+      import '@/scripts/portfolio'
+      import { inject } from '@vercel/analytics'
+      inject()
+    </script>
+  </body>
+</html>

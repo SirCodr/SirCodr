@@ -9,7 +9,7 @@ const isAdminRoute = createRouteMatcher(['/admin', '/admin/(.*)'])
 // API admin
 const isAdminApi = createRouteMatcher(['/api/admin', '/api/admin/(.*)'])
 
-export const onRequest = clerkMiddleware(async (auth, context) => {
+export const onRequest = clerkMiddleware((auth, context) => {
   const { userId } = auth()
 
   // Admin routes: sin sesión o sin rol admin → 404

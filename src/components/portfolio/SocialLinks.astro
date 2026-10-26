@@ -1,0 +1,8 @@
+---
+import { socialLinks } from '@/data/portfolio'
+---
+<div class="socials">
+  {socialLinks.map(({ label, href }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer">{label} <span aria-hidden="true">↗</span></a>
+  ))}
+</div>
