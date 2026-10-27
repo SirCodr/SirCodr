@@ -38,7 +38,7 @@ export const portfolioCopy = {
     hero: {
       eyebrow: 'DESARROLLADOR / MEDELLÍN, COLOMBIA',
       lead: 'SOY',
-      intro: 'Desarrollo webs, aplicaciones y automizo procesos.',
+      intro: 'Desarrollo webs, aplicaciones y automatizo procesos.',
       automation: 'Me gusta experimentar y crear cosas con la IA.',
       contact: 'Cuéntame qué necesitas',
       projects: 'Ver proyectos',
