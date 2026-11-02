@@ -182,6 +182,7 @@ interface DownloadableSkill {
   title: LocalizedText
   description: LocalizedText
   intent: WhatsAppIntent
+  detailHref?: Record<Locale, string>
 }
 
 export const downloadableSkills: DownloadableSkill[] = [
@@ -189,6 +190,7 @@ export const downloadableSkills: DownloadableSkill[] = [
     slug: 'story-board-motion',
     name: 'Story Board Motion',
     intent: 'story-board-motion',
+    detailHref: { es: '/skills/story-board-motion/', en: '/en/skills/story-board-motion/' },
     title: {
       es: 'Videos con motion graphics.',
       en: 'Videos with motion graphics.'

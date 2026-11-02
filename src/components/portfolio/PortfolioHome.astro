@@ -102,7 +102,7 @@ const contact = buildWhatsAppLink({ locale, intent: 'project' })
   </div>
   <div class="skills-grid">
     {downloadableSkills.map((skill, index) => (
-      <article class="skill-card">
+      <article class:list={['skill-card', { 'skill-card-detail': skill.detailHref }]}>
         {skill.slug === 'story-board-motion' ? (
           <div class="skill-preview storyboard-preview" aria-hidden="true">
             <div class="story-board">
@@ -110,7 +110,6 @@ const contact = buildWhatsAppLink({ locale, intent: 'project' })
               <div class="story-scenes"><i>01<b>{copy.skills.text}</b></i><i>02<b>{copy.skills.demo}</b></i><i>03<b>{copy.skills.motion}</b></i></div>
               <div class="story-tracks"><i></i><i></i><i></i><b></b></div>
             </div>
-            <span class="skill-visual-index">.SKILL / 01</span>
           </div>
         ) : (
           <div class="skill-preview talking-preview" aria-hidden="true">
@@ -119,7 +118,6 @@ const contact = buildWhatsAppLink({ locale, intent: 'project' })
               <div class="caption-demo"><span>{copy.skills.camera}</span><b>{copy.skills.captions}</b></div>
               <div class="audio-bars">{Array.from({ length: 9 }, () => <i></i>)}</div>
             </div>
-            <span class="skill-visual-index">.SKILL / {String(index + 1).padStart(2, '0')}</span>
             <span class="video-corner">REC ●</span>
           </div>
         )}
@@ -127,7 +125,11 @@ const contact = buildWhatsAppLink({ locale, intent: 'project' })
           <span class="eyebrow">{skill.name.toUpperCase()}</span>
           <h3>{skill.title[locale]}</h3>
           <p>{skill.description[locale]}</p>
-          <a class="skill-link" href={buildWhatsAppLink({ locale, intent: skill.intent })} target="_blank" rel="noopener noreferrer">{copy.skills.buy}<Arrow /></a>
+          {skill.detailHref ? (
+            <a class="skill-link skill-detail-link" href={skill.detailHref[locale]}>{locale === 'es' ? 'Ver la skill y sus videos' : 'Explore the skill and videos'}<Arrow /></a>
+          ) : (
+            <a class="skill-link" href={buildWhatsAppLink({ locale, intent: skill.intent })} target="_blank" rel="noopener noreferrer">{copy.skills.buy}<Arrow /></a>
+          )}
         </div>
       </article>
     ))}

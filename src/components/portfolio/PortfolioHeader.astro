@@ -5,16 +5,16 @@ import { buildWhatsAppLink } from '@/data/contact'
 import Brand from './Brand.astro'
 import Arrow from './Arrow.astro'
 
-interface Props { locale: Locale }
-const { locale } = Astro.props
+interface Props { locale: Locale; homeHref?: string }
+const { locale, homeHref = '' } = Astro.props
 const copy = portfolioCopy[locale]
 ---
 <header class="site-header">
-  <Brand locale={locale} name />
+  <Brand locale={locale} name href={`${homeHref}#inicio`} />
   <nav aria-label={copy.navigation.label}>
-    <a href={`#${copy.ids.projects}`}>{copy.navigation.projects}</a>
-    <a href={`#${copy.ids.websites}`}>{copy.navigation.websites}</a>
-    <a href={`#${copy.ids.skills}`}>{copy.navigation.skills}</a>
+    <a href={`${homeHref}#${copy.ids.projects}`}>{copy.navigation.projects}</a>
+    <a href={`${homeHref}#${copy.ids.websites}`}>{copy.navigation.websites}</a>
+    <a href={`${homeHref}#${copy.ids.skills}`}>{copy.navigation.skills}</a>
   </nav>
   <a class="nav-contact" href={buildWhatsAppLink({ locale, intent: 'project' })} target="_blank" rel="noopener noreferrer">
     {copy.navigation.contact}<Arrow />

@@ -741,6 +741,10 @@ h3 {
   border: 1px solid #d2d8dc;
   overflow: hidden;
 }
+.skill-card-detail { position: relative; }
+.skill-detail-link::after { content: ''; position: absolute; inset: 0; }
+.skill-card-detail:focus-within { outline: 3px solid var(--accent); outline-offset: 5px; }
+.skill-card-detail:hover .skill-link { color: var(--accent-dark); }
 .skill-preview {
   height: 270px;
   position: relative;

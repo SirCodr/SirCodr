@@ -5,15 +5,27 @@ import { portfolioCopy, socialLinks } from '@/data/portfolio'
 import PortfolioHeader from '@/components/portfolio/PortfolioHeader.astro'
 import PortfolioFooter from '@/components/portfolio/PortfolioFooter.astro'
 
-interface Props { locale: Locale }
-const { locale } = Astro.props
+interface Props {
+  locale: Locale
+  title?: string
+  description?: string
+  path?: string
+  alternatePath?: string
+  skipHref?: string
+  skipLabel?: string
+}
+const { locale, title, description, path, alternatePath, skipHref, skipLabel } = Astro.props
 const copy = portfolioCopy[locale]
-const canonicalURL = new URL(locale === 'es' ? '/' : '/en/', Astro.site ?? 'https://jotarestrepo.com')
-const alternateURL = new URL(locale === 'es' ? '/en/' : '/', canonicalURL)
+const home = locale === 'es' ? '/' : '/en/'
+const homeHref = path ? home : ''
+const pageTitle = title ?? copy.title
+const pageDescription = description ?? copy.description
+const canonicalURL = new URL(path ?? home, Astro.site ?? 'https://jotarestrepo.com')
+const alternateURL = new URL(alternatePath ?? (locale === 'es' ? '/en/' : '/'), canonicalURL)
 const ogImage = new URL('/photo_avatar.webp', canonicalURL)
 const person = {
   '@context': 'https://schema.org', '@type': 'Person', name: 'Juan Pablo Restrepo', alternateName: 'Jota',
-  jobTitle: locale === 'es' ? 'Desarrollador web' : 'Web developer', url: canonicalURL.href,
+  jobTitle: locale === 'es' ? 'Desarrollador web' : 'Web developer', url: new URL(home, canonicalURL).href,
   sameAs: socialLinks.map(link => link.href),
   address: { '@type': 'PostalAddress', addressLocality: 'Medellín', addressCountry: 'CO' },
   knowsLanguage: ['Spanish', 'English'],
@@ -25,32 +37,32 @@ const person = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#111315" />
-    <title>{copy.title}</title>
-    <meta name="description" content={copy.description} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonicalURL} />
     <link rel="alternate" hreflang={locale} href={canonicalURL} />
     <link rel="alternate" hreflang={locale === 'es' ? 'en' : 'es'} href={alternateURL} />
-    <link rel="alternate" hreflang="x-default" href={new URL('/', canonicalURL)} />
+    <link rel="alternate" hreflang="x-default" href={locale === 'es' ? canonicalURL : alternateURL} />
     <link rel="icon" type="image/svg+xml" href="/portfolio/jr.svg" />
     <link rel="preload" href="/fonts/portfolio/archivo-black.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={copy.title} />
-    <meta property="og:description" content={copy.description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:alt" content="Juan Pablo Restrepo — Jota" />
     <meta property="og:locale" content={locale === 'es' ? 'es_CO' : 'en_US'} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={copy.title} />
-    <meta name="twitter:description" content={copy.description} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(person).replace(/</g, '\u003c')} />
   </head>
   <body data-portfolio>
-    <a class="skip-link" href={`#${copy.ids.projects}`}>{copy.skip}</a>
-    <PortfolioHeader locale={locale} />
+    <a class="skip-link" href={skipHref ?? `#${copy.ids.projects}`}>{skipLabel ?? copy.skip}</a>
+    <PortfolioHeader locale={locale} homeHref={homeHref} />
     <main><slot /></main>
-    <PortfolioFooter locale={locale} />
+    <PortfolioFooter locale={locale} homeHref={homeHref} alternateHref={alternatePath} />
     <script>
       import '@/scripts/portfolio'
       import { inject } from '@vercel/analytics'

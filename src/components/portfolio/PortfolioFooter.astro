@@ -4,15 +4,15 @@ import { portfolioCopy } from '@/data/portfolio'
 import Brand from './Brand.astro'
 import SocialLinks from './SocialLinks.astro'
 
-interface Props { locale: Locale }
-const { locale } = Astro.props
+interface Props { locale: Locale; homeHref?: string; alternateHref?: string }
+const { locale, homeHref = '', alternateHref } = Astro.props
 const copy = portfolioCopy[locale]
 ---
 <footer class="site-footer">
-  <Brand locale={locale} />
+  <Brand locale={locale} href={`${homeHref}#inicio`} />
   <p>Juan Pablo Restrepo<br />Medellín, Colombia</p>
   <SocialLinks />
-  <a class="language-link" href={copy.language.href} lang={locale === 'es' ? 'en' : 'es'} aria-label={copy.language.accessible}>
+  <a class="language-link" href={alternateHref ?? copy.language.href} lang={locale === 'es' ? 'en' : 'es'} aria-label={alternateHref ? (locale === 'es' ? 'View this skill in English' : 'Ver esta skill en español') : copy.language.accessible}>
     {copy.language.label}
   </a>
   <span class="footer-year">© {new Date().getUTCFullYear()}</span>

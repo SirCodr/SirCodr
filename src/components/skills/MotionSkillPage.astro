@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets'
+import type { Locale } from '@/i18n/utils'
+import PortfolioLayout from '@/layouts/PortfolioLayout.astro'
+import Arrow from '@/components/portfolio/Arrow.astro'
+import { buildWhatsAppLink } from '@/data/contact'
+import { motionFilms, motionSkillCopy, motionSkillPaths } from '@/data/motion-skill'
+import '@/styles/motion-skill.css'
+
+interface Props { locale: Locale }
+const { locale } = Astro.props
+const copy = motionSkillCopy[locale]
+const home = locale === 'es' ? '/' : '/en/'
+const contact = buildWhatsAppLink({ locale, intent: 'story-board-motion' })
+const alternatePath = motionSkillPaths[locale === 'es' ? 'en' : 'es']
+---
+<PortfolioLayout locale={locale} title={copy.title} description={copy.description} path={motionSkillPaths[locale]} alternatePath={alternatePath} skipHref="#motion-skill" skipLabel={copy.skip}>
+  <div class="motion-page" id="motion-skill" tabindex="-1">
+    <section class="motion-hero" aria-labelledby="motion-title">
+      <div class="motion-topline">
+        <a href={`${home}#skills`} class="motion-back"><span aria-hidden="true">↖</span> {copy.back}</a>
+        <span class="motion-edition">{copy.edition}</span>
+      </div>
+      <div class="motion-hero-grid">
+        <div class="motion-hero-copy">
+          <p class="motion-label"><span class="motion-dot" aria-hidden="true"></span>{copy.badge}</p>
+          <p class="motion-name">Story Board Motion</p>
+          <h1 id="motion-title" aria-label={locale === 'es' ? 'De la idea al movimiento.' : 'From idea into motion.'}><span>{copy.hero[0]}</span><span class="motion-outline">{copy.hero[1]}</span><span class="motion-orange">{copy.hero[2]}<span class="motion-asterisk" aria-hidden="true">✳</span></span></h1>
+          <p class="motion-intro">{copy.intro}</p>
+          <div class="motion-hero-actions">
+            <a href="#films" class="motion-button motion-button-orange">{copy.watch}<span aria-hidden="true">↓</span></a>
+            <a href={contact} target="_blank" rel="noopener noreferrer" class="motion-text-link">{copy.get}<Arrow /></a>
+          </div>
+        </div>
+        <div class="motion-reel" aria-label={copy.reel}>
+          <div class="motion-reel-guide" aria-hidden="true"><span>9:16</span><span>● REC</span></div>
+          <div class="motion-contact-sheet">
+            {motionFilms.map((film, index) => (
+              <a class={`motion-still motion-still-${index + 1}`} href={`#film-${film.id}`} aria-label={`${locale === 'es' ? 'Ver video de' : 'View film:'} ${film.name}`}>
+                <Image src={film.poster} width={index === 0 ? 440 : 300} widths={index === 0 ? [260, 440, 660] : [180, 300, 450]} sizes={index === 0 ? '(max-width: 600px) 45vw, 280px' : '(max-width: 600px) 30vw, 190px'} alt="" loading="eager" fetchpriority={index === 0 ? 'high' : 'auto'} format="webp" quality={85} />
+                <span class="motion-still-caption"><b>{film.name}</b><span aria-hidden="true">↗</span></span>
+              </a>
+            ))}
+            <span class="motion-reel-sticker" aria-hidden="true">STORY<br />↓<br />MOTION</span>
+          </div>
+        </div>
+      </div>
+      <div class="motion-hero-foot"><span>{copy.heroNote}</span><span>{copy.realWork}</span></div>
+    </section>
+
+    <section class="motion-about motion-section" aria-labelledby="motion-about-title">
+      <div>
+        <h2 id="motion-about-title">{copy.aboutTitle[0]}<br /><span>{copy.aboutTitle[1]}</span></h2>
+      </div>
+      <div class="motion-about-copy">
+        <p class="motion-body-lead">{copy.about}</p>
+        <p class="motion-about-end">{copy.aboutEnd}</p>
+        <div class="motion-use-cases"><p class="motion-label">{copy.usesLabel}</p><ul>{copy.uses.map(use => <li><span aria-hidden="true">↗</span>{use}</li>)}</ul></div>
+      </div>
+    </section>
+
+    <section id="films" class="motion-films motion-section" aria-labelledby="films-title">
+      <div class="motion-work-heading">
+        <div><h2 id="films-title">{copy.workTitle[0]}<br /><span>{copy.workTitle[1]}</span></h2></div>
+        <div class="motion-work-intro"><p>{copy.workIntro}</p><p class="motion-sound"><span aria-hidden="true">◖))</span>{copy.sound}</p></div>
+      </div>
+      <div class="motion-film-grid">
+        {motionFilms.map(film => (
+          <article class={`motion-film motion-film-${film.id}`} id={`film-${film.id}`} aria-labelledby={`title-${film.id}`}>
+            <div class="motion-film-top"><span>{film.duration} <span aria-hidden="true">↙</span></span></div>
+            <div class="motion-film-player" data-film-player>
+              <video src={film.video} controls playsinline preload="none" poster={film.poster.src} width="720" height="1280" aria-label={`${copy.play} ${film.name}`} data-film>
+                <a href={film.video}>{copy.fallback}: {film.name}</a>
+              </video>
+              <button class="motion-play" type="button" aria-label={`${copy.play} ${film.name}`} data-film-play hidden><span aria-hidden="true">▶</span><span>{copy.play}</span></button>
+              <p class="motion-video-error" role="status" hidden data-film-error><a href={film.video}>{copy.fallback} ↗</a></p>
+            </div>
+            <div class="motion-film-info"><p class="motion-label">{film.category[locale]}</p><h3 id={`title-${film.id}`}>{film.name}<span aria-hidden="true">↗</span></h3><p>{film.description[locale]}</p></div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="motion-process motion-section" aria-labelledby="process-title">
+      <div class="motion-process-heading"><h2 id="process-title">{copy.processTitle[0]}<br /><span>{copy.processTitle[1]}</span></h2><p>{copy.processIntro}</p></div>
+      <ol class="motion-steps">{copy.steps.map((step, index) => <li><span class="motion-step-number">0{index + 1}</span><div><h3>{step.name}</h3><p>{step.detail}</p></div><span class="motion-step-output">{step.output}<span aria-hidden="true">↗</span></span></li>)}</ol>
+      <aside class="motion-requirements"><p class="motion-label">{copy.includesLabel}</p><ul>{copy.includes.map(item => <li><span aria-hidden="true">+</span>{item}</li>)}</ul></aside>
+    </section>
+
+    <section class="motion-cta motion-section" aria-labelledby="motion-cta-title">
+      <div><p class="motion-label">{copy.ctaLabel}</p><h2 id="motion-cta-title">{copy.ctaTitle[0]}<br />{copy.ctaTitle[1]}</h2><span class="motion-cta-note">{copy.ctaNote}</span></div>
+      <div class="motion-cta-action"><span class="motion-cta-arrow" aria-hidden="true">↗</span><p>{copy.ctaText}</p><a class="motion-button motion-button-dark" href={contact} target="_blank" rel="noopener noreferrer">{copy.ctaAction}<Arrow /></a></div>
+    </section>
+  </div>
+</PortfolioLayout>
+
+<script>
+  import '@/scripts/motion-skill'
+</script>

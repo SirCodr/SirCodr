@@ -42,3 +42,4 @@ README.md
 # local browser verification artifacts
 /output/
 /.playwright-cli/
+/input
